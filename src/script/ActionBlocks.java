@@ -1,6 +1,8 @@
 package script;
 
 import com.zeshanaslam.crimering.Main;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -47,6 +49,7 @@ public class ActionBlocks implements Listener {
                     // Objects
                     engine.put("player", player);
                     engine.put("event", event);
+                    engine.put("CR", this);
 
                     engine.eval(scriptObject.script);
                 } catch (ScriptException e) {
@@ -54,5 +57,13 @@ public class ActionBlocks implements Listener {
                 }
             }
         }
+    }
+
+    public void teleport(Player player, String world, int x, int y, int z, float yaw, float pitch) {
+        Location loc = new Location(Bukkit.getWorld(world), x, y, z);
+        loc.setYaw(yaw);
+        loc.setPitch(pitch);
+        
+        player.teleport(loc);
     }
 }
