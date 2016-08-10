@@ -1,4 +1,4 @@
-package Events;
+package events;
 
 import com.zeshanaslam.crimering.Main;
 import org.bukkit.Bukkit;

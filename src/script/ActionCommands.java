@@ -25,8 +25,8 @@ import java.util.HashMap;
 
 public class ActionCommands implements Listener, CommandExecutor {
 
-    private final Main plugin;
     public static HashMap<String, CopyObject> clicks = new HashMap<>();
+    private final Main plugin;
 
     public ActionCommands(Main plugin) {
         this.plugin = plugin;

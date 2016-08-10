@@ -60,7 +60,7 @@ public class RaidSetup implements CommandExecutor {
 
                 if (type.equalsIgnoreCase("spawn")) {
                     if (sender instanceof Player) {
-                        Player player = (Player)sender;
+                        Player player = (Player) sender;
                         fileHandler.set("info.x", player.getLocation().getBlockX());
                         fileHandler.set("info.y", player.getLocation().getBlockY());
                         fileHandler.set("info.z", player.getLocation().getBlockZ());

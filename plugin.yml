@@ -11,3 +11,5 @@ commands:
     description: Raids setup command.
   Action:
     description: Action script command.
+  Party:
+    description: Party command.

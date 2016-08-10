@@ -1,9 +1,10 @@
 package com.zeshanaslam.crimering;
 
-import Events.BasicEvents;
 import commands.Reload;
+import events.BasicEvents;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import raids.PartyCommands;
 import raids.RaidManager;
 import raids.RaidSetup;
 import script.ActionBlocks;
@@ -48,7 +49,7 @@ public class Main extends JavaPlugin {
             raidstDir.mkdir();
         }
 
-        // Events
+        // events
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new BasicEvents(this), this);
         pm.registerEvents(new ActionBlocks(this), this);
@@ -58,6 +59,7 @@ public class Main extends JavaPlugin {
         getCommand("CRReload").setExecutor(new Reload(this));
         getCommand("raids").setExecutor(new RaidSetup(this));
         getCommand("action").setExecutor(new ActionCommands(this));
+        getCommand("party").setExecutor(new PartyCommands(this));
     }
 
     public void onDisable() {
