@@ -11,9 +11,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
+import javax.script.*;
 
 public class ActionBlocks implements Listener {
 
@@ -47,16 +45,19 @@ public class ActionBlocks implements Listener {
             if (Main.instance.scriptsManager.contains(x + " " + y + " " + z + " " + world)) {
                 ScriptObject scriptObject = Main.instance.scriptsManager.getObject(x + " " + y + " " + z + " " + world);
 
-                ScriptEngineManager factory = new ScriptEngineManager();
-                ScriptEngine engine = factory.getEngineByName("JavaScript");
-
                 try {
-                    // Objects
-                    engine.put("player", player);
-                    engine.put("event", event);
-                    engine.put("CR", this);
+                    ScriptEngineManager factory = new ScriptEngineManager();
+                    ScriptEngine engine = factory.getEngineByName("JavaScript");
+                    Compilable compilableEngine = (Compilable) engine;
+                    CompiledScript compiledScript = compilableEngine.compile(scriptObject.script);
 
-                    engine.eval(scriptObject.script);
+                    // Objects
+                    Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
+                    bindings.put("player", player);
+                    bindings.put("event", event);
+                    bindings.put("CR", this);
+
+                    compiledScript.eval(bindings);
                 } catch (ScriptException e) {
                     e.printStackTrace();
                 }

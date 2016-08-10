@@ -65,7 +65,7 @@ public class ActionCommands implements Listener, CommandExecutor {
             }
 
             if (args[0].equalsIgnoreCase("loc")) {
-                
+
             }
         }
         return true;

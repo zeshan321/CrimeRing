@@ -4,6 +4,7 @@ import Events.BasicEvents;
 import commands.Reload;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import raids.RaidManager;
 import raids.RaidSetup;
 import script.ActionBlocks;
 import script.ActionCommands;
@@ -16,6 +17,7 @@ public class Main extends JavaPlugin {
     public static Main instance;
 
     public ScriptsManager scriptsManager;
+    public RaidManager raidManager;
 
     public void onEnable() {
         saveDefaultConfig();
@@ -24,6 +26,9 @@ public class Main extends JavaPlugin {
         // Load script manager
         scriptsManager = new ScriptsManager();
         scriptsManager.load();
+
+        // Load raid manager
+        raidManager = new RaidManager();
 
         // User data dir
         File userDir = new File("plugins/CrimeRing/");
