@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="CrimeRing:jar">
+    <output-path>$PROJECT_DIR$/../MC Test Server/plugins/</output-path>
+    <root id="archive" name="CrimeRing.jar">
+      <element id="module-output" name="CrimeRing" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Spigot Build/Spigot/Spigot-API/target/spigot-api-1.10.2-R0.1-SNAPSHOT.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Spigot Build/spigot-1.10.2.jar" path-in-jar="/" />
+      <element id="file-copy" path="$PROJECT_DIR$/config.yml" />
+      <element id="file-copy" path="$PROJECT_DIR$/plugin.yml" />
+      <element id="file-copy" path="$PROJECT_DIR$/scripts.yml" />
+    </root>
+  </artifact>
+</component>

@@ -1,0 +1,9 @@
+name: CrimeRing
+main: com.zeshanaslam.crimering.Main
+version: 1.0
+author: Zeshan Aslam
+description: >
+             CrimeRing Plugin.
+commands:
+  CRReload:
+    description: Relaods config!
