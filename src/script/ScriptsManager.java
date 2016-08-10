@@ -24,7 +24,7 @@ public class ScriptsManager {
             String dir = imports.getString(data + ".dir");
 
             try {
-                scriptData.put(data, new ScriptObject(data, type, dir, String.join("\n", Files.readAllLines(Paths.get("plugins/CrimeRing/scripts/" + File.separator + dir)))));
+                scriptData.put(data, new ScriptObject(data, type, dir, String.join("\n", Files.readAllLines(Paths.get("plugins/CrimeRing/scripts/" + File.separator + dir))).replace("\n", "").replace("\t", "")));
             } catch (IOException e) {
                 e.printStackTrace();
             }

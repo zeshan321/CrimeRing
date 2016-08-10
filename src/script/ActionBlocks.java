@@ -32,6 +32,11 @@ public class ActionBlocks implements Listener {
             return;
         }
 
+        // Check if player is using action copy
+        if (ActionCommands.clicks.containsKey(player.getName())) {
+            return;
+        }
+
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.LEFT_CLICK_BLOCK) {
 
             int x = event.getClickedBlock().getLocation().getBlockX();
@@ -63,7 +68,7 @@ public class ActionBlocks implements Listener {
         Location loc = new Location(Bukkit.getWorld(world), x, y, z);
         loc.setYaw(yaw);
         loc.setPitch(pitch);
-        
+
         player.teleport(loc);
     }
 }

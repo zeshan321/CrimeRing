@@ -6,4 +6,8 @@ description: >
              CrimeRing Plugin.
 commands:
   CRReload:
-    description: Relaods config!
+    description: Relaods config.
+  Raids:
+    description: Raids setup command.
+  Action:
+    description: Action script command.
