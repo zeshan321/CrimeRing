@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Map;
 
 public class PartyObject {
     private ArrayList<Player> members = new ArrayList();
@@ -67,7 +66,7 @@ public class PartyObject {
         while (iterator.hasNext()) {
             if (!list.endsWith(", ")) {
                 if (!list.equals(""))
-                list += ", ";
+                    list += ", ";
             }
 
             Player player = (Player) iterator.next();

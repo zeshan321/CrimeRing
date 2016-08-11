@@ -7,9 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import raids.PartyCommands;
 import raids.RaidManager;
 import raids.RaidSetup;
-import script.ActionBlocks;
-import script.ActionCommands;
-import script.ScriptsManager;
+import script.*;
 
 import java.io.File;
 
@@ -43,10 +41,16 @@ public class Main extends JavaPlugin {
             scriptDir.mkdir();
         }
 
+        // Scripts inv data dir
+        File scriptInvDir = new File("plugins/CrimeRing/scripts/inv/");
+        if (!scriptInvDir.exists()) {
+            scriptInvDir.mkdir();
+        }
+
         // Raids data dir
-        File raidstDir = new File("plugins/CrimeRing/raids/");
-        if (!raidstDir.exists()) {
-            raidstDir.mkdir();
+        File raidsDir = new File("plugins/CrimeRing/raids/");
+        if (!raidsDir.exists()) {
+            raidsDir.mkdir();
         }
 
         // events
@@ -54,6 +58,9 @@ public class Main extends JavaPlugin {
         pm.registerEvents(new BasicEvents(this), this);
         pm.registerEvents(new ActionBlocks(this), this);
         pm.registerEvents(new ActionCommands(this), this);
+        pm.registerEvents(new ActionRegions(this), this);
+        pm.registerEvents(new ActionNPC(this), this);
+        pm.registerEvents(new ActionInv(this), this);
 
         // Commands
         getCommand("CRReload").setExecutor(new Reload(this));

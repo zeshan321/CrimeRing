@@ -114,7 +114,7 @@ public class ActionCommands implements Listener, CommandExecutor {
 
                     try {
                         Main.instance.scriptsManager.scriptData.put(x + " " + y + " " + z + " " + world,
-                                new ScriptObject(x + " " + y + " " + z + " " + world, "BLOCKS"
+                                new ScriptObject(x + " " + y + " " + z + " " + world
                                         , copyObject.name1 + ".yml",
                                         String.join("\n", Files.readAllLines(Paths.get("plugins/CrimeRing/scripts/" + File.separator + copyObject.name1 + ".yml")))));
                     } catch (IOException e) {
@@ -126,7 +126,7 @@ public class ActionCommands implements Listener, CommandExecutor {
 
                     try {
                         Main.instance.scriptsManager.scriptData.put(x + " " + y + " " + z + " " + world,
-                                new ScriptObject(x + " " + y + " " + z + " " + world, "BLOCKS"
+                                new ScriptObject(x + " " + y + " " + z + " " + world
                                         , copyObject.name1 + ".yml",
                                         String.join("\n", Files.readAllLines(Paths.get("plugins/CrimeRing/scripts/" + File.separator + copyObject.name2 + ".yml")))));
                     } catch (IOException e) {

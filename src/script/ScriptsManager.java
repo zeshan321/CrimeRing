@@ -20,11 +20,10 @@ public class ScriptsManager {
         int loaded = 0;
 
         for (String data : imports.getKeys()) {
-            String type = imports.getString(data + ".type");
             String dir = imports.getString(data + ".dir");
 
             try {
-                scriptData.put(data, new ScriptObject(data, type, dir, String.join("\n", Files.readAllLines(Paths.get("plugins/CrimeRing/scripts/" + File.separator + dir))).replace("\n", "").replace("\t", "")));
+                scriptData.put(data, new ScriptObject(data, dir, String.join("\n", Files.readAllLines(Paths.get("plugins/CrimeRing/scripts/" + File.separator + dir))).replace("\n", "").replace("\t", "")));
             } catch (IOException e) {
                 e.printStackTrace();
             }
