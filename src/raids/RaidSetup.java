@@ -22,7 +22,7 @@ public class RaidSetup implements CommandExecutor {
             if (args.length == 0) {
                 sender.sendMessage(ChatColor.GOLD + "/raids create <name>");
                 sender.sendMessage(ChatColor.GOLD + "/raids delete <name>");
-                sender.sendMessage(ChatColor.GOLD + "/raids edit <name> <max | min | spawn> <value>");
+                sender.sendMessage(ChatColor.GOLD + "/raids edit <name> <max | min | spawn | name | start> <value>");
                 return false;
             }
 
@@ -43,7 +43,7 @@ public class RaidSetup implements CommandExecutor {
                 FileHandler fileHandler = new FileHandler("plugins/CrimeRing/raids/" + name + ".yml");
 
                 if (type.equalsIgnoreCase("min")) {
-                    fileHandler.set("info.min", args[3]);
+                    fileHandler.set("info.min", Integer.valueOf(args[3]));
                     fileHandler.save();
 
                     sender.sendMessage(ChatColor.GOLD + "Set min players at " + args[3] + " for " + name + ".");
@@ -51,10 +51,42 @@ public class RaidSetup implements CommandExecutor {
                 }
 
                 if (type.equalsIgnoreCase("max")) {
-                    fileHandler.set("info.max", args[3]);
+                    fileHandler.set("info.max", Integer.valueOf(args[3]));
                     fileHandler.save();
 
                     sender.sendMessage(ChatColor.GOLD + "Set max players at " + args[3] + " for " + name + ".");
+                    return false;
+                }
+
+                if (type.equalsIgnoreCase("name")) {
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 3; i < args.length; i++){
+                        sb.append(args[i]).append(" ");
+                    }
+                    String raidName = sb.toString().trim();
+
+                    fileHandler.set("info.name", raidName);
+                    fileHandler.save();
+
+                    sender.sendMessage(ChatColor.GOLD + "Set raid name " + raidName + " for " + name + ".");
+                    return false;
+                }
+
+                if (type.equalsIgnoreCase("start")) {
+                    if (sender instanceof Player) {
+                        Player player = (Player) sender;
+                        fileHandler.set("info.xs", player.getLocation().getBlockX());
+                        fileHandler.set("info.ys", player.getLocation().getBlockY());
+                        fileHandler.set("info.zs", player.getLocation().getBlockZ());
+                        fileHandler.set("info.pitchs", player.getLocation().getPitch());
+                        fileHandler.set("info.yaws", player.getLocation().getYaw());
+                        fileHandler.set("info.worlds", player.getLocation().getWorld().getName());
+                        fileHandler.save();
+
+                        sender.sendMessage(ChatColor.GOLD + "Set start for " + name + ".");
+                    } else {
+                        sender.sendMessage(ChatColor.RED + "You need to be in-game to run this command!");
+                    }
                     return false;
                 }
 
@@ -66,6 +98,7 @@ public class RaidSetup implements CommandExecutor {
                         fileHandler.set("info.z", player.getLocation().getBlockZ());
                         fileHandler.set("info.pitch", player.getLocation().getPitch());
                         fileHandler.set("info.yaw", player.getLocation().getYaw());
+                        fileHandler.set("info.world", player.getLocation().getWorld().getName());
                         fileHandler.save();
 
                         sender.sendMessage(ChatColor.GOLD + "Set spawn for " + name + ".");

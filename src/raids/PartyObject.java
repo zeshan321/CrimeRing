@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class PartyObject {
     private ArrayList<Player> members = new ArrayList();
@@ -57,6 +58,14 @@ public class PartyObject {
 
     public int size() {
         return members.size();
+    }
+
+    public Player nextPlayer() {
+        return members.get(0);
+    }
+
+    public List<Player> getMembers() {
+        return members;
     }
 
     public String membersList() {

@@ -1,6 +1,7 @@
 package script;
 
 import com.zeshanaslam.crimering.FileHandler;
+import com.zeshanaslam.crimering.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -8,6 +9,8 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import raids.PartyAPI;
+import raids.PartyObject;
 import utils.EnchantGlow;
 import utils.ItemUtils;
 
@@ -116,6 +119,21 @@ public class ActionDefaults {
             }
 
             System.out.println(ChatColor.RED + "Error: Unable to create inventory: " + filename);
+        }
+    }
+
+    public void openRaid(Player player, String filename) {
+        if (!FileHandler.fileExists("plugins/CrimeRing/raids/" + filename + ".yml")) {
+            if (player.isOp()) {
+                player.sendMessage(ChatColor.RED + "Error: Unable to create raid: " + filename);
+            }
+
+            System.out.println(ChatColor.RED + "Error: Unable to create raid: " + filename);
+            return;
+        }
+
+        if (Main.instance.raidManager.canStartRaid(player, filename)) {
+            Main.instance.raidManager.openRaidMenu(player, filename);
         }
     }
 }

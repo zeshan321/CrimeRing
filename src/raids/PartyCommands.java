@@ -7,10 +7,14 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.UUID;
 
-public class PartyCommands implements CommandExecutor {
+public class PartyCommands implements Listener, CommandExecutor {
 
     private final Main plugin;
 
@@ -33,9 +37,11 @@ public class PartyCommands implements CommandExecutor {
             }
 
             Player player = (Player) sender;
+
+            PartyAPI partyAPI = new PartyAPI();
             if (args[0].equalsIgnoreCase("create")) {
 
-                if (getParty(player) != null) {
+                if (partyAPI.getParty(player) != null) {
                     player.sendMessage(ChatColor.RED + "[Party] " + ChatColor.GOLD + "You are already in a party!");
                     return false;
                 }
@@ -50,13 +56,13 @@ public class PartyCommands implements CommandExecutor {
                     return false;
                 }
 
-                PartyObject partyObject = getParty(player);
+                PartyObject partyObject = partyAPI.getParty(player);
                 if (partyObject == null) {
                     player.sendMessage(ChatColor.RED + "[Party] " + ChatColor.GOLD + "You are not in a party!");
                     return false;
                 }
 
-                if (!isOwner(player)) {
+                if (!partyAPI.isOwner(player)) {
                     player.sendMessage(ChatColor.RED + "[Party] " + ChatColor.GOLD + "You are not the owner of this party!");
                     return false;
                 }
@@ -67,7 +73,7 @@ public class PartyCommands implements CommandExecutor {
                     return false;
                 }
 
-                if (getParty(invitePlayer) != null) {
+                if (partyAPI.getParty(invitePlayer) != null) {
                     player.sendMessage(ChatColor.RED + "[Party] " + ChatColor.GOLD + "" + invitePlayer.getName() + " is already in a party!");
                     return false;
                 }
@@ -84,12 +90,12 @@ public class PartyCommands implements CommandExecutor {
             }
 
             if (args[0].equalsIgnoreCase("accept")) {
-                if (getParty(player) != null) {
+                if (partyAPI.getParty(player) != null) {
                     player.sendMessage(ChatColor.RED + "[Party] " + ChatColor.GOLD + "You are already in a party!");
                     return false;
                 }
 
-                InviteObject invite = getInvite(player);
+                InviteObject invite = partyAPI.getInvite(player);
                 if (invite == null) {
                     player.sendMessage(ChatColor.RED + "[Party] " + ChatColor.GOLD + "You have not been invited to a party!");
                     return false;
@@ -102,23 +108,32 @@ public class PartyCommands implements CommandExecutor {
             }
 
             if (args[0].equalsIgnoreCase("leave")) {
-                PartyObject partyObject = getParty(player);
+                PartyObject partyObject = partyAPI.getParty(player);
 
                 if (partyObject == null) {
                     player.sendMessage(ChatColor.RED + "[Party] " + ChatColor.GOLD + "You are not in a party!");
                     return false;
                 }
 
-                if (isOwner(player)) {
-                    partyObject.sendMessage(ChatColor.RED + "[Party] " + ChatColor.GOLD + "The party has been disbanded by " + player.getName());
+                if (partyAPI.isOwner(player)) {
+                    if (partyObject.size() <= 1) {
+                        partyObject.sendMessage(ChatColor.RED + "[Party] " + ChatColor.GOLD + "The party has been disbanded by " + player.getName());
 
-                    for (int a = 0; a < Main.instance.raidManager.invites.size(); a++) {
-                        if ((Main.instance.raidManager.invites.get(a)).party == getParty(player)) {
-                            Main.instance.raidManager.invites.remove(a);
+                        for (int a = 0; a < Main.instance.raidManager.invites.size(); a++) {
+                            if ((Main.instance.raidManager.invites.get(a)).party == partyAPI.getParty(player)) {
+                                Main.instance.raidManager.invites.remove(a);
+                            }
                         }
-                    }
 
-                    Main.instance.raidManager.parties.remove(getParty(player));
+                        Main.instance.raidManager.parties.remove(partyAPI.getParty(player));
+                    } else {
+                        partyObject.sendMessage(ChatColor.RED + "[Party] " + ChatColor.GOLD + player.getName() + " has left the party.");
+                        partyObject.removeMember(player);
+
+                        Player newLeader = partyObject.nextPlayer();
+                        partyObject.setOwner(newLeader);
+                        partyObject.sendMessage(ChatColor.RED + "[Party] " + ChatColor.GOLD + newLeader.getName() + " is now the leader of the party.");
+                    }
                     return false;
                 }
 
@@ -132,13 +147,13 @@ public class PartyCommands implements CommandExecutor {
                     return false;
                 }
 
-                PartyObject partyObject = getParty(player);
+                PartyObject partyObject = partyAPI.getParty(player);
                 if (partyObject == null) {
                     player.sendMessage(ChatColor.RED + "[Party] " + ChatColor.GOLD + "You are not in a party!");
                     return false;
                 }
 
-                if (!isOwner(player)) {
+                if (!partyAPI.isOwner(player)) {
                     player.sendMessage(ChatColor.RED + "[Party] " + ChatColor.GOLD + "You are not the owner of this party!");
                     return false;
                 }
@@ -149,7 +164,7 @@ public class PartyCommands implements CommandExecutor {
                     return false;
                 }
 
-                if (partyObject != getParty(invitePlayer)) {
+                if (partyObject != partyAPI.getParty(invitePlayer)) {
                     player.sendMessage(ChatColor.RED + "[Party] " + ChatColor.GOLD + invitePlayer.getName() + " is not in your party!");
                     return false;
                 }
@@ -159,7 +174,7 @@ public class PartyCommands implements CommandExecutor {
             }
 
             if (args[0].equalsIgnoreCase("list")) {
-                PartyObject partyObject = getParty(player);
+                PartyObject partyObject = partyAPI.getParty(player);
                 if (partyObject == null) {
                     player.sendMessage(ChatColor.RED + "[Party] " + ChatColor.GOLD + "You are not in a party!");
                     return false;
@@ -171,39 +186,38 @@ public class PartyCommands implements CommandExecutor {
         return false;
     }
 
-    public PartyObject getParty(Player player) {
-        for (int a = 0; a < Main.instance.raidManager.parties.size(); a++) {
-            if ((Main.instance.raidManager.parties.get(a)).hasMember(player)) {
-                return Main.instance.raidManager.parties.get(a);
-            }
-        }
-        return null;
-    }
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onLeave(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
+        PartyAPI partyAPI = new PartyAPI();
+        PartyObject partyObject = partyAPI.getParty(player);
 
-    public boolean isOwner(Player player) {
-        for (int a = 0; a < Main.instance.raidManager.parties.size(); a++) {
-            if ((Main.instance.raidManager.parties.get(a)).getOwner() == player) {
-                return true;
-            }
+        if (partyObject == null) {
+            return;
         }
-        return false;
-    }
 
-    public boolean nameInUse(String name) {
-        for (int a = 0; a < Main.instance.raidManager.parties.size(); a++) {
-            if ((Main.instance.raidManager.parties.get(a)).getName().equalsIgnoreCase(name)) {
-                return true;
-            }
-        }
-        return false;
-    }
+        if (partyAPI.isOwner(player)) {
+            if (partyObject.size() <= 1) {
+                partyObject.sendMessage(ChatColor.RED + "[Party] " + ChatColor.GOLD + "The party has been disbanded by " + player.getName());
 
-    public InviteObject getInvite(Player player) {
-        for (int a = 0; a < Main.instance.raidManager.invites.size(); a++) {
-            if ((Main.instance.raidManager.invites.get(a)).player == player) {
-                return Main.instance.raidManager.invites.get(a);
+                for (int a = 0; a < Main.instance.raidManager.invites.size(); a++) {
+                    if ((Main.instance.raidManager.invites.get(a)).party == partyAPI.getParty(player)) {
+                        Main.instance.raidManager.invites.remove(a);
+                    }
+                }
+
+                Main.instance.raidManager.parties.remove(partyAPI.getParty(player));
+            } else {
+                partyObject.sendMessage(ChatColor.RED + "[Party] " + ChatColor.GOLD + player.getName() + " has left the party.");
+                partyObject.removeMember(player);
+
+                Player newLeader = partyObject.nextPlayer();
+                partyObject.setOwner(newLeader);
+                partyObject.sendMessage(ChatColor.RED + "[Party] " + ChatColor.GOLD + newLeader.getName() + " is now the leader of the party.");
             }
         }
-        return null;
+
+        partyObject.sendMessage(ChatColor.RED + "[Party] " + ChatColor.GOLD + player.getName() + " has left the party.");
+        partyObject.removeMember(player);
     }
 }
