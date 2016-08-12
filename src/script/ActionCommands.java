@@ -37,7 +37,7 @@ public class ActionCommands implements Listener, CommandExecutor {
         if (commandLabel.equalsIgnoreCase("action") && sender.isOp()) {
             if (args.length == 0) {
                 sender.sendMessage(ChatColor.GOLD + "/action copy <blocks | NPC> <name> <name>");
-                sender.sendMessage(ChatColor.GOLD + "/action loc <name>");
+                sender.sendMessage(ChatColor.GOLD + "/action loc");
                 return false;
             }
 
@@ -65,7 +65,8 @@ public class ActionCommands implements Listener, CommandExecutor {
             }
 
             if (args[0].equalsIgnoreCase("loc")) {
-
+                System.out.println("CR.teleport(player, \"" + player.getWorld().getName() +"\", " + player.getLocation().getBlockX() + ", " + player.getLocation().getBlockY() + ", " + player.getLocation().getBlockZ() + ", " + player.getLocation().getYaw() + ", " + player.getLocation().getPitch() + ");");
+                player.sendMessage(ChatColor.GOLD + "Sent to console!");
             }
         }
         return true;

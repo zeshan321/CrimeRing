@@ -1,27 +1,24 @@
 package events;
 
 import com.zeshanaslam.crimering.Main;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockRedstoneEvent;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.material.MaterialData;
+import org.bukkit.event.player.PlayerItemDamageEvent;
+import raids.PartyAPI;
+import raids.PartyObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
 public class BasicEvents implements Listener {
 
     private final Main plugin;
-    private List<Block> lampBlocks = new ArrayList<Block>();
 
     public BasicEvents(Main plugin) {
         this.plugin = plugin;
@@ -32,40 +29,78 @@ public class BasicEvents implements Listener {
         Player player = event.getPlayer();
         String cmd = event.getMessage().toLowerCase();
 
-        if (cmd.equalsIgnoreCase("/Bukkit:pl") || cmd.equalsIgnoreCase("/Bukkit:plugin") || cmd.equalsIgnoreCase("/Bukkit:plugins") || cmd.equalsIgnoreCase("/pl") || cmd.equalsIgnoreCase("/plugin") || cmd.equalsIgnoreCase("/plugins")) {
+        if (cmd.startsWith("/bukkit:pl") || cmd.startsWith("/bukkit:plugin") || cmd.startsWith("/bukkit:plugins") || cmd.startsWith("/pl") || cmd.startsWith("/plugin") || cmd.startsWith("/plugins")) {
             player.sendMessage(ChatColor.WHITE + "Plugins (1): " + ChatColor.GREEN + "CrimeRing");
             event.setCancelled(true);
         }
     }
 
     @EventHandler
-    public void interactBlock(PlayerInteractEvent e) {
-        if (!e.getPlayer().isOp()) return;
-
-        if (e.getClickedBlock() == null) return;
-
-        Block block = e.getClickedBlock();
-        if (block.getType() != Material.REDSTONE_LAMP_OFF) return;
-
-        Block b = block.getLocation().add(0, 1, 0).getBlock();
-        Material type = b.getType();
-        MaterialData data = b.getState().getData();
-
-        b.setType(Material.REDSTONE_BLOCK);
-        lampBlocks.add(block);
-
-        Bukkit.getScheduler().runTask(plugin, () -> {
-            b.setType(type);
-            b.getState().setData(data);
-        });
+    public void onDamageItem(PlayerItemDamageEvent event) {
+        event.setCancelled(true);
     }
 
-    @EventHandler
-    public void RedstoneEvent(BlockRedstoneEvent e) {
-        if (!lampBlocks.contains(e.getBlock())) return;
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onBlockedCommand(PlayerCommandPreprocessEvent event) {
+        Player player = event.getPlayer();
+        String label = event.getMessage().split(" ")[0].toLowerCase();
 
-        e.setNewCurrent(1);
-        lampBlocks.remove(e.getBlock());
+        if (label.startsWith("/reload")) {
+            event.setCancelled(true);
+        }
 
+        if (player.isOp()) {
+            return;
+        }
+
+        if (plugin.getConfig().getStringList("Blocked-cmds").contains(label)) {
+            player.sendMessage(ChatColor.RED + "You do not have access to this command!");
+            event.setCancelled(true);
+            return;
+        }
+
+        if (plugin.raidManager.raids.containsKey(player) && plugin.getConfig().getStringList("Blocked-cmds-raid").contains(label)) {
+            player.sendMessage(ChatColor.RED + "You can not use that command while in a raid!");
+            event.setCancelled(true);
+            return;
+        }
+
+        PartyAPI partyAPI = new PartyAPI();
+        PartyObject party = partyAPI.getParty(player);
+        if (party != null) {
+            if (party.getMembers().contains(player)) {
+                if (plugin.raidManager.raids.containsKey(player) && plugin.getConfig().getStringList("Blocked-cmds-raid").contains(label)) {
+                    player.sendMessage(ChatColor.RED + "You can not use that command while in a raid!");
+                    event.setCancelled(true);
+                }
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onDrop(BlockBreakEvent event) {
+        List<Integer> remove = plugin.getConfig().getIntegerList("Blocked-items-drop");
+
+        if (remove.contains(event.getBlock().getTypeId())) {
+            event.setCancelled(true);
+            event.getBlock().breakNaturally();
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onInteract(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+
+        if (event.getClickedBlock() == null) {
+            return;
+        }
+
+        if (player.isOp()) {
+            return;
+        }
+
+        if (plugin.getConfig().getIntegerList("Blocked-items-interact").contains(event.getClickedBlock().getTypeId())) {
+            event.setCancelled(true);
+        }
     }
 }

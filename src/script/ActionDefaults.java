@@ -11,6 +11,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import utils.EnchantGlow;
 import utils.ItemUtils;
+import utils.MessageUtil;
 
 public class ActionDefaults {
 
@@ -133,5 +134,42 @@ public class ActionDefaults {
         if (Main.instance.raidManager.canStartRaid(player, filename)) {
             Main.instance.raidManager.openRaidMenu(player, filename);
         }
+    }
+
+    public void cancelRaid(Player player, String filename) {
+        if (!FileHandler.fileExists("plugins/CrimeRing/raids/" + filename + ".yml")) {
+            if (player.isOp()) {
+                player.sendMessage(ChatColor.RED + "Error: Unable to create raid: " + filename);
+            }
+
+            System.out.println(ChatColor.RED + "Error: Unable to create raid: " + filename);
+            return;
+        }
+
+        FileHandler fileHandler = new FileHandler("plugins/CrimeRing/raids/" + filename + ".yml");
+        player.teleport(new Location(Bukkit.getWorld(fileHandler.getString("info.worlds")), fileHandler.getInteger("info.xs"), fileHandler.getInteger("info.ys"), fileHandler.getInteger("info.zs")));
+
+        Main.instance.raidManager.cancelRaid(player);
+
+    }
+
+    public void addFlag(Player player, String flag) {
+        Main.instance.flag.add(player.getUniqueId() + "-" + flag);
+    }
+
+    public boolean hasFlag(Player player, String flag) {
+        return Main.instance.flag.contains(player.getUniqueId() + "-" + flag);
+    }
+
+    public void removeFlag(Player player, String flag) {
+        Main.instance.flag.remove(player.getUniqueId() + "-" + flag);
+    }
+
+    public void sendTitle(Player player, String title, String subtitle, int fadeIn, int stay, int fadeOut) {
+        new MessageUtil().sendTitle(player, title, subtitle, fadeIn, stay, fadeOut);
+    }
+
+    public void sendActionBar(Player player, String message) {
+        new MessageUtil().sendActionBar(player, message);
     }
 }

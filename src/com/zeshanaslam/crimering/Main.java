@@ -2,8 +2,6 @@ package com.zeshanaslam.crimering;
 
 import commands.Reload;
 import events.BasicEvents;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import raids.PartyCommands;
@@ -13,7 +11,7 @@ import raids.RaidSetup;
 import script.*;
 
 import java.io.File;
-import java.util.Collection;
+import java.util.ArrayList;
 
 public class Main extends JavaPlugin {
 
@@ -21,6 +19,7 @@ public class Main extends JavaPlugin {
 
     public ScriptsManager scriptsManager;
     public RaidManager raidManager;
+    public ArrayList<String> flag = new ArrayList<String>();
 
     public void onEnable() {
         saveDefaultConfig();
@@ -78,9 +77,23 @@ public class Main extends JavaPlugin {
     public void onDisable() {
         saveConfig();
 
-        Collection<? extends Player> players = Bukkit.getOnlinePlayers();
+        // Move to command
+        /* Collection<? extends Player> players = Bukkit.getOnlinePlayers();
+        PartyAPI partyAPI = new PartyAPI();
         for (Player p : players) {
-            p.chat("/party leave");
-        }
+            if (partyAPI.getParty(p) == null) {
+                if (raidManager.raids.containsKey(p)) {
+                    FileHandler fileHandler = new FileHandler("plugins/CrimeRing/raids/" + raidManager.raids.get(p) + ".yml");
+
+                    String[] message = ChatColor.translateAlternateColorCodes('&', Main.instance.getConfig().getString("Raids.Kick-end")).split("/n");
+                    p.sendMessage(message);
+                    p.teleport(new Location(Bukkit.getWorld(fileHandler.getString("info.worlds")), fileHandler.getInteger("info.xs"), fileHandler.getInteger("info.ys"), fileHandler.getInteger("info.zs"), fileHandler.getInteger("info.yaws"), fileHandler.getInteger("info.pitchs")));
+
+                    raidManager.cancelRaid(p);
+                }
+            } else {
+                p.chat("/party leave");
+            }
+        }*/
     }
 }

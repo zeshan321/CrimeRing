@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.scheduler.BukkitTask;
 import utils.ItemUtils;
+import utils.MessageUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +30,7 @@ public class RaidManager {
         Inventory inventory = Bukkit.createInventory(null, 18, ChatColor.RED + "Raid: " + fileHandler.getString("info.name"));
 
         if (playersQueue(filename) == 0) {
-            inventory.setItem(1, new ItemUtils().createItem(Material.DIAMOND_HOE, ChatColor.RED + "Start Raid", ChatColor.GOLD + "Click to start raid."));
+            inventory.setItem(1, new ItemUtils().createItem(Material.IRON_HOE, ChatColor.RED + "Start Raid", ChatColor.GOLD + "Click to start raid."));
         }
 
         if (playersQueue(filename) > 0) {
@@ -111,8 +112,12 @@ public class RaidManager {
                 }
             }
 
-            String[] message = ChatColor.translateAlternateColorCodes('&', Main.instance.getConfig().getString("Raids.Start")).replace("%raid%", fileHandler.getString("info.name")).replace("%min%", fileHandler.getString("info.min")).replace("%max%", fileHandler.getString("info.max")).split("/n");
-            sendMessage(player, message);
+            String title = ChatColor.translateAlternateColorCodes('&', Main.instance.getConfig().getString("Raids.Start-title")).replace("%raid%", fileHandler.getString("info.name")).replace("%min%", fileHandler.getString("info.min")).replace("%max%", fileHandler.getString("info.max"));
+            String subtitle = ChatColor.translateAlternateColorCodes('&', Main.instance.getConfig().getString("Raids.Start-subtitle")).replace("%raid%", fileHandler.getString("info.name")).replace("%min%", fileHandler.getString("info.min")).replace("%max%", fileHandler.getString("info.max"));
+
+            sendMessage(player, title);
+            sendMessage(player, subtitle);
+            new MessageUtil().sendTitle(player, title, subtitle, 15, 50, 15);
 
             BukkitTask task1 = Bukkit.getScheduler().runTaskLaterAsynchronously(Main.instance, () -> {
                 PartyAPI partyAPI = new PartyAPI();

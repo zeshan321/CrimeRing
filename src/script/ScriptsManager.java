@@ -1,6 +1,7 @@
 package script;
 
 import com.zeshanaslam.crimering.FileHandler;
+import org.bukkit.ChatColor;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,7 +24,7 @@ public class ScriptsManager {
             String dir = imports.getString(data + ".dir");
 
             try {
-                scriptData.put(data, new ScriptObject(data, dir, String.join("\n", Files.readAllLines(Paths.get("plugins/CrimeRing/scripts/" + File.separator + dir))).replace("\n", "").replace("\t", "")));
+                scriptData.put(data, new ScriptObject(data, dir, ChatColor.translateAlternateColorCodes('&', String.join("\n", Files.readAllLines(Paths.get("plugins/CrimeRing/scripts/" + File.separator + dir))).replace("\n", "").replace("\t", ""))));
             } catch (IOException e) {
                 e.printStackTrace();
             }
