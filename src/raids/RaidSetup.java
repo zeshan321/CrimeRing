@@ -60,7 +60,7 @@ public class RaidSetup implements CommandExecutor {
 
                 if (type.equalsIgnoreCase("name")) {
                     StringBuilder sb = new StringBuilder();
-                    for (int i = 3; i < args.length; i++){
+                    for (int i = 3; i < args.length; i++) {
                         sb.append(args[i]).append(" ");
                     }
                     String raidName = sb.toString().trim();
