@@ -49,7 +49,7 @@ public class PartyCommands implements Listener, CommandExecutor {
                 }
 
                 Main.instance.raidManager.parties.add(new PartyObject(UUID.randomUUID().toString(), player));
-                player.sendMessage(ChatColor.RED + "[Party] " + ChatColor.GOLD + "You have created party!");
+                player.sendMessage(ChatColor.RED + "[Party] " + ChatColor.GOLD + "You have created a party!");
             }
 
             if (args[0].equalsIgnoreCase("invite")) {
@@ -88,6 +88,11 @@ public class PartyCommands implements Listener, CommandExecutor {
                 if (Main.instance.raidManager.raids.containsKey(player)) {
                     player.sendMessage(ChatColor.RED + "[Party] " + ChatColor.GOLD + "You can't invite a player while in queue or in a raid!!");
                     return false;
+                }
+
+                InviteObject inviteObject = partyAPI.getInvite(player);
+                if (inviteObject != null) {
+                    Main.instance.raidManager.invites.remove(inviteObject);
                 }
 
                 Main.instance.raidManager.invites.add(new InviteObject(partyObject, invitePlayer));

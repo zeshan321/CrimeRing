@@ -33,7 +33,7 @@ public class PartyAPI {
 
     public InviteObject getInvite(Player player) {
         for (int a = 0; a < Main.instance.raidManager.invites.size(); a++) {
-            if ((Main.instance.raidManager.invites.get(a)).player == player) {
+            if ((Main.instance.raidManager.invites.get(a)).player.getName().equals(player.getName())) {
                 return Main.instance.raidManager.invites.get(a);
             }
         }

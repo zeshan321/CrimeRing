@@ -12,6 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class RaidListener implements Listener {
@@ -64,8 +65,8 @@ public class RaidListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onDeathRaid(PlayerDeathEvent event) {
-        Player player = event.getEntity();
+    public void onDeathRaid(PlayerRespawnEvent event) {
+        Player player = event.getPlayer();
 
         PartyAPI partyAPI = new PartyAPI();
         PartyObject party = partyAPI.getParty(player);
@@ -73,12 +74,12 @@ public class RaidListener implements Listener {
         if (party == null) {
             if (plugin.raidManager.raids.containsKey(player)) {
                 FileHandler fileHandler = new FileHandler("plugins/CrimeRing/raids/" + plugin.raidManager.raids.get(player) + ".yml");
-                player.teleport(new Location(Bukkit.getWorld(fileHandler.getString("info.world")), fileHandler.getInteger("info.x"), fileHandler.getInteger("info.y"), fileHandler.getInteger("info.z"), fileHandler.getInteger("info.yaw"), fileHandler.getInteger("info.pitch")));
+                event.setRespawnLocation(new Location(Bukkit.getWorld(fileHandler.getString("info.world")), fileHandler.getInteger("info.x"), fileHandler.getInteger("info.y"), fileHandler.getInteger("info.z"), fileHandler.getInteger("info.yaw"), fileHandler.getInteger("info.pitch")));
             }
         } else {
             if (plugin.raidManager.raids.containsKey(party.getOwner())) {
                 FileHandler fileHandler = new FileHandler("plugins/CrimeRing/raids/" + plugin.raidManager.raids.get(party.getOwner()) + ".yml");
-                player.teleport(new Location(Bukkit.getWorld(fileHandler.getString("info.world")), fileHandler.getInteger("info.x"), fileHandler.getInteger("info.y"), fileHandler.getInteger("info.z"), fileHandler.getInteger("info.yaw"), fileHandler.getInteger("info.pitch")));
+                event.setRespawnLocation(new Location(Bukkit.getWorld(fileHandler.getString("info.world")), fileHandler.getInteger("info.x"), fileHandler.getInteger("info.y"), fileHandler.getInteger("info.z"), fileHandler.getInteger("info.yaw"), fileHandler.getInteger("info.pitch")));
             }
         }
     }

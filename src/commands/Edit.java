@@ -29,7 +29,7 @@ public class Edit implements CommandExecutor {
                 int x1 = Integer.parseInt(args[4]);
                 int y1 = Integer.parseInt(args[5]);
                 int z1 = Integer.parseInt(args[6]);
-                String argblock = args[7];
+                Material material = Material.getMaterial(args[7]);
 
                 Location point1 = new Location(Bukkit.getWorld(world), x, y, z);
                 Location point2 = new Location(Bukkit.getWorld(world), x1, y1, z1);
@@ -45,7 +45,7 @@ public class Edit implements CommandExecutor {
                     for (int j = min.getBlockY(); j <= max.getBlockY(); j++) {
                         for (int k = min.getBlockZ(); k <= max.getBlockZ();k++) {
                             Block block = Bukkit.getServer().getWorld(world).getBlockAt(i,j,k);
-                            block.setType(Material.matchMaterial(argblock));
+                            block.setType(material);
                             block.setData((byte) data);
                         }
                     }

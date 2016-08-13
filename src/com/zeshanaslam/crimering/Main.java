@@ -14,6 +14,7 @@ import script.*;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Main extends JavaPlugin {
 
@@ -22,7 +23,8 @@ public class Main extends JavaPlugin {
     public ScriptsManager scriptsManager;
     public RaidManager raidManager;
     public WorldGuardPlugin worldGuardPlugin;
-    public ArrayList<String> flag = new ArrayList<String>();
+    public ArrayList<String> flag = new ArrayList<>();
+    public HashMap<String, Integer> values = new HashMap<>();
 
     public void onEnable() {
         saveDefaultConfig();
@@ -72,6 +74,7 @@ public class Main extends JavaPlugin {
         pm.registerEvents(new ActionInv(this), this);
         pm.registerEvents(new PartyCommands(this), this);
         pm.registerEvents(new RaidListener(this), this);
+        pm.registerEvents(new ActionDeath(this), this);
 
         // Commands
         getCommand("CRReload").setExecutor(new Reload(this));

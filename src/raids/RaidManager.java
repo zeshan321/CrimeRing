@@ -41,7 +41,7 @@ public class RaidManager {
         }
 
         inventory.setItem(6, new ItemUtils().createItem(Material.SHIELD, ChatColor.RED + "Cancel Raid", ChatColor.GOLD + "Click to cancel raid."));
-        inventory.setItem(17, new ItemUtils().createItem(Material.REDSTONE_LAMP_OFF, ChatColor.RED + "Exit", ChatColor.GOLD + "Click to exit."));
+        inventory.setItem(17, new ItemUtils().createItem(Material.BANNER, ChatColor.RED + "Exit", ChatColor.GOLD + "Click to exit."));
 
         player.openInventory(inventory);
     }
@@ -115,11 +115,8 @@ public class RaidManager {
                 }
             }
 
-            String title = ChatColor.translateAlternateColorCodes('&', Main.instance.getConfig().getString("Raids.Start-title")).replace("%raid%", fileHandler.getString("info.name")).replace("%min%", fileHandler.getString("info.min")).replace("%max%", fileHandler.getString("info.max"));
-            String subtitle = ChatColor.translateAlternateColorCodes('&', Main.instance.getConfig().getString("Raids.Start-subtitle")).replace("%raid%", fileHandler.getString("info.name")).replace("%min%", fileHandler.getString("info.min")).replace("%max%", fileHandler.getString("info.max"));
-
-            sendMessage(player, title);
-            sendMessage(player, subtitle);
+            String[] message = ChatColor.translateAlternateColorCodes('&', Main.instance.getConfig().getString("Raids.Start")).replace("%raid%", fileHandler.getString("info.name")).replace("%min%", fileHandler.getString("info.min")).replace("%max%", fileHandler.getString("info.max")).split("/n");
+            sendMessage(player, message);
             //new MessageUtil().sendTitle(player, title, subtitle, 15, 50, 15);
 
             BukkitTask task1 = Bukkit.getScheduler().runTaskLater(Main.instance, () -> {
@@ -170,7 +167,9 @@ public class RaidManager {
     }
 
     public void cancelRaid(Player player) {
-        Bukkit.getScheduler().cancelTask(tasks.get(player));
+        if (tasks.get(player) != null) {
+            Bukkit.getScheduler().cancelTask(tasks.get(player));
+        }
 
         raids.remove(player);
         tasks.remove(player);

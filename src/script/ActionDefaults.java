@@ -171,16 +171,16 @@ public class ActionDefaults {
         }
     }
 
-    public void addFlag(Player player, String flag) {
-        Main.instance.flag.add(player.getUniqueId() + "-" + flag);
+    public void addFlag(String key, String flag) {
+        Main.instance.flag.add(key + "-" + flag);
     }
 
-    public boolean hasFlag(Player player, String flag) {
-        return Main.instance.flag.contains(player.getUniqueId() + "-" + flag);
+    public boolean hasFlag(String key, String flag) {
+        return Main.instance.flag.contains(key + "-" + flag);
     }
 
-    public void removeFlag(Player player, String flag) {
-        Main.instance.flag.remove(player.getUniqueId() + "-" + flag);
+    public void removeFlag(String key, String flag) {
+        Main.instance.flag.remove(key + "-" + flag);
     }
 
     public void sendTitle(Player player, String title, String subtitle, int fadeIn, int stay, int fadeOut) {
@@ -210,11 +210,62 @@ public class ActionDefaults {
             Location centerLoc = new Location(Bukkit.getWorld(world), region.getCenter().getX(), region.getCenter().getY(), region.getCenter().getZ());
             Collection<Entity> entities = Bukkit.getWorld(world).getNearbyEntities(centerLoc, region.getWidth() / 2, region.getHeight() / 2, region.getLength() / 2);
 
-            entities.forEach(Entity::remove);
+            entities.stream().filter(entity -> !(entity instanceof Player)).forEach(Entity::remove);
         }
     }
 
     public void runCommand(String command) {
         Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
+    }
+
+    public void sendRaidMessage(Player player, String message, boolean skip) {
+        PartyAPI partyAPI = new PartyAPI();
+        PartyObject party = partyAPI.getParty(player);
+
+        if (party == null) {
+            player.sendMessage(message);
+        } else {
+            for (Player players: party.getMembers()) {
+                if (skip && players.getName().equals(player.getName())) {
+                    continue;
+                }
+
+                players.sendMessage(message);
+            }
+        }
+    }
+
+    public boolean hasItem(Player player, String itemname, boolean take) {
+        if (player.getItemInHand() == null) {
+            return false;
+        }
+
+        ItemStack item = player.getItemInHand();
+        if (!item.hasItemMeta() || !item.getItemMeta().hasDisplayName()) {
+            return false;
+        }
+
+        String displayname = ChatColor.stripColor(item.getItemMeta().getDisplayName());
+        if (displayname.equals(itemname)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public void setValue(String id, int amount) {
+        Main.instance.values.put(id, amount);
+    }
+
+    public int getValue(String id) {
+        return Main.instance.values.get(id);
+    }
+
+    public void removeValue(String id) {
+        Main.instance.values.remove(id);
+    }
+
+    public void addValue(String id) {
+        Main.instance.values.put(id, Main.instance.values.get(id) + 1);
     }
 }

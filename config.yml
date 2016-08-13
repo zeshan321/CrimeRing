@@ -7,8 +7,7 @@ Raids:
   Added-queue: "&6You have been added to the queue."
   Kick: "&4You have been kicked from the raid!"
   Kick-end: "&4The raid has ended because your party leader left!"
-  Start-title: "&4&l%raid%"
-  Start-subtitle: "&6The raid will start in &22 minutes&6. If you are not near the raid NPC you will be kicked from the raid!"
+  Start: "&4&l%raid%/n&6The raid will start in &22 minutes&6. If you are not near the raid NPC you will be kicked from the raid!"
 Blocked-cmds-raid:
 - /tp
 Blocked-cmds:
