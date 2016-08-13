@@ -75,9 +75,9 @@ public class RaidSetup implements CommandExecutor {
                 if (type.equalsIgnoreCase("start")) {
                     if (sender instanceof Player) {
                         Player player = (Player) sender;
-                        fileHandler.set("info.xs", player.getLocation().getBlockX());
-                        fileHandler.set("info.ys", player.getLocation().getBlockY());
-                        fileHandler.set("info.zs", player.getLocation().getBlockZ());
+                        fileHandler.set("info.xs", player.getLocation().getX());
+                        fileHandler.set("info.ys", player.getLocation().getY());
+                        fileHandler.set("info.zs", player.getLocation().getZ());
                         fileHandler.set("info.pitchs", player.getLocation().getPitch());
                         fileHandler.set("info.yaws", player.getLocation().getYaw());
                         fileHandler.set("info.worlds", player.getLocation().getWorld().getName());
@@ -93,9 +93,9 @@ public class RaidSetup implements CommandExecutor {
                 if (type.equalsIgnoreCase("spawn")) {
                     if (sender instanceof Player) {
                         Player player = (Player) sender;
-                        fileHandler.set("info.x", player.getLocation().getBlockX());
-                        fileHandler.set("info.y", player.getLocation().getBlockY());
-                        fileHandler.set("info.z", player.getLocation().getBlockZ());
+                        fileHandler.set("info.x", player.getLocation().getX());
+                        fileHandler.set("info.y", player.getLocation().getY());
+                        fileHandler.set("info.z", player.getLocation().getZ());
                         fileHandler.set("info.pitch", player.getLocation().getPitch());
                         fileHandler.set("info.yaw", player.getLocation().getYaw());
                         fileHandler.set("info.world", player.getLocation().getWorld().getName());

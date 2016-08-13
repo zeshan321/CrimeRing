@@ -13,3 +13,5 @@ commands:
     description: Action script command.
   Party:
     description: Party command.
+  CREdit:
+    description: CR edit command.

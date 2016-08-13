@@ -65,7 +65,7 @@ public class ActionCommands implements Listener, CommandExecutor {
             }
 
             if (args[0].equalsIgnoreCase("loc")) {
-                System.out.println("CR.teleport(player, \"" + player.getWorld().getName() +"\", " + player.getLocation().getBlockX() + ", " + player.getLocation().getBlockY() + ", " + player.getLocation().getBlockZ() + ", " + player.getLocation().getYaw() + ", " + player.getLocation().getPitch() + ");");
+                System.out.println("CR.teleport(player, \"" + player.getWorld().getName() + "\", " + player.getLocation().getBlockX() + ", " + player.getLocation().getBlockY() + ", " + player.getLocation().getBlockZ() + ", " + player.getLocation().getYaw() + ", " + player.getLocation().getPitch() + ");");
                 player.sendMessage(ChatColor.GOLD + "Sent to console!");
             }
         }

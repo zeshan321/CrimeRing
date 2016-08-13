@@ -1,17 +1,27 @@
 package script;
 
+import com.sk89q.worldedit.regions.CuboidRegion;
+import com.sk89q.worldedit.regions.Region;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.zeshanaslam.crimering.FileHandler;
 import com.zeshanaslam.crimering.Main;
+import net.elseland.xikage.MythicMobs.API.Bukkit.BukkitMobsAPI;
+import net.elseland.xikage.MythicMobs.API.Exceptions.InvalidMobTypeException;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import raids.PartyAPI;
+import raids.PartyObject;
 import utils.EnchantGlow;
 import utils.ItemUtils;
 import utils.MessageUtil;
+
+import java.util.Collection;
 
 public class ActionDefaults {
 
@@ -147,10 +157,18 @@ public class ActionDefaults {
         }
 
         FileHandler fileHandler = new FileHandler("plugins/CrimeRing/raids/" + filename + ".yml");
-        player.teleport(new Location(Bukkit.getWorld(fileHandler.getString("info.worlds")), fileHandler.getInteger("info.xs"), fileHandler.getInteger("info.ys"), fileHandler.getInteger("info.zs")));
+        PartyAPI partyAPI = new PartyAPI();
+        PartyObject party = partyAPI.getParty(player);
 
-        Main.instance.raidManager.cancelRaid(player);
-
+        if (party == null) {
+            player.teleport(new Location(Bukkit.getWorld(fileHandler.getString("info.worlds")), fileHandler.getInteger("info.xs"), fileHandler.getInteger("info.ys"), fileHandler.getInteger("info.zs")));
+            Main.instance.raidManager.cancelRaid(player);
+        } else {
+            for (Player players: party.getMembers()) {
+                players.teleport(new Location(Bukkit.getWorld(fileHandler.getString("info.worlds")), fileHandler.getInteger("info.xs"), fileHandler.getInteger("info.ys"), fileHandler.getInteger("info.zs")));
+                Main.instance.raidManager.cancelRaid(players);
+            }
+        }
     }
 
     public void addFlag(Player player, String flag) {
@@ -171,5 +189,32 @@ public class ActionDefaults {
 
     public void sendActionBar(Player player, String message) {
         new MessageUtil().sendActionBar(player, message);
+    }
+
+    public void spawnMob(String type, String world, int amount, int x, int y, int z) {
+        BukkitMobsAPI bukkitMobsAPI = new BukkitMobsAPI();
+        try {
+            for (int i = 1; i < amount + 1; i++) {
+                bukkitMobsAPI.spawnMythicMob(bukkitMobsAPI.getMythicMob(type), new Location(Bukkit.getWorld(world), x, y, z));
+            }
+        } catch (InvalidMobTypeException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void clearMobs(String world, String regionName) {
+        ProtectedRegion rg = Main.instance.worldGuardPlugin.getRegionManager(Bukkit.getWorld(world)).getRegion(regionName);
+
+        if (rg != null) {
+            Region region = new CuboidRegion(rg.getMaximumPoint(), rg.getMinimumPoint());
+            Location centerLoc = new Location(Bukkit.getWorld(world), region.getCenter().getX(), region.getCenter().getY(), region.getCenter().getZ());
+            Collection<Entity> entities = Bukkit.getWorld(world).getNearbyEntities(centerLoc, region.getWidth() / 2, region.getHeight() / 2, region.getLength() / 2);
+
+            entities.forEach(Entity::remove);
+        }
+    }
+
+    public void runCommand(String command) {
+        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
     }
 }

@@ -1,5 +1,7 @@
 package com.zeshanaslam.crimering;
 
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import commands.Edit;
 import commands.Reload;
 import events.BasicEvents;
 import org.bukkit.plugin.PluginManager;
@@ -19,6 +21,7 @@ public class Main extends JavaPlugin {
 
     public ScriptsManager scriptsManager;
     public RaidManager raidManager;
+    public WorldGuardPlugin worldGuardPlugin;
     public ArrayList<String> flag = new ArrayList<String>();
 
     public void onEnable() {
@@ -31,6 +34,9 @@ public class Main extends JavaPlugin {
 
         // Load raid manager
         raidManager = new RaidManager();
+
+        // Load worldguard
+        worldGuardPlugin = (WorldGuardPlugin) getServer().getPluginManager().getPlugin("WorldGuard");
 
         // User data dir
         File userDir = new File("plugins/CrimeRing/");
@@ -72,6 +78,7 @@ public class Main extends JavaPlugin {
         getCommand("raids").setExecutor(new RaidSetup(this));
         getCommand("action").setExecutor(new ActionCommands(this));
         getCommand("party").setExecutor(new PartyCommands(this));
+        getCommand("CREdit").setExecutor(new Edit(this));
     }
 
     public void onDisable() {

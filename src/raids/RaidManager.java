@@ -9,9 +9,12 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.scheduler.BukkitTask;
+import script.ActionDefaults;
+import script.ScriptObject;
 import utils.ItemUtils;
 import utils.MessageUtil;
 
+import javax.script.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -117,9 +120,9 @@ public class RaidManager {
 
             sendMessage(player, title);
             sendMessage(player, subtitle);
-            new MessageUtil().sendTitle(player, title, subtitle, 15, 50, 15);
+            //new MessageUtil().sendTitle(player, title, subtitle, 15, 50, 15);
 
-            BukkitTask task1 = Bukkit.getScheduler().runTaskLaterAsynchronously(Main.instance, () -> {
+            BukkitTask task1 = Bukkit.getScheduler().runTaskLater(Main.instance, () -> {
                 PartyAPI partyAPI = new PartyAPI();
                 PartyObject party = partyAPI.getParty(player);
                 double radius = Main.instance.getConfig().getDouble("Raids.Radius");
@@ -144,6 +147,8 @@ public class RaidManager {
                 }
 
                 if (canStartRaid(player, filename)) {
+                    runScript(player, filename);
+
                     if (party == null) {
                         player.teleport(new Location(Bukkit.getWorld(fileHandler.getString("info.world")), fileHandler.getInteger("info.x"), fileHandler.getInteger("info.y"), fileHandler.getInteger("info.z"), fileHandler.getInteger("info.yaw"), fileHandler.getInteger("info.pitch")));
                     } else {
@@ -205,5 +210,27 @@ public class RaidManager {
         }
 
         return false;
+    }
+
+    public void runScript(Player player, String name) {
+        if (Main.instance.scriptsManager.contains("raid-" + name)) {
+            ScriptObject scriptObject = Main.instance.scriptsManager.getObject("raid-" + name);
+
+            try {
+                ScriptEngineManager factory = new ScriptEngineManager();
+                ScriptEngine engine = factory.getEngineByName("JavaScript");
+                Compilable compilableEngine = (Compilable) engine;
+                CompiledScript compiledScript = compilableEngine.compile(scriptObject.script);
+
+                // Objects
+                Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
+                bindings.put("player", player);
+                bindings.put("CR", new ActionDefaults());
+
+                compiledScript.eval(bindings);
+            } catch (ScriptException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

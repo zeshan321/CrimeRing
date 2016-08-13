@@ -3,13 +3,16 @@ package events;
 import com.zeshanaslam.crimering.Main;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
+import org.bukkit.event.weather.WeatherChangeEvent;
 import raids.PartyAPI;
 import raids.PartyObject;
 
@@ -101,6 +104,32 @@ public class BasicEvents implements Listener {
 
         if (plugin.getConfig().getIntegerList("Blocked-items-interact").contains(event.getClickedBlock().getTypeId())) {
             event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onWeatherChange(WeatherChangeEvent event) {
+        if (event.toWeatherState()) {
+            event.setCancelled(true);
+            event.getWorld().setStorm(false);
+            event.getWorld().setThundering(false);
+            event.getWorld().setWeatherDuration(0);
+        }
+    }
+
+    @EventHandler
+    public void onCrackShotBug(EntityDamageByEntityEvent event) {
+        if (event.getEntity() instanceof Player && event.getDamager() instanceof Projectile) {
+            Projectile projectile = (Projectile) event.getDamager();
+
+            if (projectile.getShooter() instanceof Player) {
+                Player damaged = (Player) event.getEntity();
+                Player shooter = (Player) projectile.getShooter();
+
+                if (damaged.getName().equals(shooter.getName())) {
+                    event.setCancelled(true);
+                }
+            }
         }
     }
 }
