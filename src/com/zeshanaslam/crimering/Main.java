@@ -2,9 +2,11 @@ package com.zeshanaslam.crimering;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.reflect.FieldAccessException;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import commands.Edit;
 import commands.Item;
@@ -12,6 +14,7 @@ import commands.Reload;
 import events.BasicEvents;
 import net.minecraft.server.v1_10_R1.NBTTagCompound;
 import net.minecraft.server.v1_10_R1.NBTTagList;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
@@ -162,6 +165,19 @@ public class Main extends JavaPlugin {
             }
 
         });
+
+        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(this, ListenerPriority.NORMAL, PacketType.Play.Client.CLIENT_COMMAND) {
+            public void onPacketReceiving(PacketEvent event) {
+                if (event.getPacketType().getLegacyId() == 22)
+                    try {
+                        if (event.getPlayer().hasMetadata("ironsights")) {
+                            event.getPlayer().closeInventory();
+                        }
+                    } catch (FieldAccessException e) {
+                        e.printStackTrace();
+                    }
+            }
+        });
     }
 
     public void onDisable() {
@@ -207,47 +223,42 @@ public class Main extends JavaPlugin {
         return setTag(i, tag);
     }
 
-    private NBTTagCompound getTag(org.bukkit.inventory.ItemStack item)
-    {
+    private NBTTagCompound getTag(org.bukkit.inventory.ItemStack item) {
         if ((item instanceof CraftItemStack)) {
-            try
-            {
+            try {
                 Field field = CraftItemStack.class.getDeclaredField("handle");
                 field.setAccessible(true);
-                return ((net.minecraft.server.v1_10_R1.ItemStack)field.get(item)).getTag();
+                return ((net.minecraft.server.v1_10_R1.ItemStack) field.get(item)).getTag();
+            } catch (Exception e) {
             }
-            catch (Exception e) {}
         }
         return null;
     }
 
-    private org.bukkit.inventory.ItemStack setTag(org.bukkit.inventory.ItemStack item, NBTTagCompound tag)
-    {
+    private org.bukkit.inventory.ItemStack setTag(org.bukkit.inventory.ItemStack item, NBTTagCompound tag) {
         CraftItemStack craftItem = null;
         if ((item instanceof CraftItemStack)) {
-            craftItem = (CraftItemStack)item;
+            craftItem = (CraftItemStack) item;
         } else {
             craftItem = CraftItemStack.asCraftCopy(item);
         }
         net.minecraft.server.v1_10_R1.ItemStack nmsItem = null;
-        try
-        {
+        try {
             Field field = CraftItemStack.class.getDeclaredField("handle");
             field.setAccessible(true);
-            nmsItem = (net.minecraft.server.v1_10_R1.ItemStack)field.get(item);
+            nmsItem = (net.minecraft.server.v1_10_R1.ItemStack) field.get(item);
+        } catch (Exception e) {
         }
-        catch (Exception e) {}
         if (nmsItem == null) {
             nmsItem = CraftItemStack.asNMSCopy(craftItem);
         }
         nmsItem.setTag(tag);
-        try
-        {
+        try {
             Field field = CraftItemStack.class.getDeclaredField("handle");
             field.setAccessible(true);
             field.set(craftItem, nmsItem);
+        } catch (Exception e) {
         }
-        catch (Exception e) {}
         return craftItem;
     }
 }

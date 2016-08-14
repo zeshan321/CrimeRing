@@ -14,5 +14,6 @@
     <orderEntry type="library" name="worldedit-bukkit-6.1.3" level="project" />
     <orderEntry type="library" name="MythicMobs-2.5.0" level="project" />
     <orderEntry type="library" name="ProtocolLib (2)" level="project" />
+    <orderEntry type="library" name="CrackShot" level="project" />
   </component>
 </module>

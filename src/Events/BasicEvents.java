@@ -1,8 +1,13 @@
 package events;
 
+import com.shampaggon.crackshot.events.WeaponScopeEvent;
 import com.zeshanaslam.crimering.Main;
+import net.minecraft.server.v1_10_R1.EnumItemSlot;
+import net.minecraft.server.v1_10_R1.PacketPlayOutEntityEquipment;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -12,10 +17,12 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
+import org.bukkit.inventory.ItemStack;
 import raids.PartyAPI;
 import raids.PartyObject;
 
@@ -164,5 +171,26 @@ public class BasicEvents implements Listener {
                 }
             }
         }
+    }
+
+    @EventHandler
+    public void onScope(WeaponScopeEvent event) {
+        Player player = event.getPlayer();
+
+        player.sendMessage("Before: " + player.hasMetadata("ironsights"));
+        if (event.isZoomIn()) {
+            ItemStack item = new ItemStack(Material.PUMPKIN);
+            PacketPlayOutEntityEquipment packet = new PacketPlayOutEntityEquipment(player.getEntityId(), EnumItemSlot.HEAD, CraftItemStack.asNMSCopy(item));
+            ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+        } else {
+            player.updateInventory();
+        }
+
+        player.sendMessage("After: " + player.hasMetadata("ironsights"));
+    }
+
+    @EventHandler
+    public void onScopeFix(EntityPo event) {
+
     }
 }
