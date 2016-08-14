@@ -2,6 +2,7 @@ package events;
 
 import com.zeshanaslam.crimering.Main;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -157,6 +158,10 @@ public class BasicEvents implements Listener {
 
             if (!(player.isOp())) {
                 event.setCancelled(true);
+            } else {
+                if (!player.getInventory().getItemInMainHand().getType().equals(Material.PAINTING)) {
+                    event.setCancelled(true);
+                }
             }
         }
     }
