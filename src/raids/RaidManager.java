@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import script.ActionDefaults;
 import script.ScriptObject;
@@ -117,48 +118,69 @@ public class RaidManager {
 
             String[] message = ChatColor.translateAlternateColorCodes('&', Main.instance.getConfig().getString("Raids.Start")).replace("%raid%", fileHandler.getString("info.name")).replace("%min%", fileHandler.getString("info.min")).replace("%max%", fileHandler.getString("info.max")).split("/n");
             sendMessage(player, message);
-            //new MessageUtil().sendTitle(player, title, subtitle, 15, 50, 15);
 
-            BukkitTask task1 = Bukkit.getScheduler().runTaskLater(Main.instance, () -> {
-                PartyAPI partyAPI = new PartyAPI();
-                PartyObject party = partyAPI.getParty(player);
-                double radius = Main.instance.getConfig().getDouble("Raids.Radius");
+            final int[] starts = {Main.instance.getConfig().getInt("Raids.Time-wait")};
 
-                Location loc = new Location(Bukkit.getWorld(fileHandler.getString("info.worlds")), fileHandler.getInteger("info.xs"), fileHandler.getInteger("info.ys"), fileHandler.getInteger("info.zs"));
-                if (party == null) {
-                    if (!(player.getLocation().distance(loc) <= radius)) {
-                        String[] kick = ChatColor.translateAlternateColorCodes('&', Main.instance.getConfig().getString("Raids.Kick")).replace("%raid%", fileHandler.getString("info.name")).replace("%min%", fileHandler.getString("info.min")).replace("%max%", fileHandler.getString("info.max")).split("/n");
-                        sendMessage(player, kick);
-                        cancelRaid(player);
-                        return;
-                    }
-                } else {
-                    for (Player players : party.getMembers()) {
-                        if (!(players.getLocation().distance(loc) <= radius)) {
+            BukkitTask task1 = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    if (starts[0] == 0) {
+                        PartyAPI partyAPI = new PartyAPI();
+                        PartyObject party = partyAPI.getParty(player);
+                        double radius = Main.instance.getConfig().getDouble("Raids.Radius");
+
+                        Location loc = new Location(Bukkit.getWorld(fileHandler.getString("info.worlds")), fileHandler.getInteger("info.xs"), fileHandler.getInteger("info.ys"), fileHandler.getInteger("info.zs"));
+                        if (party == null) {
+                            if (!(player.getLocation().distance(loc) <= radius)) {
+                                String[] kick = ChatColor.translateAlternateColorCodes('&', Main.instance.getConfig().getString("Raids.Kick")).replace("%raid%", fileHandler.getString("info.name")).replace("%min%", fileHandler.getString("info.min")).replace("%max%", fileHandler.getString("info.max")).split("/n");
+                                sendMessage(player, kick);
+                                cancelRaid(player);
+                                return;
+                            }
+                        } else {
+                            for (Player players : party.getMembers()) {
+                                if (!(players.getLocation().distance(loc) <= radius)) {
+                                    String[] kick = ChatColor.translateAlternateColorCodes('&', Main.instance.getConfig().getString("Raids.Kick")).replace("%raid%", fileHandler.getString("info.name")).replace("%min%", fileHandler.getString("info.min")).replace("%max%", fileHandler.getString("info.max")).split("/n");
+                                    sendMessage(player, kick);
+                                    cancelRaid(player);
+                                    return;
+                                }
+                            }
+                        }
+
+                        if (canStartRaid(player, filename)) {
+                            runScript(player, filename);
+
+                            if (party == null) {
+                                player.teleport(new Location(Bukkit.getWorld(fileHandler.getString("info.world")), fileHandler.getInteger("info.x"), fileHandler.getInteger("info.y"), fileHandler.getInteger("info.z"), fileHandler.getInteger("info.yaw"), fileHandler.getInteger("info.pitch")));
+                            } else {
+                                for (Player players : party.getMembers()) {
+                                    players.teleport(new Location(Bukkit.getWorld(fileHandler.getString("info.world")), fileHandler.getInteger("info.x"), fileHandler.getInteger("info.y"), fileHandler.getInteger("info.z"), fileHandler.getInteger("info.yaw"), fileHandler.getInteger("info.pitch")));
+                                }
+                            }
+                        } else {
                             String[] kick = ChatColor.translateAlternateColorCodes('&', Main.instance.getConfig().getString("Raids.Kick")).replace("%raid%", fileHandler.getString("info.name")).replace("%min%", fileHandler.getString("info.min")).replace("%max%", fileHandler.getString("info.max")).split("/n");
                             sendMessage(player, kick);
                             cancelRaid(player);
-                            return;
                         }
-                    }
-                }
 
-                if (canStartRaid(player, filename)) {
-                    runScript(player, filename);
-
-                    if (party == null) {
-                        player.teleport(new Location(Bukkit.getWorld(fileHandler.getString("info.world")), fileHandler.getInteger("info.x"), fileHandler.getInteger("info.y"), fileHandler.getInteger("info.z"), fileHandler.getInteger("info.yaw"), fileHandler.getInteger("info.pitch")));
+                        this.cancel();
                     } else {
-                        for (Player players : party.getMembers()) {
-                            players.teleport(new Location(Bukkit.getWorld(fileHandler.getString("info.world")), fileHandler.getInteger("info.x"), fileHandler.getInteger("info.y"), fileHandler.getInteger("info.z"), fileHandler.getInteger("info.yaw"), fileHandler.getInteger("info.pitch")));
+                        starts[0]--;
+
+                        PartyAPI partyAPI = new PartyAPI();
+                        PartyObject party = partyAPI.getParty(player);
+
+                        if (party == null) {
+                            new MessageUtil().sendActionBar(player, ChatColor.GOLD + "The raid will be starting in " + ChatColor.RED + starts[0] + " seconds" + ChatColor.GOLD + "!");
+                        } else {
+                            for (Player players : party.getMembers()) {
+                                new MessageUtil().sendActionBar(players, ChatColor.GOLD + "The raid will be starting in " + ChatColor.RED + starts[0] + " seconds" + ChatColor.GOLD + "!");
+                            }
                         }
                     }
-                } else {
-                    String[] kick = ChatColor.translateAlternateColorCodes('&', Main.instance.getConfig().getString("Raids.Kick")).replace("%raid%", fileHandler.getString("info.name")).replace("%min%", fileHandler.getString("info.min")).replace("%max%", fileHandler.getString("info.max")).split("/n");
-                    sendMessage(player, kick);
-                    cancelRaid(player);
                 }
-            }, Main.instance.getConfig().getInt("Raids.Time-wait") * 20);
+            }.runTaskTimer(Main.instance, 0L, 20L);
 
             tasks.put(player, task1.getTaskId());
         });
@@ -167,12 +189,12 @@ public class RaidManager {
     }
 
     public void cancelRaid(Player player) {
-        if (tasks.get(player) != null) {
+        if (tasks.containsKey(player)) {
             Bukkit.getScheduler().cancelTask(tasks.get(player));
+            tasks.remove(player);
         }
 
         raids.remove(player);
-        tasks.remove(player);
     }
 
     public void sendMessage(Player player, String message) {

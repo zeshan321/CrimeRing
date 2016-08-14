@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class PartyObject {
-    private ArrayList<Player> members = new ArrayList();
+    private ArrayList<Player> members = new ArrayList<>();
     private Player owner;
     private String name;
 
@@ -66,6 +66,10 @@ public class PartyObject {
 
     public List<Player> getMembers() {
         return members;
+    }
+
+    public void clearMembers() {
+        members.clear();
     }
 
     public String membersList() {

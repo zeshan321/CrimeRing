@@ -4,6 +4,7 @@ version: 1.0
 author: Zeshan Aslam
 description: >
              CrimeRing Plugin.
+depend: [ProtocolLib]
 commands:
   CRReload:
     description: Relaods config.
@@ -15,3 +16,5 @@ commands:
     description: Party command.
   CREdit:
     description: CR edit command.
+  CRItem:
+    description: CR item command.

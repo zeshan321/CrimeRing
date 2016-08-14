@@ -8,7 +8,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
@@ -129,6 +131,32 @@ public class BasicEvents implements Listener {
                 if (damaged.getName().equals(shooter.getName())) {
                     event.setCancelled(true);
                 }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onMobSpawn(CreatureSpawnEvent event) {
+        if (event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.CUSTOM) {
+            return;
+        }
+
+        if (event.getLocation().getWorld().getName().equals("RaidWorld")) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onPaintingBreak(HangingBreakByEntityEvent event) {
+        if (event.getRemover() instanceof Projectile) {
+            event.setCancelled(true);
+        }
+
+        if (event.getRemover() instanceof Player) {
+            Player player = (Player) event.getRemover();
+
+            if (!(player.isOp())) {
+                event.setCancelled(true);
             }
         }
     }

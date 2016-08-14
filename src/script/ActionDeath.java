@@ -7,7 +7,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 
 import javax.script.*;
 
@@ -44,6 +43,7 @@ public class ActionDeath implements Listener {
                     bindings.put("event", event);
                     bindings.put("CR", new ActionDefaults());
                     bindings.put("mobName", name);
+                    bindings.put("mobLocation", event.getEntity().getLocation());
 
                     compiledScript.eval(bindings);
                 } catch (ScriptException e) {

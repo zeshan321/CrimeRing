@@ -2,6 +2,7 @@ package com.zeshanaslam.crimering;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.file.YamlConfigurationOptions;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.IOException;
@@ -300,6 +301,16 @@ public class FileHandler {
      */
     public void decrement(String s, int i) {
         this.yaml.set(s, this.getInteger(s) - i);
+    }
+
+
+    /**
+     * Gets Itemstack.
+     *
+     * @param s Path to Itemstack.
+     */
+    public ItemStack getItemStack(String s) {
+        return this.yaml.getItemStack(s);
     }
 
     /**

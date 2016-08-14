@@ -21,7 +21,7 @@ public class Edit implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
         if (commandLabel.equalsIgnoreCase("CREdit")) {
-            if (sender.hasPermission("CR.edit")) {
+            if (sender.isOp()) {
                 String world = args[0];
                 int x = Integer.parseInt(args[1]);
                 int y = Integer.parseInt(args[2]);
@@ -41,10 +41,10 @@ public class Edit implements CommandExecutor {
                 if (args.length > 8) {
                     data = Integer.parseInt(args[8]);
                 }
-                for (int i = min.getBlockX(); i <= max.getBlockX();i++) {
+                for (int i = min.getBlockX(); i <= max.getBlockX(); i++) {
                     for (int j = min.getBlockY(); j <= max.getBlockY(); j++) {
-                        for (int k = min.getBlockZ(); k <= max.getBlockZ();k++) {
-                            Block block = Bukkit.getServer().getWorld(world).getBlockAt(i,j,k);
+                        for (int k = min.getBlockZ(); k <= max.getBlockZ(); k++) {
+                            Block block = Bukkit.getServer().getWorld(world).getBlockAt(i, j, k);
                             block.setType(material);
                             block.setData((byte) data);
                         }
