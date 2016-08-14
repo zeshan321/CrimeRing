@@ -96,7 +96,7 @@ public class BasicEvents implements Listener {
 
         if (remove.contains(event.getBlock().getTypeId())) {
             event.setCancelled(true);
-            event.getBlock().breakNaturally();
+            event.getBlock().setType(Material.AIR);
         }
     }
 
