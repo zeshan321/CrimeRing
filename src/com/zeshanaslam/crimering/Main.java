@@ -14,12 +14,12 @@ import commands.Reload;
 import events.BasicEvents;
 import net.minecraft.server.v1_10_R1.NBTTagCompound;
 import net.minecraft.server.v1_10_R1.NBTTagList;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffectType;
 import raids.PartyCommands;
 import raids.RaidListener;
 import raids.RaidManager;
@@ -166,7 +166,9 @@ public class Main extends JavaPlugin {
 
         });
 
-        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(this, ListenerPriority.NORMAL, PacketType.Play.Client.CLIENT_COMMAND) {
+        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(this,
+                ListenerPriority.NORMAL,
+                PacketType.Play.Client.CLIENT_COMMAND) {
             public void onPacketReceiving(PacketEvent event) {
                 if (event.getPacketType().getLegacyId() == 22)
                     try {
@@ -176,6 +178,19 @@ public class Main extends JavaPlugin {
                     } catch (FieldAccessException e) {
                         e.printStackTrace();
                     }
+            }
+        });
+
+        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(this,
+                ListenerPriority.NORMAL,
+                PacketType.Play.Server.REMOVE_ENTITY_EFFECT) {
+            @Override
+            public void onPacketSending(PacketEvent event) {
+                if (event.getPacketType() == PacketType.Play.Server.REMOVE_ENTITY_EFFECT) {
+                    if (event.getPlayer().hasMetadata("ironsights") && !event.getPlayer().hasPotionEffect(PotionEffectType.SPEED)) {
+                        event.getPlayer().updateInventory();
+                    }
+                }
             }
         });
     }

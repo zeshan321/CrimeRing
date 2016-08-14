@@ -17,3 +17,5 @@ Blocked-items-interact:
 Blocked-items-drop:
 - 78
 - 80
+Scope-items:
+- 'Ak-47'

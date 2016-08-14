@@ -5,6 +5,7 @@ import com.zeshanaslam.crimering.Main;
 import net.minecraft.server.v1_10_R1.EnumItemSlot;
 import net.minecraft.server.v1_10_R1.PacketPlayOutEntityEquipment;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
@@ -17,7 +18,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
@@ -177,7 +177,16 @@ public class BasicEvents implements Listener {
     public void onScope(WeaponScopeEvent event) {
         Player player = event.getPlayer();
 
-        player.sendMessage("Before: " + player.hasMetadata("ironsights"));
+        if (!plugin.getConfig().getStringList("Scope-items").contains(ChatColor.stripColor(event.getWeaponTitle()))) {
+            return;
+        }
+
+        if (player.getGameMode() == GameMode.CREATIVE) {
+            player.sendMessage(ChatColor.RED + "Scopes are disabled in creative!");
+            event.setCancelled(true);
+            return;
+        }
+
         if (event.isZoomIn()) {
             ItemStack item = new ItemStack(Material.PUMPKIN);
             PacketPlayOutEntityEquipment packet = new PacketPlayOutEntityEquipment(player.getEntityId(), EnumItemSlot.HEAD, CraftItemStack.asNMSCopy(item));
@@ -185,12 +194,5 @@ public class BasicEvents implements Listener {
         } else {
             player.updateInventory();
         }
-
-        player.sendMessage("After: " + player.hasMetadata("ironsights"));
-    }
-
-    @EventHandler
-    public void onScopeFix(EntityPo event) {
-
     }
 }
