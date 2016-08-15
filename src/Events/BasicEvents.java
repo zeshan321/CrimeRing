@@ -177,7 +177,12 @@ public class BasicEvents implements Listener {
     public void onScope(WeaponScopeEvent event) {
         Player player = event.getPlayer();
 
-        if (!plugin.getConfig().getStringList("Scope-items").contains(ChatColor.stripColor(event.getWeaponTitle()))) {
+        if (player.getInventory().getItemInMainHand() == null) {
+            return;
+        }
+
+        ItemStack inMainHand = player.getInventory().getItemInMainHand();
+        if (!plugin.getConfig().getStringList("Scope-items").contains(inMainHand.getTypeId() + ":" + inMainHand.getDurability())) {
             return;
         }
 
