@@ -13,6 +13,10 @@ import commands.Edit;
 import commands.Item;
 import commands.Reload;
 import events.BasicEvents;
+import events.BodiesEvents;
+import events.BodyObject;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
@@ -26,10 +30,7 @@ import script.*;
 import utils.ProtocolUtil;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class Main extends JavaPlugin {
 
@@ -96,6 +97,7 @@ public class Main extends JavaPlugin {
         pm.registerEvents(new PartyCommands(this), this);
         pm.registerEvents(new RaidListener(this), this);
         pm.registerEvents(new ActionDeath(this), this);
+        pm.registerEvents(new BodiesEvents(this), this);
 
         // Commands
         getCommand("CRReload").setExecutor(new Reload(this));
@@ -188,6 +190,21 @@ public class Main extends JavaPlugin {
                 }
             }
         });
+
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
+            Iterator it = BodiesEvents.bodies.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry pair = (Map.Entry)it.next();
+
+                BodyObject bodyObject = (BodyObject) pair.getValue();
+
+                long secondsLeft = ((bodyObject.time / 1000) + 300) - (System.currentTimeMillis() / 1000);
+                if (secondsLeft <= 0) {
+                    it.remove();
+                    Bukkit.broadcastMessage("Removing!");
+                }
+            }
+        }, 20L * 60, 20L * 60);
     }
 
     public void onDisable() {

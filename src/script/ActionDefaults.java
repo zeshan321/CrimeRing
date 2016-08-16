@@ -343,7 +343,7 @@ public class ActionDefaults {
     }
 
     public void setPushBlock(String world, int x, int y, int z) {
-        Bukkit.getWorld(world).getBlockAt(new Location(Bukkit.getWorld(world), x, y, z)).setType(Material.QUARTZ_BLOCK);
+        Bukkit.getWorld(world).getBlockAt(new Location(Bukkit.getWorld(world), x, y, z)).setType(Material.QUARTZ_ORE);
     }
 
     public void removePushBlocks(String world, String regionName) {

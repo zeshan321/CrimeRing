@@ -14,6 +14,7 @@ Blocked-cmds:
 - /back
 Blocked-items-interact:
 - 92
+- 145
 Blocked-items-drop:
 - 78
 - 80

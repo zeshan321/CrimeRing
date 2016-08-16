@@ -23,18 +23,18 @@ import java.util.stream.Collectors;
 
 public class RaidManager {
 
-    public ArrayList<PartyObject> parties = new ArrayList();
-    public ArrayList<InviteObject> invites = new ArrayList();
-    public HashMap<Player, String> raids = new HashMap();
-    public HashMap<Player, Integer> tasks = new HashMap();
-    public HashMap<String, String> raidnames = new HashMap();
+    public ArrayList<PartyObject> parties = new ArrayList<>();
+    public ArrayList<InviteObject> invites = new ArrayList<>();
+    public HashMap<Player, String> raids = new HashMap<>();
+    public HashMap<Player, Integer> tasks = new HashMap<>();
+    public HashMap<String, String> raidnames = new HashMap<>();
 
     public void openRaidMenu(Player player, String filename) {
         FileHandler fileHandler = new FileHandler("plugins/CrimeRing/raids/" + filename + ".yml");
         Inventory inventory = Bukkit.createInventory(null, 18, ChatColor.RED + "Raid: " + fileHandler.getString("info.name"));
 
         if (playersQueue(filename) == 0) {
-            inventory.setItem(1, new ItemUtils().createItem(Material.IRON_HOE, ChatColor.RED + "Start Raid", ChatColor.GOLD + "Click to start raid."));
+            inventory.setItem(1, new ItemUtils().createItem(Material.DIAMOND_HOE, ChatColor.RED + "Start Raid", ChatColor.GOLD + "Click to start raid.", 1, 90));
         }
 
         if (playersQueue(filename) > 0) {
@@ -42,7 +42,7 @@ public class RaidManager {
         }
 
         inventory.setItem(6, new ItemUtils().createItem(Material.SHIELD, ChatColor.RED + "Cancel Raid", ChatColor.GOLD + "Click to cancel raid."));
-        inventory.setItem(17, new ItemUtils().createItem(Material.BANNER, ChatColor.RED + "Exit", ChatColor.GOLD + "Click to exit."));
+        inventory.setItem(17, new ItemUtils().createItem(Material.BARRIER, ChatColor.RED + "Exit", ChatColor.GOLD + "Click to exit."));
 
         player.openInventory(inventory);
     }
