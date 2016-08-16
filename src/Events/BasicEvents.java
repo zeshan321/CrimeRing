@@ -7,8 +7,11 @@ import net.minecraft.server.v1_10_R1.PacketPlayOutEntityEquipment;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -17,6 +20,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -143,15 +147,17 @@ public class BasicEvents implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onMobSpawn(CreatureSpawnEvent event) {
         if (event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.CUSTOM) {
             return;
         }
 
-        if (event.getLocation().getWorld().getName().equals("RaidWorld")) {
-            event.setCancelled(true);
-        }
+       if (event.getEntity().getType() == EntityType.SILVERFISH || event.getEntity().getType() == EntityType.PIG_ZOMBIE) {
+           return;
+       }
+
+        event.setCancelled(true);
     }
 
     @EventHandler
@@ -199,5 +205,12 @@ public class BasicEvents implements Listener {
         } else {
             player.updateInventory();
         }
+    }
+
+    @EventHandler
+    public void onEntityExplode(EntityExplodeEvent event){
+        event.blockList().stream().filter(blocks -> blocks.getType() == Material.CAKE_BLOCK || blocks.getType() == Material.PAINTING).forEach(blocks -> {
+            event.blockList().remove(blocks);
+        });
     }
 }
