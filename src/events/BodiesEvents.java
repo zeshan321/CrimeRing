@@ -1,10 +1,7 @@
 package events;
 
 import com.zeshanaslam.crimering.Main;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -48,7 +45,7 @@ public class BodiesEvents implements Listener {
         }
 
         if (!empty) {
-            Block block = player.getWorld().getHighestBlockAt(player.getLocation());
+            Block block = getBodyLocation(player.getLocation());
             block.setType(Material.CAKE_BLOCK);
 
             Inventory inventory = Bukkit.createInventory(null, 54, ChatColor.RED + player.getName() + "'s body");
@@ -78,7 +75,7 @@ public class BodiesEvents implements Listener {
                     player.openInventory(bodies.get(loc).inventory);
                 } else {
                     //300
-                    long secondsLeft = ((bodies.get(loc).time / 1000) + 50) - (System.currentTimeMillis() / 1000);
+                    long secondsLeft = ((bodies.get(loc).time / 1000) + 300) - (System.currentTimeMillis() / 1000);
                     if (secondsLeft > 0) {
                         player.sendMessage(ChatColor.GOLD + bodies.get(loc).owner.getName() + "'s body will be lootable in " + ChatColor.RED + secondsLeft + " seconds " + ChatColor.GOLD + "for you.");
                     } else {
@@ -166,5 +163,21 @@ public class BodiesEvents implements Listener {
             bodies.remove(bodyObject.loc);
             temp.remove(player);
         }
+    }
+
+    private Block getBodyLocation(Location playerLocation) {
+        int x = playerLocation.getBlockX();
+        int y = playerLocation.getBlockY();
+        int z = playerLocation.getBlockZ();
+        World world = playerLocation.getWorld();
+
+        while (y != 0) {
+            if (world.getBlockAt(new Location(world, x, y, z)).getType() != Material.AIR) {
+               break;
+            }
+            y--;
+        }
+
+        return world.getBlockAt(new Location(world, x, y + 1 , z));
     }
 }

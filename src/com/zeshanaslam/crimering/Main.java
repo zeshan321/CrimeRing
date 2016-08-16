@@ -17,6 +17,7 @@ import events.BodiesEvents;
 import events.BodyObject;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
@@ -198,9 +199,10 @@ public class Main extends JavaPlugin {
 
                 BodyObject bodyObject = (BodyObject) pair.getValue();
 
-                long secondsLeft = ((bodyObject.time / 1000) + 300) - (System.currentTimeMillis() / 1000);
+                long secondsLeft = ((bodyObject.time / 1000) + 600) - (System.currentTimeMillis() / 1000);
                 if (secondsLeft <= 0) {
                     it.remove();
+                    bodyObject.loc.getWorld().getBlockAt(bodyObject.loc).setType(Material.AIR);
                     Bukkit.broadcastMessage("Removing!");
                 }
             }
@@ -209,5 +211,14 @@ public class Main extends JavaPlugin {
 
     public void onDisable() {
         saveConfig();
+
+        // Clear dead bodies
+        Iterator it = BodiesEvents.bodies.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry) it.next();
+
+            BodyObject bodyObject = (BodyObject) pair.getValue();
+            bodyObject.loc.getWorld().getBlockAt(bodyObject.loc).setType(Material.AIR);
+        }
     }
 }
