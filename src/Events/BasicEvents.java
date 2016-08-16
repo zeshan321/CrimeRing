@@ -18,10 +18,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
@@ -30,6 +32,7 @@ import org.bukkit.inventory.ItemStack;
 import raids.PartyAPI;
 import raids.PartyObject;
 
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -209,8 +212,27 @@ public class BasicEvents implements Listener {
 
     @EventHandler
     public void onEntityExplode(EntityExplodeEvent event){
-        event.blockList().stream().filter(blocks -> blocks.getType() == Material.CAKE_BLOCK || blocks.getType() == Material.PAINTING).forEach(blocks -> {
-            event.blockList().remove(blocks);
-        });
+        Iterator<Block> it = event.blockList().iterator();
+        while (it.hasNext()) {
+            Block block = it.next();
+
+            if (block.getType() == Material.CAKE_BLOCK) {
+                it.remove();
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPhysics(BlockPhysicsEvent event){
+        if (event.getBlock().getType() == Material.CAKE_BLOCK ) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onHangingBreak(HangingBreakEvent event){
+        if (event.getCause() == HangingBreakEvent.RemoveCause.EXPLOSION || event.getCause() == HangingBreakEvent.RemoveCause.PHYSICS) {
+            event.setCancelled(true);
+        }
     }
 }
