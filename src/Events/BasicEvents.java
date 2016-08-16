@@ -1,12 +1,13 @@
 package events;
 
+import com.nitnelave.CreeperHeal.block.BurntBlockManager;
+import com.nitnelave.CreeperHeal.block.ExplodedBlockManager;
+import com.shampaggon.crackshot.events.WeaponHitBlockEvent;
 import com.shampaggon.crackshot.events.WeaponScopeEvent;
 import com.zeshanaslam.crimering.Main;
 import net.minecraft.server.v1_10_R1.EnumItemSlot;
 import net.minecraft.server.v1_10_R1.PacketPlayOutEntityEquipment;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
@@ -18,6 +19,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -32,6 +34,7 @@ import org.bukkit.inventory.ItemStack;
 import raids.PartyAPI;
 import raids.PartyObject;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -210,6 +213,7 @@ public class BasicEvents implements Listener {
         }
     }
 
+    // Stop paintings and cakes from blowing up
     @EventHandler
     public void onEntityExplode(EntityExplodeEvent event){
         Iterator<Block> it = event.blockList().iterator();
@@ -233,6 +237,17 @@ public class BasicEvents implements Listener {
     public void onHangingBreak(HangingBreakEvent event){
         if (event.getCause() == HangingBreakEvent.RemoveCause.EXPLOSION || event.getCause() == HangingBreakEvent.RemoveCause.PHYSICS) {
             event.setCancelled(true);
+        }
+    }
+
+    // Glass regen
+    @EventHandler
+    public void onHitGlass(WeaponHitBlockEvent event) {
+        if (event.getBlock().getType() == Material.GLASS || event.getBlock().getType() == Material.STAINED_GLASS || event.getBlock().getType() == Material.STAINED_GLASS_PANE || event.getBlock().getType() == Material.THIN_GLASS) {
+            BurntBlockManager.recordBurntBlock(event.getBlock());
+
+            event.getBlock().getWorld().playSound(event.getBlock().getLocation(), Sound.BLOCK_GLASS_BREAK, 10, 1);
+            event.getBlock().breakNaturally();
         }
     }
 }
