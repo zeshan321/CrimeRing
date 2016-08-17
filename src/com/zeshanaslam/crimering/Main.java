@@ -9,6 +9,7 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.FieldAccessException;
 import com.comphenix.protocol.utility.MinecraftVersion;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import commands.ClearChat;
 import commands.Edit;
 import commands.Item;
 import commands.Reload;
@@ -106,6 +107,7 @@ public class Main extends JavaPlugin {
         getCommand("party").setExecutor(new PartyCommands(this));
         getCommand("CREdit").setExecutor(new Edit(this));
         getCommand("CRItem").setExecutor(new Item(this));
+        getCommand("Clearchat").setExecutor(new ClearChat(this));
 
         ProtocolUtil protocolUtil = new ProtocolUtil();
 

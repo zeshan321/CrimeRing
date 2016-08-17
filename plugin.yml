@@ -18,3 +18,5 @@ commands:
     description: CR edit command.
   CRItem:
     description: CR item command.
+  Clearchat:
+    description: Clears chat.

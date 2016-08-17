@@ -11,6 +11,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
 import org.bukkit.entity.EntityType;
@@ -19,6 +20,7 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -247,6 +249,26 @@ public class BasicEvents implements Listener {
 
             event.getBlock().getWorld().playSound(event.getBlock().getLocation(), Sound.BLOCK_GLASS_BREAK, 10, 1);
             event.getBlock().breakNaturally();
+        }
+    }
+
+    // Replace sign text that contains 'null'
+    @EventHandler
+    public void onSign(PlayerInteractEvent event) {
+        if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+            Block block = event.getClickedBlock();
+
+            if (block.getType() == Material.SIGN_POST || block.getType() == Material.WALL_SIGN) {
+                Sign sign = (Sign) block.getState();
+
+                for (int i = 0; i < 4; i++) {
+                    if (sign.getLine(i).contains("null")) {
+                        sign.setLine(i, sign.getLine(i).replace("null", ""));
+                    }
+                }
+
+                sign.update();
+            }
         }
     }
 }
