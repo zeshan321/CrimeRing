@@ -41,8 +41,7 @@ public class ActionInv implements Listener {
             try {
                 ScriptEngineManager factory = new ScriptEngineManager();
                 ScriptEngine engine = factory.getEngineByName("JavaScript");
-                Compilable compilableEngine = (Compilable) engine;
-                CompiledScript compiledScript = compilableEngine.compile(scriptObject.script);
+                CompiledScript compiledScript = scriptObject.script;
 
                 // Objects
                 Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);

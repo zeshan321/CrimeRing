@@ -153,11 +153,15 @@ public class PartyCommands implements Listener, CommandExecutor {
                 }
 
                 if (Main.instance.raidManager.raids.containsKey(partyObject.getOwner())) {
-                    FileHandler fileHandler = new FileHandler("plugins/CrimeRing/raids/" + Main.instance.raidManager.raids.get(partyObject.getOwner()) + ".yml");
+                    FileHandler fileHandler = new FileHandler("plugins/CrimeRing/raids/" + Main.instance.raidManager.raids.get(player) + ".yml");
 
                     String[] message = ChatColor.translateAlternateColorCodes('&', Main.instance.getConfig().getString("Raids.Kick-end")).split("/n");
-                    player.sendMessage(message);
-                    player.teleport(new Location(Bukkit.getWorld(fileHandler.getString("info.worlds")), fileHandler.getInteger("info.xs"), fileHandler.getInteger("info.ys"), fileHandler.getInteger("info.zs"), fileHandler.getInteger("info.yaws"), fileHandler.getInteger("info.pitchs")));
+                    for (Player players : partyObject.getMembers()) {
+                        players.sendMessage(message);
+                        players.teleport(new Location(Bukkit.getWorld(fileHandler.getString("info.worlds")), fileHandler.getInteger("info.xs"), fileHandler.getInteger("info.ys"), fileHandler.getInteger("info.zs"), fileHandler.getInteger("info.yaws"), fileHandler.getInteger("info.pitchs")));
+                    }
+
+                    Main.instance.raidManager.cancelRaid(player);
                 }
 
                 partyObject.sendMessage(ChatColor.RED + "[Party] " + ChatColor.GOLD + player.getName() + " has left the party.");
@@ -245,11 +249,15 @@ public class PartyCommands implements Listener, CommandExecutor {
         }
 
         if (Main.instance.raidManager.raids.containsKey(partyObject.getOwner())) {
-            FileHandler fileHandler = new FileHandler("plugins/CrimeRing/raids/" + Main.instance.raidManager.raids.get(partyObject.getOwner()) + ".yml");
+            FileHandler fileHandler = new FileHandler("plugins/CrimeRing/raids/" + Main.instance.raidManager.raids.get(player) + ".yml");
 
             String[] message = ChatColor.translateAlternateColorCodes('&', Main.instance.getConfig().getString("Raids.Kick-end")).split("/n");
-            player.sendMessage(message);
-            player.teleport(new Location(Bukkit.getWorld(fileHandler.getString("info.worlds")), fileHandler.getInteger("info.xs"), fileHandler.getInteger("info.ys"), fileHandler.getInteger("info.zs"), fileHandler.getInteger("info.yaws"), fileHandler.getInteger("info.pitchs")));
+            for (Player players : partyObject.getMembers()) {
+                players.sendMessage(message);
+                players.teleport(new Location(Bukkit.getWorld(fileHandler.getString("info.worlds")), fileHandler.getInteger("info.xs"), fileHandler.getInteger("info.ys"), fileHandler.getInteger("info.zs"), fileHandler.getInteger("info.yaws"), fileHandler.getInteger("info.pitchs")));
+            }
+
+            Main.instance.raidManager.cancelRaid(player);
         }
 
         partyObject.sendMessage(ChatColor.RED + "[Party] " + ChatColor.GOLD + player.getName() + " has left the party.");

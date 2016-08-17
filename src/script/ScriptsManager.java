@@ -3,6 +3,7 @@ package script;
 import com.zeshanaslam.crimering.FileHandler;
 import org.bukkit.ChatColor;
 
+import javax.script.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -24,8 +25,15 @@ public class ScriptsManager {
             String dir = imports.getString(data + ".dir");
 
             try {
-                scriptData.put(data, new ScriptObject(data, dir, ChatColor.translateAlternateColorCodes('&', String.join("\n", Files.readAllLines(Paths.get("plugins/CrimeRing/scripts/" + File.separator + dir))).replace("\n", "").replace("\t", ""))));
-            } catch (IOException e) {
+                String script = ChatColor.translateAlternateColorCodes('&', String.join("\n", Files.readAllLines(Paths.get("plugins/CrimeRing/scripts/" + File.separator + dir))).replace("\n", "").replace("\t", ""));
+
+                ScriptEngineManager factory = new ScriptEngineManager();
+                ScriptEngine engine = factory.getEngineByName("JavaScript");
+                Compilable compilableEngine = (Compilable) engine;
+                CompiledScript compiledScript = compilableEngine.compile(script);
+
+                scriptData.put(data, new ScriptObject(data, dir, compiledScript));
+            } catch (ScriptException | IOException e) {
                 e.printStackTrace();
             }
 

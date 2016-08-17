@@ -16,7 +16,6 @@ import events.BasicEvents;
 import events.BodiesEvents;
 import events.BodyObject;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
@@ -195,7 +194,7 @@ public class Main extends JavaPlugin {
         getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
             Iterator it = BodiesEvents.bodies.entrySet().iterator();
             while (it.hasNext()) {
-                Map.Entry pair = (Map.Entry)it.next();
+                Map.Entry pair = (Map.Entry) it.next();
 
                 BodyObject bodyObject = (BodyObject) pair.getValue();
 

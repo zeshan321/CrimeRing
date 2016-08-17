@@ -20,14 +20,13 @@ import java.util.HashMap;
 
 public class BodiesEvents implements Listener {
 
+    public static HashMap<Location, BodyObject> bodies = new HashMap<>();
     private final Main plugin;
+    private HashMap<Player, Location> temp = new HashMap<>();
 
     public BodiesEvents(Main plugin) {
         this.plugin = plugin;
     }
-
-    public static HashMap<Location, BodyObject> bodies = new HashMap<>();
-    private HashMap<Player, Location> temp = new HashMap<>();
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onDeath(PlayerDeathEvent event) {
@@ -37,7 +36,7 @@ public class BodiesEvents implements Listener {
         ItemStack[] items = event.getDrops().toArray(new ItemStack[0]);
 
         boolean empty = true;
-        for (ItemStack item: items){
+        for (ItemStack item : items) {
             if (item != null && item.getAmount() >= 1) {
                 empty = false;
                 break;
@@ -109,7 +108,7 @@ public class BodiesEvents implements Listener {
         }
 
         boolean empty = true;
-        for (ItemStack item: event.getInventory().getContents()){
+        for (ItemStack item : event.getInventory().getContents()) {
             if (item != null && item.getAmount() >= 1) {
                 empty = false;
                 break;
@@ -148,7 +147,7 @@ public class BodiesEvents implements Listener {
         }
 
         boolean empty = true;
-        for (ItemStack item: event.getInventory().getContents()){
+        for (ItemStack item : event.getInventory().getContents()) {
             if (item != null && item.getAmount() >= 1) {
                 empty = false;
                 break;
@@ -173,11 +172,11 @@ public class BodiesEvents implements Listener {
 
         while (y != 0) {
             if (world.getBlockAt(new Location(world, x, y, z)).getType() != Material.AIR) {
-               break;
+                break;
             }
             y--;
         }
 
-        return world.getBlockAt(new Location(world, x, y + 1 , z));
+        return world.getBlockAt(new Location(world, x, y + 1, z));
     }
 }

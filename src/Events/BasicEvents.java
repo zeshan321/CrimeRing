@@ -1,25 +1,25 @@
 package events;
 
 import com.nitnelave.CreeperHeal.block.BurntBlockManager;
-import com.nitnelave.CreeperHeal.block.ExplodedBlockManager;
 import com.shampaggon.crackshot.events.WeaponHitBlockEvent;
 import com.shampaggon.crackshot.events.WeaponScopeEvent;
 import com.zeshanaslam.crimering.Main;
 import net.minecraft.server.v1_10_R1.EnumItemSlot;
 import net.minecraft.server.v1_10_R1.PacketPlayOutEntityEquipment;
-import org.bukkit.*;
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -34,7 +34,6 @@ import org.bukkit.inventory.ItemStack;
 import raids.PartyAPI;
 import raids.PartyObject;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -146,7 +145,7 @@ public class BasicEvents implements Listener {
                 Player damaged = (Player) event.getEntity();
                 Player shooter = (Player) projectile.getShooter();
 
-                if (damaged.getName().equals(shooter.getName())) {
+                if (damaged == shooter) {
                     event.setCancelled(true);
                 }
             }
@@ -159,9 +158,9 @@ public class BasicEvents implements Listener {
             return;
         }
 
-       if (event.getEntity().getType() == EntityType.SILVERFISH || event.getEntity().getType() == EntityType.PIG_ZOMBIE) {
-           return;
-       }
+        if (event.getEntity().getType() == EntityType.SILVERFISH || event.getEntity().getType() == EntityType.PIG_ZOMBIE) {
+            return;
+        }
 
         event.setCancelled(true);
     }
@@ -215,7 +214,7 @@ public class BasicEvents implements Listener {
 
     // Stop paintings and cakes from blowing up
     @EventHandler
-    public void onEntityExplode(EntityExplodeEvent event){
+    public void onEntityExplode(EntityExplodeEvent event) {
         Iterator<Block> it = event.blockList().iterator();
         while (it.hasNext()) {
             Block block = it.next();
@@ -227,14 +226,14 @@ public class BasicEvents implements Listener {
     }
 
     @EventHandler
-    public void onPhysics(BlockPhysicsEvent event){
-        if (event.getBlock().getType() == Material.CAKE_BLOCK ) {
+    public void onPhysics(BlockPhysicsEvent event) {
+        if (event.getBlock().getType() == Material.CAKE_BLOCK) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
-    public void onHangingBreak(HangingBreakEvent event){
+    public void onHangingBreak(HangingBreakEvent event) {
         if (event.getCause() == HangingBreakEvent.RemoveCause.EXPLOSION || event.getCause() == HangingBreakEvent.RemoveCause.PHYSICS) {
             event.setCancelled(true);
         }

@@ -81,7 +81,7 @@ public class RaidManager {
                 return false;
             }
         } else {
-            if (!party.getOwner().getName().equals(player.getName())) {
+            if (party.getOwner() != player) {
                 String[] message = ChatColor.translateAlternateColorCodes('&', Main.instance.getConfig().getString("Raids.Not-leader")).replace("%raid%", raidName).replace("%min%", String.valueOf(min)).replace("%max%", String.valueOf(max)).split("/n");
                 player.sendMessage(message);
                 return false;
@@ -226,7 +226,7 @@ public class RaidManager {
         }
 
         List<Player> tempList = raids.keySet().stream().filter(players -> raids.get(players).equals(filename)).collect(Collectors.toList());
-        if (tempList.get(0).getName().equals(player.getName())) {
+        if (tempList.get(0) == player) {
             return true;
         }
 
@@ -240,8 +240,7 @@ public class RaidManager {
             try {
                 ScriptEngineManager factory = new ScriptEngineManager();
                 ScriptEngine engine = factory.getEngineByName("JavaScript");
-                Compilable compilableEngine = (Compilable) engine;
-                CompiledScript compiledScript = compilableEngine.compile(scriptObject.script);
+                CompiledScript compiledScript = scriptObject.script;
 
                 // Objects
                 Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);

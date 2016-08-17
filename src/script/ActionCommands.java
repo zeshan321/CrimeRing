@@ -19,8 +19,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.HashMap;
 
 public class ActionCommands implements Listener, CommandExecutor {
@@ -113,26 +111,12 @@ public class ActionCommands implements Listener, CommandExecutor {
                 if (copyObject.name2.equals("null")) {
                     imports.set(x + " " + y + " " + z + " " + world + ".dir", copyObject.name1 + ".yml");
 
-                    try {
-                        Main.instance.scriptsManager.scriptData.put(x + " " + y + " " + z + " " + world,
-                                new ScriptObject(x + " " + y + " " + z + " " + world
-                                        , copyObject.name1 + ".yml",
-                                        String.join("\n", Files.readAllLines(Paths.get("plugins/CrimeRing/scripts/" + File.separator + copyObject.name1 + ".yml")))));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    player.sendMessage(ChatColor.RED + "For this script to work the plugin needs to re-compile the scripts. Run: /CRReload");
 
                 } else {
                     imports.set(x + " " + y + " " + z + " " + world + ".dir", copyObject.name2 + ".yml");
 
-                    try {
-                        Main.instance.scriptsManager.scriptData.put(x + " " + y + " " + z + " " + world,
-                                new ScriptObject(x + " " + y + " " + z + " " + world
-                                        , copyObject.name1 + ".yml",
-                                        String.join("\n", Files.readAllLines(Paths.get("plugins/CrimeRing/scripts/" + File.separator + copyObject.name2 + ".yml")))));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    player.sendMessage(ChatColor.RED + "For this script to work the plugin needs to re-compile the scripts. Run: /CRReload");
                 }
 
                 imports.save();
