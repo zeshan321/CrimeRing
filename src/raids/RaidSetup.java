@@ -18,11 +18,11 @@ public class RaidSetup implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
-        if (commandLabel.equalsIgnoreCase("raids") && sender.isOp()) {
+        if (commandLabel.equalsIgnoreCase("raidsetup") && sender.isOp()) {
             if (args.length == 0) {
-                sender.sendMessage(ChatColor.GOLD + "/raids create <name>");
-                sender.sendMessage(ChatColor.GOLD + "/raids delete <name>");
-                sender.sendMessage(ChatColor.GOLD + "/raids edit <name> <max | min | spawn | name | start> <value>");
+                sender.sendMessage(ChatColor.GOLD + "/raidsetup create <name>");
+                sender.sendMessage(ChatColor.GOLD + "/raidsetup delete <name>");
+                sender.sendMessage(ChatColor.GOLD + "/raidsetup edit <name> <max | min | spawn | name | start> <value>");
                 return false;
             }
 

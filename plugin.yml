@@ -8,7 +8,7 @@ depend: [ProtocolLib]
 commands:
   CRReload:
     description: Relaods config.
-  Raids:
+  Raidsetup:
     description: Raids setup command.
   Action:
     description: Action script command.
@@ -20,3 +20,5 @@ commands:
     description: CR item command.
   Clearchat:
     description: Clears chat.
+  Raid:
+    description: General Raid command.

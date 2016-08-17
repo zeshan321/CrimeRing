@@ -3,16 +3,19 @@ package utils;
 import net.minecraft.server.v1_10_R1.EntityLiving;
 import net.minecraft.server.v1_10_R1.NBTTagCompound;
 import net.minecraft.server.v1_10_R1.NBTTagList;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ItemUtils {
 
@@ -82,7 +85,7 @@ public class ItemUtils {
         ItemStack returnStack = new ItemStack(material);
         ItemMeta meta = returnStack.getItemMeta();
         meta.setDisplayName(name);
-        ArrayList<String> lore = new ArrayList<String>();
+        List<String> lore = new ArrayList<>();
         if (description.contains("/n")) {
             String[] loreS = description.split("/n");
             for (String s : loreS) {
@@ -103,7 +106,7 @@ public class ItemUtils {
         ItemStack returnStack = new ItemStack(material, amount, (short) btyeData);
         ItemMeta meta = returnStack.getItemMeta();
         meta.setDisplayName(name);
-        ArrayList<String> lore = new ArrayList<String>();
+        List<String> lore = new ArrayList<>();
         if (description.contains("/n")) {
             String[] loreS = description.split("/n");
             for (String s : loreS) {
@@ -133,5 +136,19 @@ public class ItemUtils {
         nmsStack.setTag(tag);
 
         return CraftItemStack.asBukkitCopy(nmsStack);
+    }
+
+    public void clearRaidItems(Player player) {
+        for (ItemStack item: player.getInventory().getContents()) {
+            if (item != null && item.hasItemMeta()) {
+                ItemMeta itemMeta = item.getItemMeta();
+
+                if (itemMeta.hasLore()) {
+                    if (itemMeta.getLore().contains(ChatColor.GOLD + "Raid Item")) {
+                        player.getInventory().remove(item);
+                    }
+                }
+            }
+        }
     }
 }

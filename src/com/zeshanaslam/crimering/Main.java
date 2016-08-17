@@ -23,10 +23,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
-import raids.PartyCommands;
-import raids.RaidListener;
-import raids.RaidManager;
-import raids.RaidSetup;
+import raids.*;
 import script.*;
 import utils.ProtocolUtil;
 
@@ -102,12 +99,13 @@ public class Main extends JavaPlugin {
 
         // Commands
         getCommand("CRReload").setExecutor(new Reload(this));
-        getCommand("raids").setExecutor(new RaidSetup(this));
+        getCommand("raidsetup").setExecutor(new RaidSetup(this));
         getCommand("action").setExecutor(new ActionCommands(this));
         getCommand("party").setExecutor(new PartyCommands(this));
         getCommand("CREdit").setExecutor(new Edit(this));
         getCommand("CRItem").setExecutor(new Item(this));
         getCommand("Clearchat").setExecutor(new ClearChat(this));
+        getCommand("raid").setExecutor(new RaidCommands(this));
 
         ProtocolUtil protocolUtil = new ProtocolUtil();
 

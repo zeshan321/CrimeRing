@@ -8,6 +8,10 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Item implements CommandExecutor {
 
@@ -23,6 +27,7 @@ public class Item implements CommandExecutor {
             if (args.length == 0) {
                 commandSender.sendMessage(ChatColor.GOLD + "/CRItem save <name>");
                 commandSender.sendMessage(ChatColor.GOLD + "/CRItem get <name>");
+                commandSender.sendMessage(ChatColor.GOLD + "/CRItem raid <name>");
                 return false;
             }
 
@@ -66,6 +71,39 @@ public class Item implements CommandExecutor {
 
                 ItemStack item = fileHandler.getItemStack("Item");
                 item.setAmount(amount);
+
+                player.getInventory().addItem(item);
+                player.sendMessage(ChatColor.GOLD + "Added item saved!");
+            }
+
+            if (args[0].equalsIgnoreCase("raid")) {
+                if (args.length < 1) {
+                    commandSender.sendMessage(ChatColor.GOLD + "/CRItem get <name>");
+                    return false;
+                }
+
+                int amount = 1;
+
+                if (args.length > 2) {
+                    amount = Integer.parseInt(args[2]);
+                }
+
+                FileHandler fileHandler = new FileHandler("plugins/CrimeRing/items/" + args[1] + ".yml");
+
+                ItemStack item = fileHandler.getItemStack("Item");
+                item.setAmount(amount);
+
+                ItemMeta itemMeta = item.getItemMeta();
+                List<String> lore = new ArrayList<>();
+
+                if (itemMeta.hasLore()) {
+                    lore = itemMeta.getLore();
+                }
+
+                lore.add(ChatColor.GOLD + "Raid Item");
+                itemMeta.setLore(lore);
+
+                item.setItemMeta(itemMeta);
 
                 player.getInventory().addItem(item);
                 player.sendMessage(ChatColor.GOLD + "Added item saved!");

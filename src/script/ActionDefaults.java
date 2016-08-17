@@ -17,13 +17,16 @@ import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import raids.PartyAPI;
 import raids.PartyObject;
 import utils.EnchantGlow;
 import utils.ItemUtils;
 import utils.MessageUtil;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class ActionDefaults {
 
@@ -166,10 +169,16 @@ public class ActionDefaults {
         if (party == null) {
             player.teleport(new Location(Bukkit.getWorld(fileHandler.getString("info.worlds")), fileHandler.getInteger("info.xs"), fileHandler.getInteger("info.ys"), fileHandler.getInteger("info.zs")));
             Main.instance.raidManager.cancelRaid(player);
+
+            // Remove raid items
+            new ItemUtils().clearRaidItems(player);
         } else {
             for (Player players : party.getMembers()) {
                 players.teleport(new Location(Bukkit.getWorld(fileHandler.getString("info.worlds")), fileHandler.getInteger("info.xs"), fileHandler.getInteger("info.ys"), fileHandler.getInteger("info.zs")));
                 Main.instance.raidManager.cancelRaid(players);
+
+                // Remove raid items
+                new ItemUtils().clearRaidItems(players);
             }
         }
     }
@@ -313,15 +322,6 @@ public class ActionDefaults {
         return item;
     }
 
-    public void giveItem(Player player, String name, int amount) {
-        FileHandler fileHandler = new FileHandler("plugins/CrimeRing/items/" + name + ".yml");
-
-        ItemStack item = fileHandler.getItemStack("Item");
-        item.setAmount(amount);
-
-        player.getInventory().addItem(item);
-    }
-
     public boolean isInRaid(Player player, String name) {
         PartyAPI partyAPI = new PartyAPI();
         PartyObject party = partyAPI.getParty(player);
@@ -333,11 +333,50 @@ public class ActionDefaults {
         }
     }
 
-    public void dropItemAtLocation(Location location, String name, int amount) {
+    public void giveItem(Player player, String name, int amount, boolean remove) {
         FileHandler fileHandler = new FileHandler("plugins/CrimeRing/items/" + name + ".yml");
 
         ItemStack item = fileHandler.getItemStack("Item");
         item.setAmount(amount);
+
+        // Add 'Raid Item' to lore
+        if (remove) {
+            ItemMeta itemMeta = item.getItemMeta();
+            List<String> lore = new ArrayList<>();
+
+            if (itemMeta.hasLore()) {
+                lore = itemMeta.getLore();
+            }
+
+            lore.add(ChatColor.GOLD + "Raid Item");
+            itemMeta.setLore(lore);
+
+            item.setItemMeta(itemMeta);
+        }
+
+        player.getInventory().addItem(item);
+    }
+
+    public void dropItemAtLocation(Location location, String name, int amount, boolean remove) {
+        FileHandler fileHandler = new FileHandler("plugins/CrimeRing/items/" + name + ".yml");
+
+        ItemStack item = fileHandler.getItemStack("Item");
+        item.setAmount(amount);
+
+        // Add 'Raid Item' to lore
+        if (remove) {
+            ItemMeta itemMeta = item.getItemMeta();
+            List<String> lore = new ArrayList<>();
+
+            if (itemMeta.hasLore()) {
+                lore = itemMeta.getLore();
+            }
+
+            lore.add(ChatColor.GOLD + "Raid Item");
+            itemMeta.setLore(lore);
+
+            item.setItemMeta(itemMeta);
+        }
 
         location.getWorld().dropItem(location, item);
     }

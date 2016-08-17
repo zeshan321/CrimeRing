@@ -31,10 +31,12 @@ import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.ItemStack;
 import raids.PartyAPI;
 import raids.PartyObject;
+import utils.ItemUtils;
 
 import java.util.Iterator;
 import java.util.List;
@@ -270,5 +272,13 @@ public class BasicEvents implements Listener {
                 sign.update();
             }
         }
+    }
+
+    // Clear raid items on join in case of server crash
+    @EventHandler
+    public void onJoinRaid(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+
+        new ItemUtils().clearRaidItems(player);
     }
 }
