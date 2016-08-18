@@ -22,3 +22,6 @@ Blocked-items-drop:
 - 91
 Scope-items:
 - 293:130
+Save-worlds:
+- world
+- RaidWorld

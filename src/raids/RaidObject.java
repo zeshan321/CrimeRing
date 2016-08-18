@@ -37,7 +37,7 @@ public class RaidObject {
             return;
         }
 
-        for (Player players: members) {
+        for (Player players : members) {
             players.sendMessage(ChatColor.RED + player.getName() + " as left the raid!");
         }
     }

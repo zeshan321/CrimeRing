@@ -104,6 +104,7 @@ public class Main extends JavaPlugin {
         getCommand("clearchat").setExecutor(new ClearChat(this));
         getCommand("raid").setExecutor(new RaidCommands(this));
         getCommand("crhat").setExecutor(new Hat(this));
+        getCommand("crsave").setExecutor(new Save(this));
 
         ProtocolUtil protocolUtil = new ProtocolUtil();
 
