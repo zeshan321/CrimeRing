@@ -6,10 +6,7 @@ import com.shampaggon.crackshot.events.WeaponScopeEvent;
 import com.zeshanaslam.crimering.Main;
 import net.minecraft.server.v1_10_R1.EnumItemSlot;
 import net.minecraft.server.v1_10_R1.PacketPlayOutEntityEquipment;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
@@ -85,7 +82,7 @@ public class BasicEvents implements Listener {
             return;
         }
 
-        if (plugin.raidManager.raids.containsKey(player) && plugin.getConfig().getStringList("Blocked-cmds-raid").contains(label)) {
+        if (plugin.raidManager.isInRaid(player) && plugin.getConfig().getStringList("Blocked-cmds-raid").contains(label)) {
             player.sendMessage(ChatColor.RED + "You can not use that command while in a raid!");
             event.setCancelled(true);
             return;
@@ -95,7 +92,7 @@ public class BasicEvents implements Listener {
         PartyObject party = partyAPI.getParty(player);
         if (party != null) {
             if (party.getMembers().contains(player)) {
-                if (plugin.raidManager.raids.containsKey(player) && plugin.getConfig().getStringList("Blocked-cmds-raid").contains(label)) {
+                if (plugin.raidManager.isInRaid(player) && plugin.getConfig().getStringList("Blocked-cmds-raid").contains(label)) {
                     player.sendMessage(ChatColor.RED + "You can not use that command while in a raid!");
                     event.setCancelled(true);
                 }
@@ -279,6 +276,11 @@ public class BasicEvents implements Listener {
     public void onJoinRaid(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
+        if (player.getLocation().getWorld().getName().equals("RaidWorld")) {
+            player.teleport(new Location(Bukkit.getWorld("world"), -132, 71, -95, (float) 91.1, (float) 1.5));
+        }
+
+        // Remove raid items
         new ItemUtils().clearRaidItems(player);
     }
 }

@@ -139,7 +139,7 @@ public class ItemUtils {
     }
 
     public void clearRaidItems(Player player) {
-        for (ItemStack item: player.getInventory().getContents()) {
+        for (ItemStack item : player.getInventory().getContents()) {
             if (item != null && item.hasItemMeta()) {
                 ItemMeta itemMeta = item.getItemMeta();
 

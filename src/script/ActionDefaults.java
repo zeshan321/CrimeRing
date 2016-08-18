@@ -323,14 +323,7 @@ public class ActionDefaults {
     }
 
     public boolean isInRaid(Player player, String name) {
-        PartyAPI partyAPI = new PartyAPI();
-        PartyObject party = partyAPI.getParty(player);
-
-        if (party == null) {
-            return Main.instance.raidManager.raids.containsKey(player);
-        } else {
-            return Main.instance.raidManager.raids.containsKey(party.getOwner());
-        }
+        return Main.instance.raidManager.isInRaid(player);
     }
 
     public void giveItem(Player player, String name, int amount, boolean remove) {

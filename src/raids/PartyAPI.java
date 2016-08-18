@@ -39,4 +39,13 @@ public class PartyAPI {
         }
         return null;
     }
+
+    public void removeInvites(Player player) {
+        for (int a = 0; a < Main.instance.raidManager.invites.size(); a++) {
+            if ((Main.instance.raidManager.invites.get(a)).player.getName().equals(player.getName())) {
+                Main.instance.raidManager.invites.remove(a);
+            }
+        }
+    }
+
 }

@@ -45,16 +45,32 @@ public class RaidListener implements Listener {
         invName = invName.replace("Raid: ", "");
 
         if (event.getSlot() == 1) {
-            if (Main.instance.raidManager.raids.containsKey(player)) {
+            if (plugin.raidManager.isInRaid(player)) {
                 player.sendMessage(ChatColor.RED + "You are already in a queue for a raid!");
                 return;
             }
 
-            Main.instance.raidManager.startRaid(player, Main.instance.raidManager.raidnames.get(invName));
+            PartyAPI partyAPI = new PartyAPI();
+            PartyObject partyObject = partyAPI.getParty(player);
+
+            if (partyObject == null) {
+                RaidObject raidObject = new RaidObject(plugin.raidManager.raidNames.get(invName));
+                raidObject.members.add(player);
+
+                plugin.raidManager.raids.add(raidObject);
+                plugin.raidManager.startRaid(raidObject.id, plugin.raidManager.raidNames.get(invName));
+            } else {
+                RaidObject raidObject = new RaidObject(plugin.raidManager.raidNames.get(invName));
+                raidObject.members.addAll(partyObject.getMembers());
+
+                plugin.raidManager.raids.add(raidObject);
+                plugin.raidManager.startRaid(raidObject.id, plugin.raidManager.raidNames.get(invName));
+            }
+
         }
 
         if (event.getSlot() == 6) {
-            Main.instance.raidManager.cancelRaid(player);
+            plugin.raidManager.cancelRaid(player);
             player.sendMessage(ChatColor.RED + "Raid has been canceled!");
         }
 
@@ -71,13 +87,13 @@ public class RaidListener implements Listener {
         PartyObject party = partyAPI.getParty(player);
 
         if (party == null) {
-            if (plugin.raidManager.raids.containsKey(player)) {
-                FileHandler fileHandler = new FileHandler("plugins/CrimeRing/raids/" + plugin.raidManager.raids.get(player) + ".yml");
+            if (plugin.raidManager.isInRaid(player)) {
+                FileHandler fileHandler = new FileHandler("plugins/CrimeRing/raids/" + plugin.raidManager.getRaid(player).raidID + ".yml");
                 event.setRespawnLocation(new Location(Bukkit.getWorld(fileHandler.getString("info.world")), fileHandler.getInteger("info.x"), fileHandler.getInteger("info.y"), fileHandler.getInteger("info.z"), fileHandler.getInteger("info.yaw"), fileHandler.getInteger("info.pitch")));
             }
         } else {
-            if (plugin.raidManager.raids.containsKey(party.getOwner())) {
-                FileHandler fileHandler = new FileHandler("plugins/CrimeRing/raids/" + plugin.raidManager.raids.get(party.getOwner()) + ".yml");
+            if (plugin.raidManager.isInRaid(player)) {
+                FileHandler fileHandler = new FileHandler("plugins/CrimeRing/raids/" + plugin.raidManager.getRaid(player).raidID + ".yml");
                 event.setRespawnLocation(new Location(Bukkit.getWorld(fileHandler.getString("info.world")), fileHandler.getInteger("info.x"), fileHandler.getInteger("info.y"), fileHandler.getInteger("info.z"), fileHandler.getInteger("info.yaw"), fileHandler.getInteger("info.pitch")));
             }
         }

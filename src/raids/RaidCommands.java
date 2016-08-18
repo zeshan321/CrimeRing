@@ -1,10 +1,8 @@
 package raids;
 
-import com.zeshanaslam.crimering.FileHandler;
 import com.zeshanaslam.crimering.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -34,58 +32,14 @@ public class RaidCommands implements CommandExecutor {
             if (args[0].equalsIgnoreCase("leave")) {
                 Player player = (Player) sender;
 
-                PartyAPI partyAPI = new PartyAPI();
-                PartyObject partyObject = partyAPI.getParty(player);
+                RaidObject raidObject = plugin.raidManager.getRaid(player);
 
-                if (partyObject == null) {
-                    if (Main.instance.raidManager.raids.containsKey(player)) {
-                        FileHandler fileHandler = new FileHandler("plugins/CrimeRing/raids/" + Main.instance.raidManager.raids.get(player) + ".yml");
-
-                        player.sendMessage(ChatColor.RED + "You have left the raid!");
-                        player.teleport(new Location(Bukkit.getWorld(fileHandler.getString("info.worlds")), fileHandler.getInteger("info.xs"), fileHandler.getInteger("info.ys"), fileHandler.getInteger("info.zs"), fileHandler.getInteger("info.yaws"), fileHandler.getInteger("info.pitchs")));
-
-                        Main.instance.raidManager.cancelRaid(player);
-                        return false;
-                    }
-                }
-
-                if (partyAPI.isOwner(player)) {
-                    if (Main.instance.raidManager.raids.containsKey(player)) {
-                        FileHandler fileHandler = new FileHandler("plugins/CrimeRing/raids/" + Main.instance.raidManager.raids.get(player) + ".yml");
-
-                        for (Player players : partyObject.getMembers()) {
-                            players.sendMessage(ChatColor.RED + "You have been kicked from your raid because " + player.getName() + " left the raid!");
-                            players.teleport(new Location(Bukkit.getWorld(fileHandler.getString("info.worlds")), fileHandler.getInteger("info.xs"), fileHandler.getInteger("info.ys"), fileHandler.getInteger("info.zs"), fileHandler.getInteger("info.yaws"), fileHandler.getInteger("info.pitchs")));
-                        }
-
-                        Main.instance.raidManager.cancelRaid(player);
-                    }
-
-                    partyObject.sendMessage(ChatColor.RED + "You have been kicked from your raid because " + player.getName() + " left the raid!");
-
-                    for (int a = 0; a < Main.instance.raidManager.invites.size(); a++) {
-                        if ((Main.instance.raidManager.invites.get(a)).party == partyAPI.getParty(player)) {
-                            Main.instance.raidManager.invites.remove(a);
-                        }
-                    }
-
-                    Main.instance.raidManager.parties.remove(partyObject);
+                if (raidObject == null) {
+                    player.sendMessage(ChatColor.RED + "You are not in a raid!");
                     return false;
                 }
 
-                if (Main.instance.raidManager.raids.containsKey(partyObject.getOwner())) {
-                    FileHandler fileHandler = new FileHandler("plugins/CrimeRing/raids/" + Main.instance.raidManager.raids.get(player) + ".yml");
-
-                    for (Player players : partyObject.getMembers()) {
-                        players.sendMessage(ChatColor.RED + "You have been kicked from your raid because " + player.getName() + " left the raid!");
-                        players.teleport(new Location(Bukkit.getWorld(fileHandler.getString("info.worlds")), fileHandler.getInteger("info.xs"), fileHandler.getInteger("info.ys"), fileHandler.getInteger("info.zs"), fileHandler.getInteger("info.yaws"), fileHandler.getInteger("info.pitchs")));
-                    }
-
-                    Main.instance.raidManager.cancelRaid(player);
-                    return false;
-                }
-
-                player.sendMessage(ChatColor.RED + "You are not in a raid!");
+                raidObject.removeMember(player);
             }
 
             if (args[0].equalsIgnoreCase("kick")) {
@@ -101,61 +55,17 @@ public class RaidCommands implements CommandExecutor {
                     return false;
                 }
 
-                PartyAPI partyAPI = new PartyAPI();
-                PartyObject partyObject = partyAPI.getParty(player);
+                RaidObject raidObject = plugin.raidManager.getRaid(player);
 
-                if (partyObject == null) {
-                    if (Main.instance.raidManager.raids.containsKey(player)) {
-                        FileHandler fileHandler = new FileHandler("plugins/CrimeRing/raids/" + Main.instance.raidManager.raids.get(player) + ".yml");
-
-                        player.sendMessage(ChatColor.RED + "You have been kicked from the raid by an Admin.");
-                        player.teleport(new Location(Bukkit.getWorld(fileHandler.getString("info.worlds")), fileHandler.getInteger("info.xs"), fileHandler.getInteger("info.ys"), fileHandler.getInteger("info.zs"), fileHandler.getInteger("info.yaws"), fileHandler.getInteger("info.pitchs")));
-
-                        Main.instance.raidManager.cancelRaid(player);
-                        sender.sendMessage(ChatColor.GOLD + "Kicked " + player.getName() + " from raid.");
-                        return false;
-                    }
-                }
-
-                if (partyAPI.isOwner(player)) {
-                    if (Main.instance.raidManager.raids.containsKey(player)) {
-                        FileHandler fileHandler = new FileHandler("plugins/CrimeRing/raids/" + Main.instance.raidManager.raids.get(player) + ".yml");
-
-                        for (Player players : partyObject.getMembers()) {
-                            players.sendMessage(ChatColor.RED + "You have been kicked from the raid by an Admin.");
-                            players.teleport(new Location(Bukkit.getWorld(fileHandler.getString("info.worlds")), fileHandler.getInteger("info.xs"), fileHandler.getInteger("info.ys"), fileHandler.getInteger("info.zs"), fileHandler.getInteger("info.yaws"), fileHandler.getInteger("info.pitchs")));
-                        }
-
-                        Main.instance.raidManager.cancelRaid(player);
-                    }
-
-                    partyObject.sendMessage(ChatColor.RED + "You have been kicked from the raid by an Admin.");
-
-                    for (int a = 0; a < Main.instance.raidManager.invites.size(); a++) {
-                        if ((Main.instance.raidManager.invites.get(a)).party == partyAPI.getParty(player)) {
-                            Main.instance.raidManager.invites.remove(a);
-                        }
-                    }
-
-                    Main.instance.raidManager.parties.remove(partyObject);
-                    sender.sendMessage(ChatColor.GOLD + "Kicked " + player.getName() + " from raid.");
+                if (raidObject == null) {
+                    sender.sendMessage(ChatColor.RED + player.getName() + " is currently not in a raid.");
                     return false;
                 }
 
-                if (Main.instance.raidManager.raids.containsKey(partyObject.getOwner())) {
-                    FileHandler fileHandler = new FileHandler("plugins/CrimeRing/raids/" + Main.instance.raidManager.raids.get(player) + ".yml");
+                raidObject.removeMember(player);
 
-                    for (Player players : partyObject.getMembers()) {
-                        players.sendMessage(ChatColor.RED + "You have been kicked from the raid by an Admin.");
-                        players.teleport(new Location(Bukkit.getWorld(fileHandler.getString("info.worlds")), fileHandler.getInteger("info.xs"), fileHandler.getInteger("info.ys"), fileHandler.getInteger("info.zs"), fileHandler.getInteger("info.yaws"), fileHandler.getInteger("info.pitchs")));
-                    }
-
-                    Main.instance.raidManager.cancelRaid(player);
-                    sender.sendMessage(ChatColor.GOLD + "Kicked " + player.getName() + " from raid.");
-                    return false;
-                }
-
-                sender.sendMessage(ChatColor.RED + player.getName() + " is currently not in a raid.");
+                player.sendMessage(ChatColor.RED + "You have been kicked from the raid by an Admin!");
+                sender.sendMessage(ChatColor.RED + "Kicked " + player.getName() + " from raid!");
             }
         }
 

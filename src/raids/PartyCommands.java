@@ -1,10 +1,8 @@
 package raids;
 
-import com.zeshanaslam.crimering.FileHandler;
 import com.zeshanaslam.crimering.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -48,7 +46,7 @@ public class PartyCommands implements Listener, CommandExecutor {
                     return false;
                 }
 
-                Main.instance.raidManager.parties.add(new PartyObject(UUID.randomUUID().toString(), player));
+                plugin.raidManager.parties.add(new PartyObject(UUID.randomUUID().toString(), player));
                 player.sendMessage(ChatColor.RED + "[Party] " + ChatColor.GOLD + "You have created a party!");
             }
 
@@ -85,17 +83,18 @@ public class PartyCommands implements Listener, CommandExecutor {
                     return false;
                 }
 
-                if (Main.instance.raidManager.raids.containsKey(player)) {
+                if (plugin.raidManager.isInRaid(player)) {
                     player.sendMessage(ChatColor.RED + "[Party] " + ChatColor.GOLD + "You can't invite a player while in queue or in a raid!!");
                     return false;
                 }
 
                 InviteObject inviteObject = partyAPI.getInvite(player);
                 if (inviteObject != null) {
-                    Main.instance.raidManager.invites.remove(inviteObject);
+                    plugin.raidManager.invites.remove(inviteObject);
                 }
 
-                Main.instance.raidManager.invites.add(new InviteObject(partyObject, invitePlayer));
+                partyAPI.removeInvites(invitePlayer);
+                plugin.raidManager.invites.add(new InviteObject(partyObject, invitePlayer));
                 partyObject.sendMessage(ChatColor.RED + "[Party] " + ChatColor.GOLD + invitePlayer.getName() + " has been invited to your party!");
 
                 invitePlayer.sendMessage(ChatColor.RED + "[Party] " + ChatColor.GOLD + "You have been invited to " + player.getName() + "'s party! Type " + ChatColor.GREEN + "'/party accept' " + ChatColor.GOLD + "to accept.");
@@ -116,7 +115,7 @@ public class PartyCommands implements Listener, CommandExecutor {
                 invite.party.addMember(player);
                 invite.party.sendMessage(ChatColor.RED + "[Party] " + ChatColor.GOLD + player.getName() + " has joined the party!");
 
-                Main.instance.raidManager.parties.remove(invite);
+                plugin.raidManager.parties.remove(invite);
             }
 
             if (args[0].equalsIgnoreCase("leave")) {
@@ -128,41 +127,13 @@ public class PartyCommands implements Listener, CommandExecutor {
                 }
 
                 if (partyAPI.isOwner(player)) {
-                    if (Main.instance.raidManager.raids.containsKey(player)) {
-                        FileHandler fileHandler = new FileHandler("plugins/CrimeRing/raids/" + Main.instance.raidManager.raids.get(player) + ".yml");
-
-                        String[] message = ChatColor.translateAlternateColorCodes('&', Main.instance.getConfig().getString("Raids.Kick-end")).split("/n");
-                        for (Player players : partyObject.getMembers()) {
-                            players.sendMessage(message);
-                            players.teleport(new Location(Bukkit.getWorld(fileHandler.getString("info.worlds")), fileHandler.getInteger("info.xs"), fileHandler.getInteger("info.ys"), fileHandler.getInteger("info.zs"), fileHandler.getInteger("info.yaws"), fileHandler.getInteger("info.pitchs")));
-                        }
-
-                        Main.instance.raidManager.cancelRaid(player);
+                    if (partyObject.getMembers().isEmpty()) {
+                        plugin.raidManager.cancelRaid(plugin.raidManager.getRaid(player));
+                    } else {
+                        partyObject.setOwner(partyObject.nextPlayer());
                     }
-
-                    partyObject.sendMessage(ChatColor.RED + "[Party] " + ChatColor.GOLD + "The party has been disbanded by " + player.getName());
-
-                    for (int a = 0; a < Main.instance.raidManager.invites.size(); a++) {
-                        if ((Main.instance.raidManager.invites.get(a)).party == partyAPI.getParty(player)) {
-                            Main.instance.raidManager.invites.remove(a);
-                        }
-                    }
-
-                    Main.instance.raidManager.parties.remove(partyObject);
-                    return false;
                 }
 
-                if (Main.instance.raidManager.raids.containsKey(partyObject.getOwner())) {
-                    FileHandler fileHandler = new FileHandler("plugins/CrimeRing/raids/" + Main.instance.raidManager.raids.get(player) + ".yml");
-
-                    String[] message = ChatColor.translateAlternateColorCodes('&', Main.instance.getConfig().getString("Raids.Kick-end")).split("/n");
-                    for (Player players : partyObject.getMembers()) {
-                        players.sendMessage(message);
-                        players.teleport(new Location(Bukkit.getWorld(fileHandler.getString("info.worlds")), fileHandler.getInteger("info.xs"), fileHandler.getInteger("info.ys"), fileHandler.getInteger("info.zs"), fileHandler.getInteger("info.yaws"), fileHandler.getInteger("info.pitchs")));
-                    }
-
-                    Main.instance.raidManager.cancelRaid(player);
-                }
 
                 partyObject.sendMessage(ChatColor.RED + "[Party] " + ChatColor.GOLD + player.getName() + " has left the party.");
                 partyObject.removeMember(player);
@@ -223,42 +194,17 @@ public class PartyCommands implements Listener, CommandExecutor {
             return;
         }
 
+
         if (partyAPI.isOwner(player)) {
-            if (Main.instance.raidManager.raids.containsKey(player)) {
-                FileHandler fileHandler = new FileHandler("plugins/CrimeRing/raids/" + Main.instance.raidManager.raids.get(player) + ".yml");
-
-                String[] message = ChatColor.translateAlternateColorCodes('&', Main.instance.getConfig().getString("Raids.Kick-end")).split("/n");
-                for (Player players : partyObject.getMembers()) {
-                    players.sendMessage(message);
-                    players.teleport(new Location(Bukkit.getWorld(fileHandler.getString("info.worlds")), fileHandler.getInteger("info.xs"), fileHandler.getInteger("info.ys"), fileHandler.getInteger("info.zs"), fileHandler.getInteger("info.yaws"), fileHandler.getInteger("info.pitchs")));
-                }
-
-                Main.instance.raidManager.cancelRaid(player);
+            if (partyObject.getMembers().isEmpty()) {
+                plugin.raidManager.cancelRaid(plugin.raidManager.getRaid(player));
+            } else {
+                partyObject.setOwner(partyObject.nextPlayer());
             }
-
-            partyObject.sendMessage(ChatColor.RED + "[Party] " + ChatColor.GOLD + "The party has been disbanded by " + player.getName());
-
-            for (int a = 0; a < Main.instance.raidManager.invites.size(); a++) {
-                if ((Main.instance.raidManager.invites.get(a)).party == partyAPI.getParty(player)) {
-                    Main.instance.raidManager.invites.remove(a);
-                }
-            }
-
-            Main.instance.raidManager.parties.remove(partyObject);
-            return;
         }
 
-        if (Main.instance.raidManager.raids.containsKey(partyObject.getOwner())) {
-            FileHandler fileHandler = new FileHandler("plugins/CrimeRing/raids/" + Main.instance.raidManager.raids.get(player) + ".yml");
-
-            String[] message = ChatColor.translateAlternateColorCodes('&', Main.instance.getConfig().getString("Raids.Kick-end")).split("/n");
-            for (Player players : partyObject.getMembers()) {
-                players.sendMessage(message);
-                players.teleport(new Location(Bukkit.getWorld(fileHandler.getString("info.worlds")), fileHandler.getInteger("info.xs"), fileHandler.getInteger("info.ys"), fileHandler.getInteger("info.zs"), fileHandler.getInteger("info.yaws"), fileHandler.getInteger("info.pitchs")));
-            }
-
-            Main.instance.raidManager.cancelRaid(player);
-        }
+        RaidObject raidObject = plugin.raidManager.getRaid(player);
+        raidObject.removeMember(player);
 
         partyObject.sendMessage(ChatColor.RED + "[Party] " + ChatColor.GOLD + player.getName() + " has left the party.");
         partyObject.removeMember(player);
