@@ -112,6 +112,13 @@ public class PartyCommands implements Listener, CommandExecutor {
                     return false;
                 }
 
+                if (plugin.raidManager.isInRaid(invite.party.getOwner())) {
+                    plugin.raidManager.invites.remove(invite);
+
+                    player.sendMessage(ChatColor.RED + "You can't join a party while the party is in a raid!");
+                    return false;
+                }
+
                 invite.party.addMember(player);
                 invite.party.sendMessage(ChatColor.RED + "[Party] " + ChatColor.GOLD + player.getName() + " has joined the party!");
 
@@ -126,12 +133,15 @@ public class PartyCommands implements Listener, CommandExecutor {
                     return false;
                 }
 
-                if (partyAPI.isOwner(player)) {
-                    if (partyObject.getMembers().isEmpty()) {
-                        plugin.raidManager.cancelRaid(plugin.raidManager.getRaid(player));
-                    } else {
-                        partyObject.setOwner(partyObject.nextPlayer());
+                if (plugin.raidManager.isInRaid(player)) {
+                    if (partyAPI.isOwner(player)) {
+                        if (partyObject.getMembers().isEmpty()) {
+                            plugin.raidManager.cancelRaid(plugin.raidManager.getRaid(player));
+                        }
                     }
+
+                    RaidObject raidObject = plugin.raidManager.getRaid(player);
+                    raidObject.removeMember(player);
                 }
 
 
@@ -195,16 +205,16 @@ public class PartyCommands implements Listener, CommandExecutor {
         }
 
 
-        if (partyAPI.isOwner(player)) {
-            if (partyObject.getMembers().isEmpty()) {
-                plugin.raidManager.cancelRaid(plugin.raidManager.getRaid(player));
-            } else {
-                partyObject.setOwner(partyObject.nextPlayer());
+        if (plugin.raidManager.isInRaid(player)) {
+            if (partyAPI.isOwner(player)) {
+                if (partyObject.getMembers().isEmpty()) {
+                    plugin.raidManager.cancelRaid(plugin.raidManager.getRaid(player));
+                }
             }
-        }
 
-        RaidObject raidObject = plugin.raidManager.getRaid(player);
-        raidObject.removeMember(player);
+            RaidObject raidObject = plugin.raidManager.getRaid(player);
+            raidObject.removeMember(player);
+        }
 
         partyObject.sendMessage(ChatColor.RED + "[Party] " + ChatColor.GOLD + player.getName() + " has left the party.");
         partyObject.removeMember(player);

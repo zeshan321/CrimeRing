@@ -36,6 +36,8 @@ public class PartyObject {
 
     public void setOwner(Player owner) {
         this.owner = owner;
+
+        sendMessage(ChatColor.RED + "[Party] " + ChatColor.GREEN + owner.getName() + ChatColor.GOLD + " is now the party leader.");
     }
 
     public String getName() {
@@ -54,6 +56,14 @@ public class PartyObject {
 
     public void removeMember(Player player) {
         this.members.remove(player);
+
+        if (owner == player) {
+            if (members.isEmpty()) {
+                Main.instance.raidManager.parties.remove(this);
+            } else {
+                setOwner(nextPlayer());
+            }
+        }
     }
 
     public int size() {

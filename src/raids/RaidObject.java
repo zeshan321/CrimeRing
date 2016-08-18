@@ -3,6 +3,7 @@ package raids;
 import com.zeshanaslam.crimering.FileHandler;
 import com.zeshanaslam.crimering.Main;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -23,6 +24,7 @@ public class RaidObject {
     }
 
     public void removeMember(Player player) {
+
         FileHandler fileHandler = new FileHandler("plugins/CrimeRing/raids/" + raidID + ".yml");
 
         Location loc = new Location(Bukkit.getWorld(fileHandler.getString("info.worlds")), fileHandler.getInteger("info.xs"), fileHandler.getInteger("info.ys"), fileHandler.getInteger("info.zs"), fileHandler.getInteger("info.yaws"), fileHandler.getInteger("info.pitchs"));
@@ -32,6 +34,11 @@ public class RaidObject {
 
         if (members.isEmpty()) {
             Main.instance.raidManager.cancelRaid(this);
+            return;
+        }
+
+        for (Player players: members) {
+            players.sendMessage(ChatColor.RED + player.getName() + " as left the raid!");
         }
     }
 

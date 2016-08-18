@@ -16,7 +16,7 @@ public class ClearChat implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
-        if (commandLabel.equalsIgnoreCase("/clearchat")) {
+        if (commandLabel.equalsIgnoreCase("clearchat")) {
             if (sender.isOp()) {
                 for (int i = 0; i < 100; i++) {
                     Bukkit.broadcastMessage("");

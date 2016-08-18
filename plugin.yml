@@ -18,7 +18,9 @@ commands:
     description: CR edit command.
   CRItem:
     description: CR item command.
-  Clearchat:
+  clearchat:
     description: Clears chat.
   Raid:
     description: General Raid command.
+  Crhat:
+    description: Sets hat.

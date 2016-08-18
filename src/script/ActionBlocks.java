@@ -53,6 +53,10 @@ public class ActionBlocks implements Listener {
                     bindings.put("player", player);
                     bindings.put("event", event);
                     bindings.put("CR", new ActionDefaults());
+                    bindings.put("x", x);
+                    bindings.put("y", y);
+                    bindings.put("z", z);
+                    bindings.put("world", world);
 
                     compiledScript.eval(bindings);
                 } catch (ScriptException e) {
