@@ -15,6 +15,7 @@ import entity.EntityManager;
 import events.BasicEvents;
 import events.BodiesEvents;
 import events.BodyObject;
+import events.PlayerEvents;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -88,6 +89,12 @@ public class Main extends JavaPlugin {
             itemsDir.mkdir();
         }
 
+        // Player data dir
+        File playerDir = new File("plugins/CrimeRing/player/");
+        if (!playerDir.exists()) {
+            playerDir.mkdir();
+        }
+
         // events
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new BasicEvents(this), this);
@@ -101,6 +108,7 @@ public class Main extends JavaPlugin {
         pm.registerEvents(new ActionDeath(this), this);
         pm.registerEvents(new BodiesEvents(this), this);
         pm.registerEvents(new EntityListener(this), this);
+        pm.registerEvents(new PlayerEvents(this), this);
 
         // Commands
         getCommand("CRReload").setExecutor(new Reload(this));
@@ -113,6 +121,7 @@ public class Main extends JavaPlugin {
         getCommand("raid").setExecutor(new RaidCommands(this));
         getCommand("crhat").setExecutor(new Hat(this));
         getCommand("crsave").setExecutor(new Save(this));
+        getCommand("npcclear").setExecutor(new NPCClear(this));
 
         ProtocolUtil protocolUtil = new ProtocolUtil();
 

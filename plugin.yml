@@ -26,3 +26,5 @@ commands:
     description: Sets hat.
   crsave:
     description: Save worlds in config.
+  npcclear:
+    description: Clears all CR NPCs.

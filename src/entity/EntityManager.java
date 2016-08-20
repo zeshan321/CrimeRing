@@ -47,7 +47,7 @@ public class EntityManager {
         //new EntityMethods().addCustomNBT((LivingEntity) entity, "NoAI", 1);
 
         // Store data
-        entityObjectList.add(new EntityObject(player, entity, hidden));
+        entityObjectList.add(new EntityObject(player, entity, hidden, entity.getUniqueId()));
         entityUUID.add(entity.getUniqueId());
     }
 
@@ -62,7 +62,7 @@ public class EntityManager {
 
     public EntityObject getEntityObject(Player player, String name) {
         for (EntityObject entityObject : entityObjectList) {
-            if (entityObject.owner == player && ChatColor.stripColor(entityObject.entity.getCustomName()).equals(name)) {
+            if (entityObject.owner == player && ChatColor.stripColor(name).equals(ChatColor.stripColor(entityObject.entity.getCustomName()))) {
                 return entityObject;
             }
         }
@@ -70,18 +70,24 @@ public class EntityManager {
     }
 
     public void killEntity(Player player, String name) {
-        EntityObject entityObject = getEntityObject(player, name);
+        EntityObject entityObject = getEntityObject(player, ChatColor.stripColor(name));
 
-        entityObject.entity.remove();
-        entityObjectList.remove(entityObject);
+        if (entityObjectList.contains(entityObject)) {
+            entityObjectList.remove(entityObject);
+            entityUUID.remove(entityObject.entityUUID);
+
+            if (entityObject.entity != null) {
+                entityObject.entity.remove();
+            }
+        }
     }
 
     public void navigate(final Player player, final LivingEntity entity, final String script, final int x, final int y, final int z) {
-        final int[] remind = {0};
+        EntityObject entityObject = getEntityObject(player, ChatColor.stripColor(entity.getCustomName()));
 
         new BukkitRunnable() {
             public void run() {
-                if (entity.isDead() || !player.isOnline()) {
+                if (entity == null || entity.isDead() || !player.isOnline()) {
                     killEntity(player, entity.getCustomName());
                     this.cancel();
                     return;
@@ -102,11 +108,14 @@ public class EntityManager {
                     return;
                 }
 
-                if (remind[0] <= 1) {
-                    remind[0]++;
+                if (entity.getLocation().getBlockX() == entityObject.lastX && entity.getLocation().getBlockY() == entityObject.lastY  && entity.getLocation().getBlockZ() == entityObject.lastZ) {
                     new EntityMethods().handlePathfinders(new Location(entity.getWorld(), x, y, z), entity, 1.9);
+                } else {
+                    entityObject.lastX = entity.getLocation().getBlockX();
+                    entityObject.lastY = entity.getLocation().getBlockY();
+                    entityObject.lastZ = entity.getLocation().getBlockZ();
                 }
             }
-        }.runTaskTimer(Main.instance, 0L, 20L);
+        }.runTaskTimer(Main.instance, 0L, 40L);
     }
 }

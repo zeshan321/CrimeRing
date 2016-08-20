@@ -1,5 +1,8 @@
 package script;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Multimap;
 import com.zeshanaslam.crimering.FileHandler;
 import org.bukkit.ChatColor;
 
@@ -8,12 +11,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
 
 public class ScriptsManager {
 
-    public HashMap<String, ScriptObject> scriptData = new HashMap<>();
-    public ScriptEngineManager factory;
+    private Multimap<String, ScriptObject> scriptData = HashMultimap.create();
+    private ScriptEngineManager factory;
     public ScriptEngine engine;
 
 
@@ -55,6 +57,6 @@ public class ScriptsManager {
     }
 
     public ScriptObject getObject(String key) {
-        return scriptData.get(key);
+        return Iterables.get(scriptData.get(key), 0);
     }
 }

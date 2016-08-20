@@ -429,4 +429,36 @@ public class ActionDefaults {
     public void navigate(Player player, LivingEntity entity, String script, int x, int y, int z) {
         Main.instance.entityManager.navigate(player, entity, script, x, y, z);
     }
+
+    public void addSkillPoint(Player player) {
+        if (FileHandler.fileExists("plugins/CrimeRing/player/" + player.getUniqueId().toString())) {
+            return;
+        }
+
+        FileHandler fileHandler = new FileHandler(("plugins/CrimeRing/player/" + player.getUniqueId().toString()));
+        fileHandler.increment("skill-points");
+
+        fileHandler.save();
+    }
+
+    public void setSkillPoint(Player player, int amount) {
+        if (FileHandler.fileExists("plugins/CrimeRing/player/" + player.getUniqueId().toString())) {
+            return;
+        }
+
+        FileHandler fileHandler = new FileHandler(("plugins/CrimeRing/player/" + player.getUniqueId().toString()));
+        fileHandler.set("skill-points", amount);
+
+        fileHandler.save();
+    }
+
+    public int getSkillPoint(Player player) {
+        if (FileHandler.fileExists("plugins/CrimeRing/player/" + player.getUniqueId().toString())) {
+            return 0;
+        }
+
+        FileHandler fileHandler = new FileHandler(("plugins/CrimeRing/player/" + player.getUniqueId().toString()));
+
+        return fileHandler.getInteger("skill-points");
+    }
 }
