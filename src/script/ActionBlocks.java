@@ -41,11 +41,10 @@ public class ActionBlocks implements Listener {
             String world = player.getWorld().getName();
 
             if (Main.instance.scriptsManager.contains(x + " " + y + " " + z + " " + world)) {
-                ScriptObject scriptObject = Main.instance.scriptsManager.getObject(x + " " + y + " " + z + " " + world);
+                /*ScriptObject scriptObject = Main.instance.scriptsManager.getObject(x + " " + y + " " + z + " " + world);
 
                 try {
-                    ScriptEngineManager factory = new ScriptEngineManager();
-                    ScriptEngine engine = factory.getEngineByName("JavaScript");
+                    ScriptEngine engine = Main.instance.scriptsManager.engine;
                     CompiledScript compiledScript = scriptObject.script;
 
                     // Objects
@@ -61,7 +60,33 @@ public class ActionBlocks implements Listener {
                     compiledScript.eval(bindings);
                 } catch (ScriptException e) {
                     e.printStackTrace();
-                }
+                } */
+
+                plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+                    @Override
+                    public void run() {
+                        ScriptObject scriptObject = Main.instance.scriptsManager.getObject(x + " " + y + " " + z + " " + world);
+
+                        try {
+                            ScriptEngine engine = Main.instance.scriptsManager.engine;
+                            CompiledScript compiledScript = scriptObject.script;
+
+                            // Objects
+                            Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
+                            bindings.put("player", player);
+                            bindings.put("event", event);
+                            bindings.put("CR", new ActionDefaults());
+                            bindings.put("x", x);
+                            bindings.put("y", y);
+                            bindings.put("z", z);
+                            bindings.put("world", world);
+
+                            compiledScript.eval(bindings);
+                        } catch (ScriptException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
             }
         }
     }

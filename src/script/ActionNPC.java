@@ -1,6 +1,7 @@
 package script;
 
 import com.zeshanaslam.crimering.Main;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -41,12 +42,11 @@ public class ActionNPC implements Listener {
             return;
         }
 
-        if (Main.instance.scriptsManager.contains(interacted.getCustomName())) {
-            ScriptObject scriptObject = Main.instance.scriptsManager.getObject(interacted.getCustomName());
+        if (Main.instance.scriptsManager.contains("NPC-" + ChatColor.stripColor(interacted.getCustomName()))) {
+            ScriptObject scriptObject = Main.instance.scriptsManager.getObject("NPC-" + ChatColor.stripColor(interacted.getCustomName()));
 
             try {
-                ScriptEngineManager factory = new ScriptEngineManager();
-                ScriptEngine engine = factory.getEngineByName("JavaScript");
+                ScriptEngine engine = Main.instance.scriptsManager.engine;
                 CompiledScript compiledScript = scriptObject.script;
 
                 // Objects
@@ -54,6 +54,10 @@ public class ActionNPC implements Listener {
                 bindings.put("player", player);
                 bindings.put("event", event);
                 bindings.put("CR", new ActionDefaults());
+                bindings.put("x", interacted.getLocation().getBlockX());
+                bindings.put("y", interacted.getLocation().getBlockY());
+                bindings.put("z", interacted.getLocation().getBlockZ());
+                bindings.put("world", interacted.getLocation().getWorld().getName());
 
                 compiledScript.eval(bindings);
             } catch (ScriptException e) {

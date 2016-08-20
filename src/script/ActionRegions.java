@@ -26,8 +26,7 @@ public class ActionRegions implements Listener {
             ScriptObject scriptObject = Main.instance.scriptsManager.getObject(event.getRegion().getId());
 
             try {
-                ScriptEngineManager factory = new ScriptEngineManager();
-                ScriptEngine engine = factory.getEngineByName("JavaScript");
+                ScriptEngine engine = Main.instance.scriptsManager.engine;
                 CompiledScript compiledScript = scriptObject.script;
 
                 // Objects
@@ -52,8 +51,7 @@ public class ActionRegions implements Listener {
             ScriptObject scriptObject = Main.instance.scriptsManager.getObject(event.getRegion().getId());
 
             try {
-                ScriptEngineManager factory = new ScriptEngineManager();
-                ScriptEngine engine = factory.getEngineByName("JavaScript");
+                ScriptEngine engine = Main.instance.scriptsManager.engine;
                 CompiledScript compiledScript = scriptObject.script;
 
                 // Objects

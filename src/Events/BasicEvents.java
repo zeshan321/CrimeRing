@@ -243,7 +243,18 @@ public class BasicEvents implements Listener {
     // Glass regen
     @EventHandler
     public void onHitGlass(WeaponHitBlockEvent event) {
-        if (event.getBlock().getType() == Material.GLASS || event.getBlock().getType() == Material.STAINED_GLASS || event.getBlock().getType() == Material.STAINED_GLASS_PANE || event.getBlock().getType() == Material.THIN_GLASS) {
+        if (event.getBlock().getType() == Material.GLASS || event.getBlock().getType() == Material.THIN_GLASS) {
+            BurntBlockManager.recordBurntBlock(event.getBlock());
+
+            event.getBlock().getWorld().playSound(event.getBlock().getLocation(), Sound.BLOCK_GLASS_BREAK, 10, 1);
+            event.getBlock().breakNaturally();
+        }
+
+        if (event.getBlock().getType() == Material.STAINED_GLASS || event.getBlock().getType() == Material.STAINED_GLASS_PANE) {
+            if (event.getBlock().getData() == 15 || event.getBlock().getData() == 14 || event.getBlock().getData() == 11) {
+                return;
+            }
+
             BurntBlockManager.recordBurntBlock(event.getBlock());
 
             event.getBlock().getWorld().playSound(event.getBlock().getLocation(), Sound.BLOCK_GLASS_BREAK, 10, 1);

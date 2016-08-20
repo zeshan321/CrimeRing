@@ -10,6 +10,8 @@ import com.comphenix.protocol.reflect.FieldAccessException;
 import com.comphenix.protocol.utility.MinecraftVersion;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import commands.*;
+import entity.EntityListener;
+import entity.EntityManager;
 import events.BasicEvents;
 import events.BodiesEvents;
 import events.BodyObject;
@@ -33,9 +35,11 @@ public class Main extends JavaPlugin {
 
     public ScriptsManager scriptsManager;
     public RaidManager raidManager;
+    public EntityManager entityManager;
     public WorldGuardPlugin worldGuardPlugin;
     public ArrayList<String> flag = new ArrayList<>();
     public HashMap<String, Integer> values = new HashMap<>();
+    public HashMap<String, String> globalFlags = new HashMap<>();
 
     public void onEnable() {
         saveDefaultConfig();
@@ -47,6 +51,9 @@ public class Main extends JavaPlugin {
 
         // Load raid manager
         raidManager = new RaidManager();
+
+        // Load entity manager
+        entityManager = new EntityManager();
 
         // Load worldguard
         worldGuardPlugin = (WorldGuardPlugin) getServer().getPluginManager().getPlugin("WorldGuard");
@@ -93,6 +100,7 @@ public class Main extends JavaPlugin {
         pm.registerEvents(new RaidListener(this), this);
         pm.registerEvents(new ActionDeath(this), this);
         pm.registerEvents(new BodiesEvents(this), this);
+        pm.registerEvents(new EntityListener(this), this);
 
         // Commands
         getCommand("CRReload").setExecutor(new Reload(this));

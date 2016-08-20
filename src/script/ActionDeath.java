@@ -32,8 +32,7 @@ public class ActionDeath implements Listener {
                 ScriptObject scriptObject = Main.instance.scriptsManager.getObject(name);
 
                 try {
-                    ScriptEngineManager factory = new ScriptEngineManager();
-                    ScriptEngine engine = factory.getEngineByName("JavaScript");
+                    ScriptEngine engine = Main.instance.scriptsManager.engine;
                     CompiledScript compiledScript = scriptObject.script;
 
                     // Objects

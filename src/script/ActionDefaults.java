@@ -13,6 +13,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -193,6 +194,22 @@ public class ActionDefaults {
 
     public void removeFlag(String key, String flag) {
         Main.instance.flag.remove(key + "-" + flag);
+    }
+
+    public void addGlobal(String key, String flag) {
+        Main.instance.globalFlags.put(key, flag);
+    }
+
+    public String getGlobal(String key) {
+        return Main.instance.globalFlags.get(key);
+    }
+
+    public boolean hasGlobal(String key) {
+        return Main.instance.globalFlags.containsKey(key);
+    }
+
+    public void removeGlobal(String key) {
+        Main.instance.globalFlags.remove(key);
     }
 
     public void sendTitle(Player player, String title, String subtitle, int fadeIn, int stay, int fadeOut) {
@@ -399,5 +416,17 @@ public class ActionDefaults {
                 }
             }
         }
+    }
+
+    public void createEntityWithSkin(Player player, String type, String name, String skin, boolean hidden, String world, int x, int y, int z, float yaw, float pitch) {
+        Main.instance.entityManager.createEntityWithSkin(player, type, name, skin, hidden, world, x, y, z, yaw, pitch);
+    }
+
+    public LivingEntity getEntity(Player player, String name) {
+        return Main.instance.entityManager.getEntity(player, name);
+    }
+
+    public void navigate(Player player, LivingEntity entity, String script, int x, int y, int z) {
+        Main.instance.entityManager.navigate(player, entity, script, x, y, z);
     }
 }

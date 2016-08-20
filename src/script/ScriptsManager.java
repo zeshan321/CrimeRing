@@ -13,6 +13,14 @@ import java.util.HashMap;
 public class ScriptsManager {
 
     public HashMap<String, ScriptObject> scriptData = new HashMap<>();
+    public ScriptEngineManager factory;
+    public ScriptEngine engine;
+
+
+    public ScriptsManager() {
+        this.factory = new ScriptEngineManager();
+        this.engine = factory.getEngineByName("nashorn");
+    }
 
     public void load() {
         scriptData.clear();
@@ -27,8 +35,7 @@ public class ScriptsManager {
             try {
                 String script = ChatColor.translateAlternateColorCodes('&', String.join("\n", Files.readAllLines(Paths.get("plugins/CrimeRing/scripts/" + File.separator + dir))).replace("\n", "").replace("\t", ""));
 
-                ScriptEngineManager factory = new ScriptEngineManager();
-                ScriptEngine engine = factory.getEngineByName("JavaScript");
+                ScriptEngine engine = this.engine;
                 Compilable compilableEngine = (Compilable) engine;
                 CompiledScript compiledScript = compilableEngine.compile(script);
 

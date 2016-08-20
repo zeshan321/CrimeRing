@@ -244,8 +244,7 @@ public class RaidManager {
             ScriptObject scriptObject = Main.instance.scriptsManager.getObject("raid-" + name);
 
             try {
-                ScriptEngineManager factory = new ScriptEngineManager();
-                ScriptEngine engine = factory.getEngineByName("JavaScript");
+                ScriptEngine engine = Main.instance.scriptsManager.engine;
                 CompiledScript compiledScript = scriptObject.script;
 
                 // Objects

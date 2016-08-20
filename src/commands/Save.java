@@ -18,14 +18,14 @@ public class Save implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
         if (commandLabel.equalsIgnoreCase("crsave")) {
             if (sender.isOp()) {
-                System.out.println("[CR] Save worlds and player data...");
+                Bukkit.broadcastMessage("Saving world data. Expect lag for a short while.");
                 Bukkit.savePlayers();
 
-                for (String worlds: plugin.getConfig().getStringList("Save-worlds")) {
+                for (String worlds : plugin.getConfig().getStringList("Save-worlds")) {
                     Bukkit.getWorld(worlds).save();
                 }
 
-                System.out.println("[CR] Save complete!");
+                Bukkit.broadcastMessage("Save Complete.");
             }
         }
         return false;
