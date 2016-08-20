@@ -5,6 +5,7 @@ import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.zeshanaslam.crimering.FileHandler;
 import com.zeshanaslam.crimering.Main;
+import me.robin.battlelevels.api.BattleLevelsAPI;
 import net.elseland.xikage.MythicMobs.API.Bukkit.BukkitMobsAPI;
 import net.elseland.xikage.MythicMobs.API.Exceptions.InvalidMobTypeException;
 import org.bukkit.Bukkit;
@@ -460,5 +461,9 @@ public class ActionDefaults {
         FileHandler fileHandler = new FileHandler(("plugins/CrimeRing/player/" + player.getUniqueId().toString()));
 
         return fileHandler.getInteger("skill-points");
+    }
+
+    public int getPlayerLevel(Player player) {
+        return BattleLevelsAPI.getLevel(player.getUniqueId());
     }
 }

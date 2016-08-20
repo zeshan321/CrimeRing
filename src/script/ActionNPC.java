@@ -42,6 +42,10 @@ public class ActionNPC implements Listener {
             return;
         }
 
+        if (!Main.instance.entityManager.entityHider.canSee(player, event.getRightClicked())) {
+            return;
+        }
+
         if (Main.instance.scriptsManager.contains("NPC-" + ChatColor.stripColor(interacted.getCustomName()))) {
             ScriptObject scriptObject = Main.instance.scriptsManager.getObject("NPC-" + ChatColor.stripColor(interacted.getCustomName()));
 
