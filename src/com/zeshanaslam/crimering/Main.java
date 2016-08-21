@@ -17,6 +17,7 @@ import events.BodiesEvents;
 import events.BodyObject;
 import events.PlayerEvents;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
@@ -24,6 +25,8 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
 import raids.*;
+import resourcepack.ResourceCommand;
+import resourcepack.ResourceListener;
 import script.*;
 import utils.ProtocolUtil;
 
@@ -109,6 +112,7 @@ public class Main extends JavaPlugin {
         pm.registerEvents(new BodiesEvents(this), this);
         pm.registerEvents(new EntityListener(this), this);
         pm.registerEvents(new PlayerEvents(this), this);
+        pm.registerEvents(new ResourceListener(this), this);
 
         // Commands
         getCommand("CRReload").setExecutor(new Reload(this));
@@ -122,6 +126,7 @@ public class Main extends JavaPlugin {
         getCommand("crhat").setExecutor(new Hat(this));
         getCommand("crsave").setExecutor(new Save(this));
         getCommand("npcclear").setExecutor(new NPCClear(this));
+        getCommand("crrpupdate").setExecutor(new ResourceCommand(this));
 
         ProtocolUtil protocolUtil = new ProtocolUtil();
 
@@ -222,6 +227,14 @@ public class Main extends JavaPlugin {
                 }
             }
         }, 20L * 60, 20L * 60);
+
+        // Kick for not having resource pack
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
+            Bukkit.getOnlinePlayers().stream().filter(players -> !players.hasMetadata("hasResource")).forEach(players -> {
+                players.removeMetadata("hasResource", this);
+                players.kickPlayer(ChatColor.translateAlternateColorCodes('&', getConfig().getString("Resource-kick")));
+            });
+        }, 20L * 30, 20L * 30);
     }
 
     public void onDisable() {

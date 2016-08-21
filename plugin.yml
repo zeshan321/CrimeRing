@@ -28,3 +28,5 @@ commands:
     description: Save worlds in config.
   npcclear:
     description: Clears all CR NPCs.
+  crrpupdate:
+    description: Updates resource pack.

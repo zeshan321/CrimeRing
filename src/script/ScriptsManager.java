@@ -14,13 +14,12 @@ import java.nio.file.Paths;
 
 public class ScriptsManager {
 
-    private Multimap<String, ScriptObject> scriptData = HashMultimap.create();
-    private ScriptEngineManager factory;
     public ScriptEngine engine;
+    private Multimap<String, ScriptObject> scriptData = HashMultimap.create();
 
 
     public ScriptsManager() {
-        this.factory = new ScriptEngineManager();
+        ScriptEngineManager factory = new ScriptEngineManager();
         this.engine = factory.getEngineByName("nashorn");
     }
 

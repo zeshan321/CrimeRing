@@ -25,3 +25,6 @@ Scope-items:
 Save-worlds:
 - world
 - RaidWorld
+Resource-pack: "http://files.enjin.com/1274010/CrimeRing.zip"
+Resource-hash: ""
+Resource-kick: "&4CrimeRing requires you to use the config!"

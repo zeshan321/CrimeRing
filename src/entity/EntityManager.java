@@ -108,7 +108,7 @@ public class EntityManager {
                     return;
                 }
 
-                if (entity.getLocation().getBlockX() == entityObject.lastX && entity.getLocation().getBlockY() == entityObject.lastY  && entity.getLocation().getBlockZ() == entityObject.lastZ) {
+                if (entity.getLocation().getBlockX() == entityObject.lastX && entity.getLocation().getBlockY() == entityObject.lastY && entity.getLocation().getBlockZ() == entityObject.lastZ) {
                     new EntityMethods().handlePathfinders(new Location(entity.getWorld(), x, y, z), entity, 1.9);
                 } else {
                     entityObject.lastX = entity.getLocation().getBlockX();
