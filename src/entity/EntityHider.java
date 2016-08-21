@@ -225,7 +225,6 @@ public class EntityHider implements Listener {
         validate(observer, entity);
         boolean hiddenBefore = !setVisibility(observer, entity.getEntityId(), true);
 
-        // Resend packets
         if (manager != null && hiddenBefore) {
             manager.updateEntity(entity, Arrays.asList(observer));
         }

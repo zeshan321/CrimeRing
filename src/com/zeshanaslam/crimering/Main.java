@@ -12,10 +12,7 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import commands.*;
 import entity.EntityListener;
 import entity.EntityManager;
-import events.BasicEvents;
-import events.BodiesEvents;
-import events.BodyObject;
-import events.PlayerEvents;
+import events.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -24,6 +21,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
+import packets.WrapperPlayClientWindowClick;
 import raids.*;
 import resourcepack.ResourceCommand;
 import resourcepack.ResourceListener;
@@ -113,6 +111,7 @@ public class Main extends JavaPlugin {
         pm.registerEvents(new EntityListener(this), this);
         pm.registerEvents(new PlayerEvents(this), this);
         pm.registerEvents(new ResourceListener(this), this);
+        pm.registerEvents(new OffHand(this), this);
 
         // Commands
         getCommand("CRReload").setExecutor(new Reload(this));
@@ -208,6 +207,25 @@ public class Main extends JavaPlugin {
 
                 if (event.getPlayer().equals(entity)) {
                     protocolUtil.modifyWatchable(event, POTION_INDEX, 0);
+                }
+            }
+        });
+
+        // Disable off hand
+        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(this,
+                ListenerPriority.NORMAL,
+                PacketType.Play.Client.WINDOW_CLICK) {
+            public void onPacketReceiving(PacketEvent event) {
+                WrapperPlayClientWindowClick packet = new WrapperPlayClientWindowClick(event.getPacket());
+
+                if (packet.getSlot() == 45) {
+                    plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+                        ItemStack itemStack = event.getPlayer().getInventory().getItemInOffHand();
+
+                        event.getPlayer().getInventory().setItemInOffHand(null);
+                        event.getPlayer().getInventory().addItem(itemStack);
+                        event.getPlayer().updateInventory();
+                    }, 5L);
                 }
             }
         });
