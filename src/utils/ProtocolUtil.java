@@ -3,10 +3,8 @@ package utils;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.WrappedWatchableObject;
 import net.minecraft.server.v1_10_R1.NBTTagCompound;
-import net.minecraft.server.v1_10_R1.NBTTagList;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
-import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -38,45 +36,6 @@ public class ProtocolUtil {
             }
         }
         return false;
-    }
-
-    public ItemStack removeAttributes(ItemStack i) {
-        if (i == null) {
-            return i;
-        }
-
-        if (i.getType() == Material.BOOK_AND_QUILL) {
-            return i;
-        }
-
-        ItemStack item = i.clone();
-        net.minecraft.server.v1_10_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(item);
-
-        NBTTagCompound tag;
-        if (!nmsStack.hasTag()) {
-            tag = new NBTTagCompound();
-            nmsStack.setTag(tag);
-        } else {
-            tag = nmsStack.getTag();
-        }
-
-        NBTTagList am = new NBTTagList();
-        tag.set("AttributeModifiers", am);
-        nmsStack.setTag(tag);
-
-        return setUnbreakable(CraftItemStack.asCraftMirror(nmsStack));
-    }
-
-    public ItemStack setUnbreakable(ItemStack i) {
-        if (!(i instanceof CraftItemStack)) {
-            i = CraftItemStack.asCraftCopy(i);
-        }
-        NBTTagCompound tag = getTag(i);
-        if (tag == null) {
-            tag = new NBTTagCompound();
-        }
-        tag.setInt("Unbreakable", 1);
-        return setTag(i, tag);
     }
 
     public NBTTagCompound getTag(org.bukkit.inventory.ItemStack item) {
@@ -116,5 +75,30 @@ public class ProtocolUtil {
         } catch (Exception e) {
         }
         return craftItem;
+    }
+
+    public org.bukkit.inventory.ItemStack setItemHideFlags(org.bukkit.inventory.ItemStack i) {
+        if (i == null) {
+            return i;
+        }
+
+        if (i.getType() == Material.BOOK_AND_QUILL) {
+            return i;
+        }
+
+        if (!(i instanceof CraftItemStack)) {
+            i = CraftItemStack.asCraftCopy(i);
+        }
+
+        NBTTagCompound tag = getTag(i);
+
+        if (tag == null) {
+            tag = new NBTTagCompound();
+        }
+
+        tag.setInt("HideFlags", 63);
+        tag.setInt("Unbreakable", 1);
+
+        return setTag(i, tag);
     }
 }

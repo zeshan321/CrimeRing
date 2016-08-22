@@ -18,7 +18,10 @@ public class Reload implements CommandExecutor {
     public boolean onCommand(CommandSender commandSender, Command command, String commandLabel, String[] strings) {
         if (commandLabel.equalsIgnoreCase("CRReload") && commandSender.isOp()) {
             Main.instance.reloadConfig();
+
+            // Reload managers
             Main.instance.scriptsManager.load();
+            Main.instance.renamerManager.load();
 
             commandSender.sendMessage(ChatColor.RED + "CrimeRing has been reloaded!");
         }

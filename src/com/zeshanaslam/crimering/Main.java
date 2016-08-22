@@ -1,5 +1,6 @@
 package com.zeshanaslam.crimering;
 
+import bank.BankListener;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.ListenerPriority;
@@ -23,6 +24,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
 import packets.WrapperPlayClientWindowClick;
 import raids.*;
+import renamer.RenamerManager;
 import resourcepack.ResourceCommand;
 import resourcepack.ResourceListener;
 import script.*;
@@ -38,6 +40,7 @@ public class Main extends JavaPlugin {
     public ScriptsManager scriptsManager;
     public RaidManager raidManager;
     public EntityManager entityManager;
+    public RenamerManager renamerManager;
     public WorldGuardPlugin worldGuardPlugin;
     public ArrayList<String> flag = new ArrayList<>();
     public HashMap<String, Integer> values = new HashMap<>();
@@ -50,6 +53,11 @@ public class Main extends JavaPlugin {
         // Load script manager
         scriptsManager = new ScriptsManager();
         scriptsManager.load();
+
+        // Load renamer manager
+        renamerManager = new RenamerManager();
+        renamerManager.load();
+        renamerManager.loadListeners();
 
         // Load raid manager
         raidManager = new RaidManager();
@@ -112,6 +120,7 @@ public class Main extends JavaPlugin {
         pm.registerEvents(new PlayerEvents(this), this);
         pm.registerEvents(new ResourceListener(this), this);
         pm.registerEvents(new OffHand(this), this);
+        pm.registerEvents(new BankListener(this), this);
 
         // Commands
         getCommand("CRReload").setExecutor(new Reload(this));
@@ -133,32 +142,28 @@ public class Main extends JavaPlugin {
         Set<PacketType> packets = new HashSet<>();
         packets.add(PacketType.Play.Server.SET_SLOT);
         packets.add(PacketType.Play.Server.WINDOW_ITEMS);
-        packets.add(PacketType.Play.Server.CUSTOM_PAYLOAD);
 
         ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(this, packets) {
             @Override
             public void onPacketSending(PacketEvent event) {
                 PacketContainer packet = event.getPacket();
                 PacketType type = packet.getType();
+
                 if (type == PacketType.Play.Server.WINDOW_ITEMS) {
                     try {
                         ItemStack[] read = packet.getItemArrayModifier().read(0);
+
                         for (int i = 0; i < read.length; i++) {
-                            read[i] = protocolUtil.removeAttributes(read[i]);
+                            read[i] = protocolUtil.setItemHideFlags(read[i]);
                         }
+
                         packet.getItemArrayModifier().write(0, read);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                } else if (type == PacketType.Play.Server.CUSTOM_PAYLOAD) {
-                    if (!packet.getStrings().read(0).equalsIgnoreCase("MC|TrList")) {
-                        return;
-                    }
-
-                    // Fix support
                 } else {
                     try {
-                        packet.getItemModifier().write(0, protocolUtil.removeAttributes(packet.getItemModifier().read(0)));
+                        packet.getItemModifier().write(0, protocolUtil.setItemHideFlags(packet.getItemModifier().read(0)));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -241,7 +246,6 @@ public class Main extends JavaPlugin {
                 if (secondsLeft <= 0) {
                     it.remove();
                     bodyObject.loc.getWorld().getBlockAt(bodyObject.loc).setType(Material.AIR);
-                    Bukkit.broadcastMessage("Removing!");
                 }
             }
         }, 20L * 60, 20L * 60);
@@ -265,6 +269,8 @@ public class Main extends JavaPlugin {
 
             BodyObject bodyObject = (BodyObject) pair.getValue();
             bodyObject.loc.getWorld().getBlockAt(bodyObject.loc).setType(Material.AIR);
+
+            it.remove();
         }
     }
 }

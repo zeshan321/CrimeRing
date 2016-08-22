@@ -31,7 +31,7 @@ public class ItemUtils {
         return null;
     }
 
-    public static LivingEntity addCustomNBT(LivingEntity entity, String key, Object value) {
+    public LivingEntity addCustomNBT(LivingEntity entity, String key, Object value) {
         if (entity == null) return null;
         Entity bukkitEntity = entity;
         net.minecraft.server.v1_10_R1.Entity nmsEntity = ((CraftEntity) bukkitEntity).getHandle();
@@ -54,7 +54,7 @@ public class ItemUtils {
         return entity;
     }
 
-    private static org.bukkit.inventory.ItemStack setTag(org.bukkit.inventory.ItemStack item, NBTTagCompound tag) {
+    private org.bukkit.inventory.ItemStack setTag(org.bukkit.inventory.ItemStack item, NBTTagCompound tag) {
         CraftItemStack craftItem = null;
         if ((item instanceof CraftItemStack)) {
             craftItem = (CraftItemStack) item;
