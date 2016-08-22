@@ -20,12 +20,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
 import raids.PartyAPI;
 import raids.PartyObject;
 import utils.EnchantGlow;
 import utils.ItemUtils;
 import utils.MessageUtil;
 
+import javax.script.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -465,5 +470,170 @@ public class ActionDefaults {
 
     public int getPlayerLevel(Player player) {
         return BattleLevelsAPI.getLevel(player.getUniqueId());
+    }
+
+    public void createScoreboard(Player player, String name) {
+        PartyAPI partyAPI = new PartyAPI();
+        PartyObject partyObject = partyAPI.getParty(player);
+
+        if (partyObject == null) {
+            ScoreboardManager manager = Bukkit.getScoreboardManager();
+            Scoreboard scoreboard = manager.getNewScoreboard();
+
+            Objective objective = scoreboard.registerNewObjective("dummy", "title");
+            objective.setDisplayName(name);
+            objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+
+            player.setScoreboard(scoreboard);
+        } else {
+            ScoreboardManager manager = Bukkit.getScoreboardManager();
+            Scoreboard scoreboard = manager.getNewScoreboard();
+
+            Objective objective = scoreboard.registerNewObjective("dummy", "title");
+            objective.setDisplayName(name);
+            objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+
+            for (Player players : partyObject.getMembers()) {
+                players.setScoreboard(scoreboard);
+            }
+        }
+    }
+
+    public void setSBObjective(Player player, String objectiveName, int value) {
+        PartyAPI partyAPI = new PartyAPI();
+        PartyObject partyObject = partyAPI.getParty(player);
+
+        if (partyObject == null) {
+            if (player.getScoreboard() == null) {
+                return;
+            }
+
+            Scoreboard scoreboard = player.getScoreboard();
+            Objective objective = scoreboard.getObjective(DisplaySlot.SIDEBAR);
+
+            objective.getScore(objectiveName).setScore(value);
+        } else {
+            for (Player players : partyObject.getMembers()) {
+                if (players.getScoreboard() == null) {
+                    continue;
+                }
+
+                Scoreboard scoreboard = player.getScoreboard();
+                Objective objective = scoreboard.getObjective(DisplaySlot.SIDEBAR);
+
+                objective.getScore(objectiveName).setScore(value);
+            }
+        }
+    }
+
+    public void addSBObjective(Player player, String objectiveName) {
+        PartyAPI partyAPI = new PartyAPI();
+        PartyObject partyObject = partyAPI.getParty(player);
+
+        if (partyObject == null) {
+            if (player.getScoreboard() == null) {
+                return;
+            }
+
+            Scoreboard scoreboard = player.getScoreboard();
+            Objective objective = scoreboard.getObjective(DisplaySlot.SIDEBAR);
+
+            if (objective.getScore(objectiveName) != null) {
+                objective.getScore(objectiveName).setScore(objective.getScore(objectiveName).getScore() + 1);
+            } else {
+                objective.getScore(objectiveName).setScore(0);
+            }
+        } else {
+            for (Player players : partyObject.getMembers()) {
+                if (players.getScoreboard() == null) {
+                    continue;
+                }
+
+                Scoreboard scoreboard = players.getScoreboard();
+                Objective objective = scoreboard.getObjective(DisplaySlot.SIDEBAR);
+
+                if (objective.getScore(objectiveName) != null) {
+                    objective.getScore(objectiveName).setScore(objective.getScore(objectiveName).getScore() + 1);
+                } else {
+                    objective.getScore(objectiveName).setScore(0);
+                }
+            }
+        }
+    }
+
+    public void subSBObjective(Player player, String objectiveName) {
+        PartyAPI partyAPI = new PartyAPI();
+        PartyObject partyObject = partyAPI.getParty(player);
+
+        if (partyObject == null) {
+            if (player.getScoreboard() == null) {
+                return;
+            }
+
+            Scoreboard scoreboard = player.getScoreboard();
+            Objective objective = scoreboard.getObjective(DisplaySlot.SIDEBAR);
+
+            if (objective.getScore(objectiveName) != null) {
+                objective.getScore(objectiveName).setScore(objective.getScore(objectiveName).getScore() - 1);
+            } else {
+                objective.getScore(objectiveName).setScore(0);
+            }
+        } else {
+            for (Player players : partyObject.getMembers()) {
+                if (players.getScoreboard() == null) {
+                    continue;
+                }
+
+                Scoreboard scoreboard = players.getScoreboard();
+                Objective objective = scoreboard.getObjective(DisplaySlot.SIDEBAR);
+
+                if (objective.getScore(objectiveName) != null) {
+                    objective.getScore(objectiveName).setScore(objective.getScore(objectiveName).getScore() - 1);
+                } else {
+                    objective.getScore(objectiveName).setScore(0);
+                }
+            }
+        }
+    }
+
+    public void removeSB(Player player) {
+        PartyAPI partyAPI = new PartyAPI();
+        PartyObject partyObject = partyAPI.getParty(player);
+
+        if (partyObject == null) {
+            if (player.getScoreboard() == null) {
+                return;
+            }
+
+            player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+        } else {
+            for (Player players : partyObject.getMembers()) {
+                if (players.getScoreboard() == null) {
+                    continue;
+                }
+
+                player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+            }
+        }
+    }
+
+    public void runScriptLater(Player player, String name, int seconds) {
+        Main.instance.getServer().getScheduler().runTaskLater(Main.instance, () -> {
+            ScriptObject scriptObject = Main.instance.scriptsManager.getObject(name);
+
+            try {
+                ScriptEngine engine = Main.instance.scriptsManager.engine;
+                CompiledScript compiledScript = scriptObject.script;
+
+                // Objects
+                Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
+                bindings.put("player", player);
+                bindings.put("CR", new ActionDefaults());
+
+                compiledScript.eval(bindings);
+            } catch (ScriptException e) {
+                e.printStackTrace();
+            }
+        }, seconds * 20);
     }
 }

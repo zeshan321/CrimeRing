@@ -9,10 +9,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+import utils.ItemUtils;
 
 public class RaidListener implements Listener {
 
@@ -95,6 +98,39 @@ public class RaidListener implements Listener {
             if (plugin.raidManager.isInRaid(player)) {
                 FileHandler fileHandler = new FileHandler("plugins/CrimeRing/raids/" + plugin.raidManager.getRaid(player).raidID + ".yml");
                 event.setRespawnLocation(new Location(Bukkit.getWorld(fileHandler.getString("info.world")), fileHandler.getInteger("info.x"), fileHandler.getInteger("info.y"), fileHandler.getInteger("info.z"), fileHandler.getInteger("info.yaw"), fileHandler.getInteger("info.pitch")));
+            }
+        }
+    }
+
+    @EventHandler
+    public void onDeath(PlayerDeathEvent event) {
+        Player player = event.getEntity();
+
+        if (plugin.raidManager.isInRaid(player)) {
+            if (player.getLocation().getWorld().getName().equals("RaidWorld")) {
+                return;
+            }
+
+            RaidObject raidObject = plugin.raidManager.getRaid(player);
+
+            for (Player players : raidObject.members) {
+                raidObject.removeMember(players, true);
+            }
+
+            plugin.raidManager.sendMessage(raidObject, ChatColor.RED + "The raid has been canceled because " + player.getName() + " died while in queue!");
+        }
+    }
+
+    // Remove scoreboard on leave
+    @EventHandler
+    public void onWorldChange(PlayerChangedWorldEvent event) {
+        Player player = event.getPlayer();
+
+        if (event.getFrom().getName().equals("RaidWorld")) {
+            new ItemUtils().clearRaidItems(player);
+
+            if (player.getScoreboard() != null) {
+                player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
             }
         }
     }
