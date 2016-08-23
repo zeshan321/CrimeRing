@@ -636,4 +636,41 @@ public class ActionDefaults {
             }
         }, seconds * 20);
     }
+
+    public void teleport(LivingEntity entity, String world, int x, int y, int z, float yaw, float pitch) {
+        Location loc = new Location(Bukkit.getWorld(world), x, y, z);
+        loc.setYaw(yaw);
+        loc.setPitch(pitch);
+
+        entity.teleport(loc);
+    }
+
+    public void sendMessageLater(Player player, String message, int seconds) {
+        Main.instance.getServer().getScheduler().runTaskLater(Main.instance, () -> {
+            player.sendMessage(message);
+        }, seconds * 20);
+    }
+
+    public void equipItem(LivingEntity entity, String location, String material, int meta) {
+        location = location.toUpperCase();
+
+        ItemStack itemStack = new ItemStack(Material.valueOf(material), 1, (byte) meta);
+        switch (location) {
+            case "HELMET":
+                entity.getEquipment().setHelmet(itemStack);
+                break;
+            case "CHESTPLATE":
+                entity.getEquipment().setChestplate(itemStack);
+                break;
+            case "LEGGINGS":
+                entity.getEquipment().setLeggings(itemStack);
+                break;
+            case "BOOTS":
+                entity.getEquipment().setBoots(itemStack);
+                break;
+            case "HAND":
+                entity.getEquipment().setItemInMainHand(itemStack);
+                break;
+        }
+    }
 }

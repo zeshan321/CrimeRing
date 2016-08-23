@@ -28,6 +28,12 @@ public class EntityManager {
     }
 
     public void createEntityWithSkin(Player player, String type, String name, String skin, boolean hidden, String world, int x, int y, int z, float yaw, float pitch) {
+        if (getEntityObject(player, name) != null) {
+            EntityObject entityObject = getEntityObject(player, name);
+            entityObject.entity.remove();
+            entityObjectList.remove(entityObject);
+        }
+
         Entity entity = Bukkit.getWorld(world).spawnEntity(new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch), EntityType.valueOf(type));
         entity.setCustomName(name);
 

@@ -13,6 +13,7 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import commands.*;
 import entity.EntityListener;
 import entity.EntityManager;
+import entity.EntityObject;
 import events.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -269,6 +270,17 @@ public class Main extends JavaPlugin {
 
             BodyObject bodyObject = (BodyObject) pair.getValue();
             bodyObject.loc.getWorld().getBlockAt(bodyObject.loc).setType(Material.AIR);
+
+            it.remove();
+        }
+
+        // Clear NPCs
+        it = entityManager.entityObjectList.iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry) it.next();
+
+            EntityObject entityObject = (EntityObject) pair.getValue();
+            entityObject.entity.remove();
 
             it.remove();
         }

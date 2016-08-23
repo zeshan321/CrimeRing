@@ -68,8 +68,8 @@ public class EntityMethods {
     }
 
     public void runScript(Player player, LivingEntity entity, String script) {
-        if (Main.instance.scriptsManager.contains("NPC-" + script)) {
-            ScriptObject scriptObject = Main.instance.scriptsManager.getObject("NPC-" + script);
+        if (Main.instance.scriptsManager.contains(script)) {
+            ScriptObject scriptObject = Main.instance.scriptsManager.getObject(script);
 
             try {
                 ScriptEngine engine = Main.instance.scriptsManager.engine;

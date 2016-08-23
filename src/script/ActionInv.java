@@ -36,6 +36,8 @@ public class ActionInv implements Listener {
         String invName = ChatColor.stripColor(event.getInventory().getName());
 
         if (Main.instance.scriptsManager.contains(invName)) {
+            event.setCancelled(true);
+            
             ScriptObject scriptObject = Main.instance.scriptsManager.getObject(invName);
 
             try {
