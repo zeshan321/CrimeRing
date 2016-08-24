@@ -38,10 +38,12 @@ public class EntityListener implements Listener {
             EntityObject entityObject = iterator.next();
 
             if (entityObject.owner == event.getPlayer()) {
-                iterator.remove();
-                Main.instance.entityManager.entityUUID.remove(entityObject.entity.getUniqueId());
+                plugin.entityManager.entityUUID.remove(entityObject.entity.getUniqueId());
 
                 entityObject.entity.remove();
+
+                iterator.remove();
+
             }
         }
     }

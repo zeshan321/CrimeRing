@@ -30,3 +30,5 @@ commands:
     description: Clears all CR NPCs.
   crrpupdate:
     description: Updates resource pack.
+  CRFakeBlocks:
+    description: Fake blocks command.

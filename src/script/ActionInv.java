@@ -37,7 +37,7 @@ public class ActionInv implements Listener {
 
         if (Main.instance.scriptsManager.contains(invName)) {
             event.setCancelled(true);
-            
+
             ScriptObject scriptObject = Main.instance.scriptsManager.getObject(invName);
 
             try {

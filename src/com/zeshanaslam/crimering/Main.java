@@ -15,10 +15,14 @@ import entity.EntityListener;
 import entity.EntityManager;
 import entity.EntityObject;
 import events.*;
+import fakeblocks.FakeblockCommand;
+import fakeblocks.FakeblockListener;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -46,6 +50,8 @@ public class Main extends JavaPlugin {
     public ArrayList<String> flag = new ArrayList<>();
     public HashMap<String, Integer> values = new HashMap<>();
     public HashMap<String, String> globalFlags = new HashMap<>();
+    public HashMap<String, String> fakeBlocks = new HashMap<>();
+    public HashMap<String, String> fakeBlocksLocation = new HashMap<>();
 
     public void onEnable() {
         saveDefaultConfig();
@@ -105,6 +111,12 @@ public class Main extends JavaPlugin {
             playerDir.mkdir();
         }
 
+        // Player data dir
+        File fakeDir = new File("plugins/CrimeRing/fakeblocks/");
+        if (!fakeDir.exists()) {
+            fakeDir.mkdir();
+        }
+
         // events
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new BasicEvents(this), this);
@@ -122,6 +134,8 @@ public class Main extends JavaPlugin {
         pm.registerEvents(new ResourceListener(this), this);
         pm.registerEvents(new OffHand(this), this);
         pm.registerEvents(new BankListener(this), this);
+        pm.registerEvents(new ScriptListener(this), this);
+        pm.registerEvents(new FakeblockListener(this), this);
 
         // Commands
         getCommand("CRReload").setExecutor(new Reload(this));
@@ -136,6 +150,7 @@ public class Main extends JavaPlugin {
         getCommand("crsave").setExecutor(new Save(this));
         getCommand("npcclear").setExecutor(new NPCClear(this));
         getCommand("crrpupdate").setExecutor(new ResourceCommand(this));
+        getCommand("CRFakeBlocks").setExecutor(new FakeblockCommand(this));
 
         ProtocolUtil protocolUtil = new ProtocolUtil();
 
@@ -232,6 +247,43 @@ public class Main extends JavaPlugin {
                         event.getPlayer().getInventory().addItem(itemStack);
                         event.getPlayer().updateInventory();
                     }, 5L);
+                }
+            }
+        });
+
+        // Stop removing fake blocks
+        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(this,
+                PacketType.Play.Client.USE_ITEM) {
+            @Override
+            public void onPacketReceiving(PacketEvent event) {
+                Player player = event.getPlayer();
+
+                int x = event.getPacket().getBlockPositionModifier().read(0).getX();
+                int y = event.getPacket().getBlockPositionModifier().read(0).getY();
+                int z = event.getPacket().getBlockPositionModifier().read(0).getZ();
+                String world = player.getWorld().getName();
+
+                if (fakeBlocksLocation.containsKey(x + "-" + y + "-" + z + "-" + world)) {
+                    event.setCancelled(true);
+                }
+            }
+        });
+
+        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(this,
+                PacketType.Play.Client.BLOCK_DIG) {
+            @Override
+            public void onPacketReceiving(PacketEvent event) {
+                Player player = event.getPlayer();
+
+                int x = event.getPacket().getBlockPositionModifier().read(0).getX();
+                int y = event.getPacket().getBlockPositionModifier().read(0).getY();
+                int z = event.getPacket().getBlockPositionModifier().read(0).getZ();
+                String world = player.getWorld().getName();
+
+                if (fakeBlocksLocation.containsKey(x + "-" + y + "-" + z + "-" + world)) {
+                    String[] data = fakeBlocksLocation.get(x + "-" + y + "-" + z + "-" + world).split(" ");
+
+                    player.sendBlockChange(new Location(player.getWorld(), x, y, z), Material.matchMaterial(data[0]), (byte) Integer.parseInt(data[1]));
                 }
             }
         });

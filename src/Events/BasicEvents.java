@@ -25,10 +25,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemDamageEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.ItemStack;
 import raids.PartyAPI;
@@ -293,5 +290,19 @@ public class BasicEvents implements Listener {
 
         // Remove raid items
         new ItemUtils().clearRaidItems(player);
+    }
+
+    // Clear flags
+    @EventHandler
+    public void onLeaveFlags(PlayerQuitEvent event) {
+        Iterator<String> iterator = plugin.flag.iterator();
+
+        while (iterator.hasNext()) {
+            String flag = iterator.next();
+
+            if (flag.startsWith(event.getPlayer().getUniqueId().toString())) {
+                iterator.remove();
+            }
+        }
     }
 }

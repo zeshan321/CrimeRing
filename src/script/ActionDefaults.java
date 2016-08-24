@@ -8,10 +8,7 @@ import com.zeshanaslam.crimering.Main;
 import me.robin.battlelevels.api.BattleLevelsAPI;
 import net.elseland.xikage.MythicMobs.API.Bukkit.BukkitMobsAPI;
 import net.elseland.xikage.MythicMobs.API.Exceptions.InvalidMobTypeException;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -654,7 +651,8 @@ public class ActionDefaults {
     public void equipItem(LivingEntity entity, String location, String material, int meta) {
         location = location.toUpperCase();
 
-        ItemStack itemStack = new ItemStack(Material.valueOf(material), 1, (byte) meta);
+        ItemStack itemStack = new ItemStack(Material.valueOf(material), 1);
+        itemStack.setDurability((short) meta);
         switch (location) {
             case "HELMET":
                 entity.getEquipment().setHelmet(itemStack);
@@ -671,6 +669,62 @@ public class ActionDefaults {
             case "HAND":
                 entity.getEquipment().setItemInMainHand(itemStack);
                 break;
+        }
+    }
+
+    public void playSound(Player player, String sound, int seconds) {
+        if (seconds == 0) {
+            player.playSound(player.getLocation(), Sound.valueOf(sound), 1, 0);
+            return;
+        }
+
+        Main.instance.getServer().getScheduler().runTaskLater(Main.instance, () -> {
+            player.playSound(player.getLocation(), Sound.valueOf(sound), 1, 0);
+        }, seconds * 20);
+    }
+
+    public void showFakeblock(Player player, String file) {
+        FileHandler yaml = new FileHandler("plugins/CrimeRing/fakeblocks/" + file + ".yml");
+
+        if (yaml.getBoolean("Editing")) {
+            player.sendMessage(ChatColor.GOLD + "This area is currently being edited by a Admin. Sorry for the inconvenience.");
+            return;
+        }
+
+        for (String location : yaml.getStringList("List")) {
+            String[] location1 = location.split(" ");
+            int x = Integer.parseInt(location1[0]);
+            int y = Integer.parseInt(location1[1]);
+            int z = Integer.parseInt(location1[2]);
+            String world = location1[3];
+            Material material = Material.matchMaterial(location1[4]);
+            int byteData = Integer.parseInt(location1[5]);
+
+            if (!(Main.instance.fakeBlocksLocation.containsKey(x + "-" + y + "-" + z + "-" + world))) {
+                Main.instance.fakeBlocksLocation.put(x + "-" + y + "-" + z + "-" + world, material.toString() + " " + byteData);
+            }
+
+            Location loc = new Location(Bukkit.getWorld(world), x, y, z);
+            player.sendBlockChange(loc, material, (byte) byteData);
+        }
+    }
+
+    public void removeFakeblock(Player player, String file) {
+        FileHandler yaml = new FileHandler("plugins/CrimeRing/fakeblocks/" + file + ".yml");
+
+        for (String location : yaml.getStringList("List")) {
+            String[] location1 = location.split(" ");
+            int x = Integer.parseInt(location1[0]);
+            int y = Integer.parseInt(location1[1]);
+            int z = Integer.parseInt(location1[2]);
+            String world = location1[3];
+
+            if (Main.instance.fakeBlocksLocation.containsKey(x + "-" + y + "-" + z + "-" + world)) {
+                Main.instance.fakeBlocksLocation.remove(x + "-" + y + "-" + z + "-" + world);
+            }
+
+            Location loc = new Location(Bukkit.getWorld(world), x, y, z);
+            player.sendBlockChange(loc, Material.AIR, (byte) 0);
         }
     }
 }

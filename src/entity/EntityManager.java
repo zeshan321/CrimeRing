@@ -19,8 +19,8 @@ import java.util.UUID;
 
 public class EntityManager {
 
-    public List<UUID> entityUUID = new ArrayList<>();
     public List<EntityObject> entityObjectList = new ArrayList<>();
+    public List<UUID> entityUUID = new ArrayList<>();
     public EntityHider entityHider;
 
     public EntityManager() {
@@ -30,6 +30,7 @@ public class EntityManager {
     public void createEntityWithSkin(Player player, String type, String name, String skin, boolean hidden, String world, int x, int y, int z, float yaw, float pitch) {
         if (getEntityObject(player, name) != null) {
             EntityObject entityObject = getEntityObject(player, name);
+            entityUUID.remove(entityObject.entity.getUniqueId());
             entityObject.entity.remove();
             entityObjectList.remove(entityObject);
         }
@@ -51,6 +52,10 @@ public class EntityManager {
 
         // Remove AI
         //new EntityMethods().addCustomNBT((LivingEntity) entity, "NoAI", 1);
+
+        // Entity flags
+        ((LivingEntity) entity).setCollidable(false);
+        ((LivingEntity) entity).setCanPickupItems(false);
 
         // Store data
         entityObjectList.add(new EntityObject(player, entity, hidden, entity.getUniqueId()));
@@ -80,7 +85,6 @@ public class EntityManager {
 
         if (entityObjectList.contains(entityObject)) {
             entityObjectList.remove(entityObject);
-            entityUUID.remove(entityObject.entityUUID);
 
             if (entityObject.entity != null) {
                 entityObject.entity.remove();
@@ -93,19 +97,19 @@ public class EntityManager {
 
         new BukkitRunnable() {
             public void run() {
-                if (entity == null || entity.isDead() || !player.isOnline()) {
+                if (entity.isDead() || !player.isOnline()) {
                     killEntity(player, entity.getCustomName());
                     this.cancel();
                     return;
                 }
 
                 // If players out of range teleport back to them
-                if (player.getLocation().distance(entity.getLocation()) > 15) {
+                /*if (player.getLocation().distance(entity.getLocation()) > 15) {
                     entity.teleport(player.getLocation());
 
                     // Start navigation again
                     new EntityMethods().handlePathfinders(new Location(entity.getWorld(), x, y, z), entity, 1.9);
-                }
+                }*/
 
                 // Trigger script when the entity reaches the location
                 if (entity.getLocation().distance(new Location(entity.getWorld(), x, y, z)) <= 1) {
@@ -116,11 +120,11 @@ public class EntityManager {
 
                 if (entity.getLocation().getBlockX() == entityObject.lastX && entity.getLocation().getBlockY() == entityObject.lastY && entity.getLocation().getBlockZ() == entityObject.lastZ) {
                     new EntityMethods().handlePathfinders(new Location(entity.getWorld(), x, y, z), entity, 1.9);
-                } else {
-                    entityObject.lastX = entity.getLocation().getBlockX();
-                    entityObject.lastY = entity.getLocation().getBlockY();
-                    entityObject.lastZ = entity.getLocation().getBlockZ();
                 }
+
+                entityObject.lastX = entity.getLocation().getBlockX();
+                entityObject.lastY = entity.getLocation().getBlockY();
+                entityObject.lastZ = entity.getLocation().getBlockZ();
             }
         }.runTaskTimer(Main.instance, 0L, 40L);
     }
