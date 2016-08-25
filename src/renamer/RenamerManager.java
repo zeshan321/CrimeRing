@@ -80,7 +80,7 @@ public class RenamerManager {
         if (!items.containsKey(itemStack.getTypeId() + ":" + itemStack.getDurability())) {
             return itemStack;
         }
-        
+
         RenamerObject renamerObject = items.get(itemStack.getTypeId() + ":" + itemStack.getDurability());
 
         ItemMeta itemMeta = itemStack.getItemMeta();

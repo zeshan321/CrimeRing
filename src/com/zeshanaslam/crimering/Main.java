@@ -9,6 +9,8 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.FieldAccessException;
 import com.comphenix.protocol.utility.MinecraftVersion;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import commands.*;
 import entity.EntityListener;
@@ -35,6 +37,7 @@ import resourcepack.ResourceListener;
 import script.*;
 import utils.ProtocolUtil;
 
+import javax.script.ScriptEngine;
 import java.io.File;
 import java.util.*;
 
@@ -52,6 +55,7 @@ public class Main extends JavaPlugin {
     public HashMap<String, String> globalFlags = new HashMap<>();
     public HashMap<String, String> fakeBlocks = new HashMap<>();
     public HashMap<String, String> fakeBlocksLocation = new HashMap<>();
+    public Table<UUID, String, ListenerObject> listeners = HashBasedTable.create();
 
     public void onEnable() {
         saveDefaultConfig();

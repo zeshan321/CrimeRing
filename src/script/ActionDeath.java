@@ -28,6 +28,18 @@ public class ActionDeath implements Listener {
             String name = ChatColor.stripColor(event.getEntity().getCustomName());
             Player player = event.getEntity().getKiller();
 
+            if (Main.instance.listeners.contains(player.getUniqueId(), "DEATH-" + event.getEntity().getCustomName())) {
+                ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(),  "DEATH-" + event.getEntity().getCustomName());
+
+                Invocable invocable = (Invocable) listenerObject.engine;
+                try {
+                    invocable.invokeFunction(listenerObject.method, event);
+                } catch (ScriptException | NoSuchMethodException e) {
+                    e.printStackTrace();
+                }
+                return;
+            }
+
             if (Main.instance.scriptsManager.contains(name)) {
                 ScriptObject scriptObject = Main.instance.scriptsManager.getObject(name);
 
@@ -39,7 +51,7 @@ public class ActionDeath implements Listener {
                     Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
                     bindings.put("player", player);
                     bindings.put("event", event);
-                    bindings.put("CR", new ActionDefaults());
+                    bindings.put("CR", new ActionDefaults(engine));
                     bindings.put("mobName", name);
                     bindings.put("mobLocation", event.getEntity().getLocation());
 

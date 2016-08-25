@@ -46,8 +46,20 @@ public class ActionNPC implements Listener {
             return;
         }
 
-        if (Main.instance.scriptsManager.contains("NPC-" + ChatColor.stripColor(interacted.getCustomName()))) {
-            ScriptObject scriptObject = Main.instance.scriptsManager.getObject("NPC-" + ChatColor.stripColor(interacted.getCustomName()));
+        if (Main.instance.listeners.contains(player.getUniqueId(), "NPC-" + interacted.getCustomName())) {
+            ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(),  "NPC-" + interacted.getCustomName());
+
+            Invocable invocable = (Invocable) listenerObject.engine;
+            try {
+                invocable.invokeFunction(listenerObject.method, event);
+            } catch (ScriptException | NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+            return;
+        }
+
+        if (Main.instance.scriptsManager.contains(ChatColor.stripColor(interacted.getCustomName()))) {
+            ScriptObject scriptObject = Main.instance.scriptsManager.getObject(ChatColor.stripColor(interacted.getCustomName()));
 
             try {
                 ScriptEngine engine = Main.instance.scriptsManager.engine;
@@ -57,7 +69,7 @@ public class ActionNPC implements Listener {
                 Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
                 bindings.put("player", player);
                 bindings.put("event", event);
-                bindings.put("CR", new ActionDefaults());
+                bindings.put("CR", new ActionDefaults(engine));
                 bindings.put("x", interacted.getLocation().getBlockX());
                 bindings.put("y", interacted.getLocation().getBlockY());
                 bindings.put("z", interacted.getLocation().getBlockZ());

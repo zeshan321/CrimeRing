@@ -7,10 +7,10 @@ import com.zeshanaslam.crimering.FileHandler;
 import org.bukkit.ChatColor;
 
 import javax.script.*;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 public class ScriptsManager {
 
@@ -19,8 +19,7 @@ public class ScriptsManager {
 
 
     public ScriptsManager() {
-        ScriptEngineManager factory = new ScriptEngineManager();
-        this.engine = factory.getEngineByName("nashorn");
+        this.engine = new ScriptEngineManager().getEngineByName("nashorn");
     }
 
     public void load() {
@@ -34,14 +33,28 @@ public class ScriptsManager {
             String dir = imports.getString(data + ".dir");
 
             try {
-                String script = ChatColor.translateAlternateColorCodes('&', String.join("\n", Files.readAllLines(Paths.get("plugins/CrimeRing/scripts/" + File.separator + dir))).replace("\n", "").replace("\t", ""));
+                FileReader reader = new FileReader("plugins/CrimeRing/scripts/" + File.separator + dir);
+                BufferedReader textReader = new BufferedReader(reader);
 
-                ScriptEngine engine = this.engine;
+                String line;
+                String script = "";
+                while ((line = textReader.readLine()) != null) {
+
+                    if (line.contains("//")) {
+                        continue;
+                    }
+
+                    script += line;
+                }
+
+                script = ChatColor.translateAlternateColorCodes('&', String.join("\n", script).replace("\n", "").replace("\t", ""));
+
                 Compilable compilableEngine = (Compilable) engine;
                 CompiledScript compiledScript = compilableEngine.compile(script);
 
                 scriptData.put(data, new ScriptObject(data, dir, compiledScript));
             } catch (ScriptException | IOException e) {
+                System.out.println("[CR] Error for file: " + dir);
                 e.printStackTrace();
             }
 

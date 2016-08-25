@@ -1,6 +1,7 @@
 package script;
 
 import com.zeshanaslam.crimering.Main;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -35,6 +36,20 @@ public class ActionInv implements Listener {
 
         String invName = ChatColor.stripColor(event.getInventory().getName());
 
+        if (Main.instance.listeners.contains(player.getUniqueId(), "INVENTORY-" + event.getInventory().getName())) {
+            event.setCancelled(true);
+
+            ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(),  "INVENTORY-" + event.getInventory().getName());
+
+            Invocable invocable = (Invocable) listenerObject.engine;
+            try {
+                invocable.invokeFunction(listenerObject.method, event);
+            } catch (ScriptException | NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+            return;
+        }
+
         if (Main.instance.scriptsManager.contains(invName)) {
             event.setCancelled(true);
 
@@ -48,7 +63,7 @@ public class ActionInv implements Listener {
                 Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
                 bindings.put("player", player);
                 bindings.put("event", event);
-                bindings.put("CR", new ActionDefaults());
+                bindings.put("CR", new ActionDefaults(engine));
 
                 compiledScript.eval(bindings);
             } catch (ScriptException e) {

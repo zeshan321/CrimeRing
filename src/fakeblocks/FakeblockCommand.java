@@ -49,6 +49,10 @@ public class FakeblockCommand implements CommandExecutor {
                         player.sendMessage(ChatColor.GOLD + "Loading blocks.");
 
                         for (String location : getFileContent(fileName)) {
+                            if (location.endsWith("feather")) {
+                                continue;
+                            }
+
                             String[] location1 = location.split(" ");
                             int x = Integer.parseInt(location1[0]);
                             int y = Integer.parseInt(location1[1]);
@@ -76,12 +80,19 @@ public class FakeblockCommand implements CommandExecutor {
                         player.sendMessage(ChatColor.GOLD + "Removing blocks.");
 
                         for (String location : getFileContent(fileName)) {
+                            if (location.endsWith("feather")) {
+                                continue;
+                            }
+
                             String[] location1 = location.split(" ");
+
                             int x = Integer.parseInt(location1[0]);
                             int y = Integer.parseInt(location1[1]);
                             int z = Integer.parseInt(location1[2]);
                             String world = location1[3];
+
                             Location loc = new Location(Bukkit.getWorld(world), x, y, z);
+
                             Block block = Bukkit.getWorld(world).getBlockAt(loc);
                             block.setType(Material.AIR);
                         }

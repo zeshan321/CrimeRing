@@ -1,6 +1,5 @@
 package entity;
 
-import com.zeshanaslam.crimering.Main;
 import net.minecraft.server.v1_10_R1.EntityInsentient;
 import net.minecraft.server.v1_10_R1.EntityLiving;
 import net.minecraft.server.v1_10_R1.NBTTagCompound;
@@ -10,10 +9,10 @@ import org.bukkit.craftbukkit.v1_10_R1.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import script.ActionDefaults;
-import script.ScriptObject;
 
-import javax.script.*;
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptException;
 import java.util.Set;
 
 import static me.libraryaddict.disguise.utilities.ReflectionManager.getNmsClass;
@@ -67,27 +66,16 @@ public class EntityMethods {
         }
     }
 
-    public void runScript(Player player, LivingEntity entity, String script) {
-        if (Main.instance.scriptsManager.contains(script)) {
-            ScriptObject scriptObject = Main.instance.scriptsManager.getObject(script);
-
-            try {
-                ScriptEngine engine = Main.instance.scriptsManager.engine;
-                CompiledScript compiledScript = scriptObject.script;
-
-                // Objects
-                Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
-                bindings.put("player", player);
-                bindings.put("CR", new ActionDefaults());
-                bindings.put("x", entity.getLocation().getBlockX());
-                bindings.put("y", entity.getLocation().getBlockY());
-                bindings.put("z", entity.getLocation().getBlockZ());
-                bindings.put("world", entity.getLocation().getWorld().getName());
-
-                compiledScript.eval(bindings);
-            } catch (ScriptException e) {
-                e.printStackTrace();
-            }
+    public void runScript(Player player, ScriptEngine engine, LivingEntity entity, String script) {
+        if (script.equalsIgnoreCase("none")) {
+            return;
+        }
+        
+        Invocable invocable = (Invocable) engine;
+        try {
+            invocable.invokeFunction(script);
+        } catch (ScriptException | NoSuchMethodException e) {
+            e.printStackTrace();
         }
     }
 }

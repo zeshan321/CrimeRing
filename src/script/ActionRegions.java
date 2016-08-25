@@ -22,6 +22,18 @@ public class ActionRegions implements Listener {
     public void onEnter(RegionEnterEvent event) {
         Player player = event.getPlayer();
 
+        if (Main.instance.listeners.contains(player.getUniqueId(), "REGION_ENTER-" + event.getRegion().getId())) {
+            ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(),  "REGION_ENTER-" + event.getRegion().getId());
+
+            Invocable invocable = (Invocable) listenerObject.engine;
+            try {
+                invocable.invokeFunction(listenerObject.method, event);
+            } catch (ScriptException | NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+            return;
+        }
+
         if (Main.instance.scriptsManager.contains(event.getRegion().getId())) {
             ScriptObject scriptObject = Main.instance.scriptsManager.getObject(event.getRegion().getId());
 
@@ -34,7 +46,7 @@ public class ActionRegions implements Listener {
                 bindings.put("player", player);
                 bindings.put("event", event);
                 bindings.put("regionType", "enter");
-                bindings.put("CR", new ActionDefaults());
+                bindings.put("CR", new ActionDefaults(engine));
 
                 compiledScript.eval(bindings);
             } catch (ScriptException e) {
@@ -46,6 +58,18 @@ public class ActionRegions implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onLeave(RegionLeaveEvent event) {
         Player player = event.getPlayer();
+
+        if (Main.instance.listeners.contains(player.getUniqueId(), "REGION_LEAVE-" + event.getRegion().getId())) {
+            ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(),  "REGION_LEAVE-" + event.getRegion().getId());
+
+            Invocable invocable = (Invocable) listenerObject.engine;
+            try {
+                invocable.invokeFunction(listenerObject.method, event);
+            } catch (ScriptException | NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+            return;
+        }
 
         if (Main.instance.scriptsManager.contains(event.getRegion().getId())) {
             ScriptObject scriptObject = Main.instance.scriptsManager.getObject(event.getRegion().getId());
@@ -59,7 +83,7 @@ public class ActionRegions implements Listener {
                 bindings.put("player", player);
                 bindings.put("event", event);
                 bindings.put("regionType", "leave");
-                bindings.put("CR", new ActionDefaults());
+                bindings.put("CR", new ActionDefaults(engine));
 
                 compiledScript.eval(bindings);
             } catch (ScriptException e) {

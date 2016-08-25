@@ -12,6 +12,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import javax.script.ScriptEngine;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -53,6 +54,9 @@ public class EntityManager {
         // Remove AI
         //new EntityMethods().addCustomNBT((LivingEntity) entity, "NoAI", 1);
 
+        // Remove sound
+        new EntityMethods().addCustomNBT((LivingEntity) entity, "Silent", 1);
+
         // Entity flags
         ((LivingEntity) entity).setCollidable(false);
         ((LivingEntity) entity).setCanPickupItems(false);
@@ -92,7 +96,7 @@ public class EntityManager {
         }
     }
 
-    public void navigate(final Player player, final LivingEntity entity, final String script, final int x, final int y, final int z) {
+    public void navigate(final Player player, final ScriptEngine engine, final LivingEntity entity, final String script, final int x, final int y, final int z) {
         EntityObject entityObject = getEntityObject(player, ChatColor.stripColor(entity.getCustomName()));
 
         new BukkitRunnable() {
@@ -113,12 +117,13 @@ public class EntityManager {
 
                 // Trigger script when the entity reaches the location
                 if (entity.getLocation().distance(new Location(entity.getWorld(), x, y, z)) <= 1) {
-                    new EntityMethods().runScript(player, entity, script);
+                    new EntityMethods().runScript(player, engine, entity, script);
                     this.cancel();
                     return;
                 }
 
                 if (entity.getLocation().getBlockX() == entityObject.lastX && entity.getLocation().getBlockY() == entityObject.lastY && entity.getLocation().getBlockZ() == entityObject.lastZ) {
+                    entity.teleport(new Location(entity.getWorld(), entityObject.lastX, entityObject.lastY, entityObject.lastZ));
                     new EntityMethods().handlePathfinders(new Location(entity.getWorld(), x, y, z), entity, 1.9);
                 }
 

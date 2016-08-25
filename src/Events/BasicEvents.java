@@ -291,18 +291,4 @@ public class BasicEvents implements Listener {
         // Remove raid items
         new ItemUtils().clearRaidItems(player);
     }
-
-    // Clear flags
-    @EventHandler
-    public void onLeaveFlags(PlayerQuitEvent event) {
-        Iterator<String> iterator = plugin.flag.iterator();
-
-        while (iterator.hasNext()) {
-            String flag = iterator.next();
-
-            if (flag.startsWith(event.getPlayer().getUniqueId().toString())) {
-                iterator.remove();
-            }
-        }
-    }
 }

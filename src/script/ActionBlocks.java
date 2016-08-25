@@ -40,6 +40,18 @@ public class ActionBlocks implements Listener {
             int z = event.getClickedBlock().getLocation().getBlockZ();
             String world = player.getWorld().getName();
 
+            if (Main.instance.listeners.contains(player.getUniqueId(), "BLOCK-" + x + " " + y + " " + z + " " + world)) {
+                ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(), "BLOCK-" + x + " " + y + " " + z + " " + world);
+
+                Invocable invocable = (Invocable) listenerObject.engine;
+                try {
+                    invocable.invokeFunction(listenerObject.method, event);
+                } catch (ScriptException | NoSuchMethodException e) {
+                    e.printStackTrace();
+                }
+                return;
+            }
+
             if (Main.instance.scriptsManager.contains(x + " " + y + " " + z + " " + world)) {
                 ScriptObject scriptObject = Main.instance.scriptsManager.getObject(x + " " + y + " " + z + " " + world);
 
@@ -51,7 +63,7 @@ public class ActionBlocks implements Listener {
                     Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
                     bindings.put("player", player);
                     bindings.put("event", event);
-                    bindings.put("CR", new ActionDefaults());
+                    bindings.put("CR", new ActionDefaults(engine));
                     bindings.put("x", x);
                     bindings.put("y", y);
                     bindings.put("z", z);

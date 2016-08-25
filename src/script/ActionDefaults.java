@@ -10,6 +10,7 @@ import net.elseland.xikage.MythicMobs.API.Bukkit.BukkitMobsAPI;
 import net.elseland.xikage.MythicMobs.API.Exceptions.InvalidMobTypeException;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
@@ -28,11 +29,15 @@ import utils.ItemUtils;
 import utils.MessageUtil;
 
 import javax.script.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class ActionDefaults {
+
+    private ScriptEngine engine;
+
+    public ActionDefaults(ScriptEngine engine) {
+        this.engine = engine;
+    }
 
     public void teleport(Player player, String world, int x, int y, int z, float yaw, float pitch) {
         Location loc = new Location(Bukkit.getWorld(world), x, y, z);
@@ -275,14 +280,14 @@ public class ActionDefaults {
         PartyObject party = partyAPI.getParty(player);
 
         if (party == null) {
-            player.sendMessage(message);
+            player.sendMessage(message.split("\\n"));
         } else {
             for (Player players : party.getMembers()) {
                 if (skip && players.getName().equals(player.getName())) {
                     continue;
                 }
 
-                players.sendMessage(message);
+                players.sendMessage(message.split("\\n"));
             }
         }
     }
@@ -430,7 +435,7 @@ public class ActionDefaults {
     }
 
     public void navigate(Player player, LivingEntity entity, String script, int x, int y, int z) {
-        Main.instance.entityManager.navigate(player, entity, script, x, y, z);
+        Main.instance.entityManager.navigate(player, engine, entity, script, x, y, z);
     }
 
     public void addSkillPoint(Player player) {
@@ -519,6 +524,31 @@ public class ActionDefaults {
                 Objective objective = scoreboard.getObjective(DisplaySlot.SIDEBAR);
 
                 objective.getScore(objectiveName).setScore(value);
+            }
+        }
+    }
+
+    public void removeSBObjective(Player player, String objectiveName) {
+        PartyAPI partyAPI = new PartyAPI();
+        PartyObject partyObject = partyAPI.getParty(player);
+
+        if (partyObject == null) {
+            if (player.getScoreboard() == null) {
+                return;
+            }
+
+            Scoreboard scoreboard = player.getScoreboard();
+
+            scoreboard.resetScores(objectiveName);
+        } else {
+            for (Player players : partyObject.getMembers()) {
+                if (players.getScoreboard() == null) {
+                    continue;
+                }
+
+                Scoreboard scoreboard = player.getScoreboard();
+
+                scoreboard.resetScores(objectiveName);
             }
         }
     }
@@ -625,7 +655,7 @@ public class ActionDefaults {
                 // Objects
                 Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
                 bindings.put("player", player);
-                bindings.put("CR", new ActionDefaults());
+                bindings.put("CR", new ActionDefaults(engine));
 
                 compiledScript.eval(bindings);
             } catch (ScriptException e) {
@@ -634,17 +664,31 @@ public class ActionDefaults {
         }, seconds * 20);
     }
 
-    public void teleport(LivingEntity entity, String world, int x, int y, int z, float yaw, float pitch) {
+    public void runFunctionLater(String name, int seconds) {
+        Main.instance.getServer().getScheduler().runTaskLater(Main.instance, () -> {
+            Invocable invocable = (Invocable) engine;
+            try {
+                invocable.invokeFunction(name);
+            } catch (ScriptException | NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+        }, seconds * 20);
+    }
+
+
+    public void teleportEntity(LivingEntity entity, String world, int x, int y, int z, float yaw, float pitch) {
         Location loc = new Location(Bukkit.getWorld(world), x, y, z);
         loc.setYaw(yaw);
         loc.setPitch(pitch);
 
         entity.teleport(loc);
+
+        ((CraftEntity) entity).getHandle().setPositionRotation(x, y, z, yaw, pitch);
     }
 
     public void sendMessageLater(Player player, String message, int seconds) {
         Main.instance.getServer().getScheduler().runTaskLater(Main.instance, () -> {
-            player.sendMessage(message);
+            player.sendMessage(message.split("\\n"));
         }, seconds * 20);
     }
 
@@ -724,7 +768,110 @@ public class ActionDefaults {
             }
 
             Location loc = new Location(Bukkit.getWorld(world), x, y, z);
-            player.sendBlockChange(loc, Material.AIR, (byte) 0);
+            Bukkit.getWorld(world).getBlockAt(loc).getState().update();
+        }
+    }
+
+    public boolean isEquipped(Player player, String location, String type, int data) {
+        switch (location) {
+            case "HELMET":
+                if (player.getEquipment().getHelmet() != null && player.getEquipment().getHelmet().getType().equals(Material.valueOf(type)) && player.getEquipment().getHelmet().getDurability() == (short) data) {
+                    return true;
+                }
+                break;
+            case "CHESTPLATE":
+                if (player.getEquipment().getChestplate() != null && player.getEquipment().getChestplate().getType().equals(Material.valueOf(type)) && player.getEquipment().getChestplate().getDurability() == (short) data) {
+                    return true;
+                }
+                break;
+            case "LEGGINGS":
+                if (player.getEquipment().getLeggings() != null && player.getEquipment().getLeggings().getType().equals(Material.valueOf(type)) && player.getEquipment().getLeggings().getDurability() == (short) data) {
+                    return true;
+                }
+                break;
+            case "BOOTS":
+                if (player.getEquipment().getBoots() != null && player.getEquipment().getBoots().getType().equals(Material.valueOf(type)) && player.getEquipment().getBoots().getDurability() == (short) data) {
+                    return true;
+                }
+                break;
+            case "HAND":
+                if (player.getEquipment().getItemInMainHand() != null && player.getEquipment().getItemInMainHand().getType().equals(Material.valueOf(type)) && player.getEquipment().getItemInMainHand().getDurability() == (short) data) {
+                    return true;
+                }
+                break;
+        }
+
+        return false;
+    }
+
+    public void startListener(Player player, String type, String trigger, String method) {
+        type = type.toUpperCase();
+
+        ListenerObject listenerObject = new ListenerObject(engine, method);
+        switch (type) {
+            case "INVENTORY":
+                Main.instance.listeners.put(player.getUniqueId(), type + "-" + trigger, listenerObject);
+                break;
+
+            case "REGION_ENTER":
+                Main.instance.listeners.put(player.getUniqueId(), type + "-" + trigger, listenerObject);
+                break;
+
+            case "REGION_LEAVE":
+                Main.instance.listeners.put(player.getUniqueId(), type + "-" + trigger, listenerObject);
+                break;
+
+            case "BLOCK":
+                Main.instance.listeners.put(player.getUniqueId(), type + "-" + trigger, listenerObject);
+                break;
+
+            case "DEATH":
+                Main.instance.listeners.put(player.getUniqueId(), type + "-" + trigger, listenerObject);
+                break;
+
+            case "NPC":
+                Main.instance.listeners.put(player.getUniqueId(), type + "-" + trigger, listenerObject);
+                break;
+        }
+    }
+
+    public void stopListener(Player player, String type, String trigger) {
+        type = type.toUpperCase();
+
+        switch (type) {
+            case "INVENTORY":
+                Main.instance.listeners.remove(player.getUniqueId(), type + "-" + trigger);
+                break;
+
+            case "REGION_ENTER":
+                Main.instance.listeners.remove(player.getUniqueId(), type + "-" + trigger);
+                break;
+
+            case "REGION_LEAVE":
+                Main.instance.listeners.remove(player.getUniqueId(), type + "-" + trigger);
+                break;
+
+            case "BLOCK":
+                Main.instance.listeners.remove(player.getUniqueId(), type + "-" + trigger);
+                break;
+
+            case "DEATH":
+                Main.instance.listeners.remove(player.getUniqueId(), type + "-" + trigger);
+                break;
+
+            case "NPC":
+                Main.instance.listeners.remove(player.getUniqueId(), type + "-" + trigger);
+                break;
+        }
+    }
+
+    public void clearListener(Player player) {
+        Iterator<UUID> iterator = Main.instance.listeners.rowKeySet().iterator();
+
+        while (iterator.hasNext()) {
+            if (iterator.next() == player.getUniqueId()) {
+                iterator.remove();
+            }
         }
     }
 }
