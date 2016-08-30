@@ -33,9 +33,11 @@ import java.util.*;
 
 public class ActionDefaults {
 
+    private String scriptID;
     private ScriptEngine engine;
 
-    public ActionDefaults(ScriptEngine engine) {
+    public ActionDefaults(String scriptID, ScriptEngine engine) {
+        this.scriptID = scriptID;
         this.engine = engine;
     }
 
@@ -655,7 +657,7 @@ public class ActionDefaults {
                 // Objects
                 Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
                 bindings.put("player", player);
-                bindings.put("CR", new ActionDefaults(engine));
+                bindings.put("CR", new ActionDefaults(scriptID, engine));
 
                 compiledScript.eval(bindings);
             } catch (ScriptException e) {
@@ -807,7 +809,11 @@ public class ActionDefaults {
     public void startListener(Player player, String type, String trigger, String method) {
         type = type.toUpperCase();
 
-        ListenerObject listenerObject = new ListenerObject(engine, method);
+        if (Main.instance.listeners.contains(player.getUniqueId(), type + "-" + trigger)) {
+            return;
+        }
+
+        ListenerObject listenerObject = new ListenerObject(scriptID, engine, method);
         switch (type) {
             case "INVENTORY":
                 Main.instance.listeners.put(player.getUniqueId(), type + "-" + trigger, listenerObject);
@@ -830,6 +836,14 @@ public class ActionDefaults {
                 break;
 
             case "NPC":
+                Main.instance.listeners.put(player.getUniqueId(), type + "-" + trigger, listenerObject);
+                break;
+
+            case "EQUIP":
+                Main.instance.listeners.put(player.getUniqueId(), type + "-" + trigger, listenerObject);
+                break;
+
+            case "UNEQUIP":
                 Main.instance.listeners.put(player.getUniqueId(), type + "-" + trigger, listenerObject);
                 break;
         }
@@ -860,6 +874,14 @@ public class ActionDefaults {
                 break;
 
             case "NPC":
+                Main.instance.listeners.remove(player.getUniqueId(), type + "-" + trigger);
+                break;
+
+            case "EQUIP":
+                Main.instance.listeners.remove(player.getUniqueId(), type + "-" + trigger);
+                break;
+
+            case "UNEQUIP":
                 Main.instance.listeners.remove(player.getUniqueId(), type + "-" + trigger);
                 break;
         }

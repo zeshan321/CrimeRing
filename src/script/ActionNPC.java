@@ -47,7 +47,7 @@ public class ActionNPC implements Listener {
         }
 
         if (Main.instance.listeners.contains(player.getUniqueId(), "NPC-" + interacted.getCustomName())) {
-            ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(),  "NPC-" + interacted.getCustomName());
+            ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(), "NPC-" + interacted.getCustomName());
 
             Invocable invocable = (Invocable) listenerObject.engine;
             try {
@@ -69,7 +69,7 @@ public class ActionNPC implements Listener {
                 Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
                 bindings.put("player", player);
                 bindings.put("event", event);
-                bindings.put("CR", new ActionDefaults(engine));
+                bindings.put("CR", new ActionDefaults(ChatColor.stripColor(interacted.getCustomName()), engine));
                 bindings.put("x", interacted.getLocation().getBlockX());
                 bindings.put("y", interacted.getLocation().getBlockY());
                 bindings.put("z", interacted.getLocation().getBlockZ());

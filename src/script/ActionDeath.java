@@ -29,7 +29,7 @@ public class ActionDeath implements Listener {
             Player player = event.getEntity().getKiller();
 
             if (Main.instance.listeners.contains(player.getUniqueId(), "DEATH-" + event.getEntity().getCustomName())) {
-                ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(),  "DEATH-" + event.getEntity().getCustomName());
+                ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(), "DEATH-" + event.getEntity().getCustomName());
 
                 Invocable invocable = (Invocable) listenerObject.engine;
                 try {
@@ -51,7 +51,7 @@ public class ActionDeath implements Listener {
                     Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
                     bindings.put("player", player);
                     bindings.put("event", event);
-                    bindings.put("CR", new ActionDefaults(engine));
+                    bindings.put("CR", new ActionDefaults(name, engine));
                     bindings.put("mobName", name);
                     bindings.put("mobLocation", event.getEntity().getLocation());
 

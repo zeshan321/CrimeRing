@@ -250,7 +250,7 @@ public class RaidManager {
                 // Objects
                 Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
                 bindings.put("player", player);
-                bindings.put("CR", new ActionDefaults(engine));
+                bindings.put("CR", new ActionDefaults("raid-" + name, engine));
 
                 compiledScript.eval(bindings);
             } catch (ScriptException e) {

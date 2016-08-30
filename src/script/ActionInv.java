@@ -1,7 +1,6 @@
 package script;
 
 import com.zeshanaslam.crimering.Main;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -39,7 +38,7 @@ public class ActionInv implements Listener {
         if (Main.instance.listeners.contains(player.getUniqueId(), "INVENTORY-" + event.getInventory().getName())) {
             event.setCancelled(true);
 
-            ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(),  "INVENTORY-" + event.getInventory().getName());
+            ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(), "INVENTORY-" + event.getInventory().getName());
 
             Invocable invocable = (Invocable) listenerObject.engine;
             try {
@@ -63,7 +62,7 @@ public class ActionInv implements Listener {
                 Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
                 bindings.put("player", player);
                 bindings.put("event", event);
-                bindings.put("CR", new ActionDefaults(engine));
+                bindings.put("CR", new ActionDefaults(invName, engine));
 
                 compiledScript.eval(bindings);
             } catch (ScriptException e) {

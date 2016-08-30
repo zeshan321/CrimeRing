@@ -23,7 +23,7 @@ public class ActionRegions implements Listener {
         Player player = event.getPlayer();
 
         if (Main.instance.listeners.contains(player.getUniqueId(), "REGION_ENTER-" + event.getRegion().getId())) {
-            ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(),  "REGION_ENTER-" + event.getRegion().getId());
+            ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(), "REGION_ENTER-" + event.getRegion().getId());
 
             Invocable invocable = (Invocable) listenerObject.engine;
             try {
@@ -46,7 +46,7 @@ public class ActionRegions implements Listener {
                 bindings.put("player", player);
                 bindings.put("event", event);
                 bindings.put("regionType", "enter");
-                bindings.put("CR", new ActionDefaults(engine));
+                bindings.put("CR", new ActionDefaults(event.getRegion().getId(), engine));
 
                 compiledScript.eval(bindings);
             } catch (ScriptException e) {
@@ -60,7 +60,7 @@ public class ActionRegions implements Listener {
         Player player = event.getPlayer();
 
         if (Main.instance.listeners.contains(player.getUniqueId(), "REGION_LEAVE-" + event.getRegion().getId())) {
-            ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(),  "REGION_LEAVE-" + event.getRegion().getId());
+            ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(), "REGION_LEAVE-" + event.getRegion().getId());
 
             Invocable invocable = (Invocable) listenerObject.engine;
             try {
@@ -83,7 +83,7 @@ public class ActionRegions implements Listener {
                 bindings.put("player", player);
                 bindings.put("event", event);
                 bindings.put("regionType", "leave");
-                bindings.put("CR", new ActionDefaults(engine));
+                bindings.put("CR", new ActionDefaults(event.getRegion().getId(), engine));
 
                 compiledScript.eval(bindings);
             } catch (ScriptException e) {

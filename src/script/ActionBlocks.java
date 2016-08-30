@@ -63,7 +63,7 @@ public class ActionBlocks implements Listener {
                     Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
                     bindings.put("player", player);
                     bindings.put("event", event);
-                    bindings.put("CR", new ActionDefaults(engine));
+                    bindings.put("CR", new ActionDefaults(x + " " + y + " " + z + " " + world, engine));
                     bindings.put("x", x);
                     bindings.put("y", y);
                     bindings.put("z", z);

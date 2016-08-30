@@ -37,7 +37,6 @@ import resourcepack.ResourceListener;
 import script.*;
 import utils.ProtocolUtil;
 
-import javax.script.ScriptEngine;
 import java.io.File;
 import java.util.*;
 
@@ -140,6 +139,7 @@ public class Main extends JavaPlugin {
         pm.registerEvents(new BankListener(this), this);
         pm.registerEvents(new ScriptListener(this), this);
         pm.registerEvents(new FakeblockListener(this), this);
+        pm.registerEvents(new ActionEquip(this), this);
 
         // Commands
         getCommand("CRReload").setExecutor(new Reload(this));
@@ -288,6 +288,46 @@ public class Main extends JavaPlugin {
                     String[] data = fakeBlocksLocation.get(x + "-" + y + "-" + z + "-" + world).split(" ");
 
                     player.sendBlockChange(new Location(player.getWorld(), x, y, z), Material.matchMaterial(data[0]), (byte) Integer.parseInt(data[1]));
+                }
+            }
+        });
+
+        // Equip listener
+        List<UUID> add = new ArrayList<>();
+        List<UUID> remove = new ArrayList<>();
+        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(this,
+                PacketType.Play.Server.SET_SLOT) {
+            @Override
+            public void onPacketSending(PacketEvent event) {
+                PacketContainer packet = event.getPacket();
+                Player player = event.getPlayer();
+
+                int slotIndex = packet.getIntegers().read(1);
+                if (slotIndex >= 5 && slotIndex < 9) {
+                    ItemStack itemStack = packet.getItemModifier().read(0);
+                    if (itemStack == null) {
+                        if (remove.contains(player.getUniqueId())) {
+                            return;
+                        }
+
+                        remove.add(player.getUniqueId());
+                        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+                            remove.remove(player.getUniqueId());
+
+                            plugin.getServer().getPluginManager().callEvent(new PlayerUnequipEvent(player, itemStack, slotIndex));
+                        }, 0);
+                    } else {
+                        if (add.contains(player.getUniqueId())) {
+                            return;
+                        }
+
+                        add.add(player.getUniqueId());
+                        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+                            add.remove(player.getUniqueId());
+
+                            plugin.getServer().getPluginManager().callEvent(new PlayerEquipEvent(player, itemStack, slotIndex));
+                        }, 0);
+                    }
                 }
             }
         });
