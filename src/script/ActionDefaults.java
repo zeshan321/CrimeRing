@@ -11,10 +11,7 @@ import net.elseland.xikage.MythicMobs.API.Exceptions.InvalidMobTypeException;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftEntity;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Monster;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -810,7 +807,7 @@ public class ActionDefaults {
         type = type.toUpperCase();
 
         if (Main.instance.listeners.contains(player.getUniqueId(), type + "-" + trigger)) {
-            return;
+            stopListener(player, type, trigger);
         }
 
         ListenerObject listenerObject = new ListenerObject(scriptID, engine, method);
@@ -893,6 +890,37 @@ public class ActionDefaults {
         while (iterator.hasNext()) {
             if (iterator.next() == player.getUniqueId()) {
                 iterator.remove();
+            }
+        }
+    }
+
+    public void setItemframeItem(String world, int x, int y, int z, String type, int data) {
+        ItemStack itemStack = new ItemStack(Material.valueOf(type));
+
+        if (data > 0)
+        itemStack.setDurability((short) data);
+
+        Location location = new Location(Bukkit.getWorld(world), x, y ,z);
+        for(Entity entity : location.getWorld().getEntities()) {
+            if(entity.getLocation().distance(location) <= 2) {
+                if (entity instanceof ItemFrame) {
+                    ItemFrame itemFrame = (ItemFrame) entity;
+                    itemFrame.setItem(itemStack);
+                    return;
+                }
+            }
+        }
+    }
+
+    public void setItemframeRotation(String world, int x, int y, int z, String rotation) {
+        Location location = new Location(Bukkit.getWorld(world), x, y ,z);
+        for(Entity entity : location.getWorld().getEntities()) {
+            if(entity.getLocation().distance(location) <= 2) {
+                if (entity instanceof ItemFrame) {
+                    ItemFrame itemFrame = (ItemFrame) entity;
+                    itemFrame.setRotation(Rotation.valueOf(rotation));
+                    return;
+                }
             }
         }
     }
