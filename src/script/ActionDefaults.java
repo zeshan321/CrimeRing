@@ -473,6 +473,26 @@ public class ActionDefaults {
         return BattleLevelsAPI.getLevel(player.getUniqueId());
     }
 
+    public void addPlayerScore(Player player, double amount) {
+        BattleLevelsAPI.addScore(player.getUniqueId(), amount, true);
+    }
+
+    public double getPlayerScore(Player player) {
+        return BattleLevelsAPI.getScore(player.getUniqueId());
+    }
+
+    public int getPlayerDeaths(Player player) {
+        return BattleLevelsAPI.getDeaths(player.getUniqueId());
+    }
+
+    public int getPlayerKills(Player player) {
+        return BattleLevelsAPI.getKills(player.getUniqueId());
+    }
+
+    public int getPlayerKillstreak(Player player) {
+        return BattleLevelsAPI.getKillstreak(player.getUniqueId());
+    }
+
     public void createScoreboard(Player player, String name) {
         PartyAPI partyAPI = new PartyAPI();
         PartyObject partyObject = partyAPI.getParty(player);
@@ -828,7 +848,11 @@ public class ActionDefaults {
                 Main.instance.listeners.put(player.getUniqueId(), type + "-" + trigger, listenerObject);
                 break;
 
-            case "DEATH":
+            case "DEATH_ENTITY":
+                Main.instance.listeners.put(player.getUniqueId(), type + "-" + trigger, listenerObject);
+                break;
+
+            case "DEATH_PLAYER":
                 Main.instance.listeners.put(player.getUniqueId(), type + "-" + trigger, listenerObject);
                 break;
 
@@ -841,6 +865,10 @@ public class ActionDefaults {
                 break;
 
             case "UNEQUIP":
+                Main.instance.listeners.put(player.getUniqueId(), type + "-" + trigger, listenerObject);
+                break;
+
+            case "BREAK":
                 Main.instance.listeners.put(player.getUniqueId(), type + "-" + trigger, listenerObject);
                 break;
         }
@@ -866,7 +894,11 @@ public class ActionDefaults {
                 Main.instance.listeners.remove(player.getUniqueId(), type + "-" + trigger);
                 break;
 
-            case "DEATH":
+            case "DEATH_ENTITY":
+                Main.instance.listeners.remove(player.getUniqueId(), type + "-" + trigger);
+                break;
+
+            case "DEATH_PLAYER":
                 Main.instance.listeners.remove(player.getUniqueId(), type + "-" + trigger);
                 break;
 
@@ -879,6 +911,10 @@ public class ActionDefaults {
                 break;
 
             case "UNEQUIP":
+                Main.instance.listeners.remove(player.getUniqueId(), type + "-" + trigger);
+                break;
+
+            case "BREAK":
                 Main.instance.listeners.remove(player.getUniqueId(), type + "-" + trigger);
                 break;
         }
@@ -898,11 +934,11 @@ public class ActionDefaults {
         ItemStack itemStack = new ItemStack(Material.valueOf(type));
 
         if (data > 0)
-        itemStack.setDurability((short) data);
+            itemStack.setDurability((short) data);
 
-        Location location = new Location(Bukkit.getWorld(world), x, y ,z);
-        for(Entity entity : location.getWorld().getEntities()) {
-            if(entity.getLocation().distance(location) <= 2) {
+        Location location = new Location(Bukkit.getWorld(world), x, y, z);
+        for (Entity entity : location.getWorld().getEntities()) {
+            if (entity.getLocation().distance(location) <= 2) {
                 if (entity instanceof ItemFrame) {
                     ItemFrame itemFrame = (ItemFrame) entity;
                     itemFrame.setItem(itemStack);
@@ -913,9 +949,9 @@ public class ActionDefaults {
     }
 
     public void setItemframeRotation(String world, int x, int y, int z, String rotation) {
-        Location location = new Location(Bukkit.getWorld(world), x, y ,z);
-        for(Entity entity : location.getWorld().getEntities()) {
-            if(entity.getLocation().distance(location) <= 2) {
+        Location location = new Location(Bukkit.getWorld(world), x, y, z);
+        for (Entity entity : location.getWorld().getEntities()) {
+            if (entity.getLocation().distance(location) <= 2) {
                 if (entity instanceof ItemFrame) {
                     ItemFrame itemFrame = (ItemFrame) entity;
                     itemFrame.setRotation(Rotation.valueOf(rotation));
