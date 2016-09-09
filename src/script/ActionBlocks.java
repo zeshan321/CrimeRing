@@ -69,6 +69,7 @@ public class ActionBlocks implements Listener {
                     bindings.put("y", y);
                     bindings.put("z", z);
                     bindings.put("world", world);
+                    bindings.put("blockLocation", event.getClickedBlock().getLocation());
 
                     compiledScript.eval(bindings);
                 } catch (ScriptException e) {
@@ -116,6 +117,7 @@ public class ActionBlocks implements Listener {
                 bindings.put("y", y);
                 bindings.put("z", z);
                 bindings.put("world", world);
+                bindings.put("blockLocation", event.getBlock().getLocation());
 
                 compiledScript.eval(bindings);
             } catch (ScriptException e) {
@@ -151,6 +153,7 @@ public class ActionBlocks implements Listener {
                 bindings.put("y", y);
                 bindings.put("z", z);
                 bindings.put("world", world);
+                bindings.put("blockLocation", event.getBlock().getLocation());
 
                 compiledScript.eval(bindings);
             } catch (ScriptException e) {

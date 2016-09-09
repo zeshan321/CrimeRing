@@ -15,6 +15,10 @@ import org.bukkit.entity.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
@@ -694,6 +698,25 @@ public class ActionDefaults {
         }, seconds * 20);
     }
 
+    // Cancels on player death
+    public void runFunctionLater(Player player, String name, int seconds) {
+        BukkitTask task = new BukkitRunnable() {
+            @Override
+            public void run() {
+                Main.instance.playerTasks.remove(this.getTaskId());
+
+                Invocable invocable = (Invocable) engine;
+                try {
+                    invocable.invokeFunction(name);
+                } catch (ScriptException | NoSuchMethodException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.runTaskLater(Main.instance, seconds * 20);
+
+        Main.instance.playerTasks.put(task.getTaskId(), player.getUniqueId());
+    }
+
 
     public void teleportEntity(LivingEntity entity, String world, int x, int y, int z, float yaw, float pitch) {
         Location loc = new Location(Bukkit.getWorld(world), x, y, z);
@@ -871,6 +894,10 @@ public class ActionDefaults {
             case "BREAK":
                 Main.instance.listeners.put(player.getUniqueId(), type + "-" + trigger, listenerObject);
                 break;
+
+            case "CONSUME":
+                Main.instance.listeners.put(player.getUniqueId(), type + "-" + trigger, listenerObject);
+                break;
         }
     }
 
@@ -917,6 +944,10 @@ public class ActionDefaults {
             case "BREAK":
                 Main.instance.listeners.remove(player.getUniqueId(), type + "-" + trigger);
                 break;
+
+            case "CONSUME":
+                Main.instance.listeners.remove(player.getUniqueId(), type + "-" + trigger);
+                break;
         }
     }
 
@@ -959,5 +990,23 @@ public class ActionDefaults {
                 }
             }
         }
+    }
+
+    public void addPotionEffect(Player player, String type, int duration, int level) {
+        player.addPotionEffect(new PotionEffect(PotionEffectType.getByName(type), duration, level));
+    }
+
+    public void removePotionEffect(Player player, String type) {
+        player.removePotionEffect(PotionEffectType.getByName(type));
+    }
+
+    public void clearPotionEffects(Player player) {
+        for (PotionEffect effect : player.getActivePotionEffects()) {
+            player.removePotionEffect(effect.getType());
+        }
+    }
+
+    public boolean hasPotionEffect(Player player, String type) {
+        return player.hasPotionEffect(PotionEffectType.getByName(type));
     }
 }

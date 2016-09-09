@@ -54,6 +54,7 @@ public class Main extends JavaPlugin {
     public HashMap<String, String> globalFlags = new HashMap<>();
     public HashMap<String, String> fakeBlocks = new HashMap<>();
     public HashMap<String, String> fakeBlocksLocation = new HashMap<>();
+    public HashMap<Integer, UUID> playerTasks = new HashMap<>();
     public Table<UUID, String, ListenerObject> listeners = HashBasedTable.create();
 
     public void onEnable() {
@@ -140,6 +141,7 @@ public class Main extends JavaPlugin {
         pm.registerEvents(new ScriptListener(this), this);
         pm.registerEvents(new FakeblockListener(this), this);
         pm.registerEvents(new ActionEquip(this), this);
+        pm.registerEvents(new ActionConsume(this), this);
 
         // Commands
         getCommand("CRReload").setExecutor(new Reload(this));
