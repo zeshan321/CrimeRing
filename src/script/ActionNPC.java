@@ -15,6 +15,7 @@ import javax.script.*;
 public class ActionNPC implements Listener {
 
     private final Main plugin;
+    private final String typeNPC = "NPC-";
 
     public ActionNPC(Main plugin) {
         this.plugin = plugin;
@@ -46,8 +47,8 @@ public class ActionNPC implements Listener {
             return;
         }
 
-        if (Main.instance.listeners.contains(player.getUniqueId(), "NPC-" + interacted.getCustomName())) {
-            ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(), "NPC-" + interacted.getCustomName());
+        if (Main.instance.listeners.contains(player.getUniqueId(), typeNPC + interacted.getCustomName())) {
+            ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(), typeNPC + interacted.getCustomName());
 
             Invocable invocable = (Invocable) listenerObject.engine;
             try {
@@ -58,8 +59,8 @@ public class ActionNPC implements Listener {
             return;
         }
 
-        if (Main.instance.scriptsManager.contains(ChatColor.stripColor(interacted.getCustomName()))) {
-            ScriptObject scriptObject = Main.instance.scriptsManager.getObject(ChatColor.stripColor(interacted.getCustomName()));
+        if (Main.instance.scriptsManager.contains(typeNPC + ChatColor.stripColor(interacted.getCustomName()))) {
+            ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeNPC + ChatColor.stripColor(interacted.getCustomName()));
 
             try {
                 ScriptEngine engine = Main.instance.scriptsManager.engine;
@@ -69,7 +70,7 @@ public class ActionNPC implements Listener {
                 Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
                 bindings.put("player", player);
                 bindings.put("event", event);
-                bindings.put("CR", new ActionDefaults(ChatColor.stripColor(interacted.getCustomName()), engine));
+                bindings.put("CR", new ActionDefaults(typeNPC + ChatColor.stripColor(interacted.getCustomName()), engine));
                 bindings.put("x", interacted.getLocation().getBlockX());
                 bindings.put("y", interacted.getLocation().getBlockY());
                 bindings.put("z", interacted.getLocation().getBlockZ());

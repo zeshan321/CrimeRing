@@ -15,6 +15,8 @@ import javax.script.*;
 public class ActionBlocks implements Listener {
 
     private final Main plugin;
+    private final String typeBlock = "BLOCK-";
+    private final String typeBreak = "BREAK-";
 
     public ActionBlocks(Main plugin) {
         this.plugin = plugin;
@@ -41,8 +43,8 @@ public class ActionBlocks implements Listener {
             int z = event.getClickedBlock().getLocation().getBlockZ();
             String world = player.getWorld().getName();
 
-            if (Main.instance.listeners.contains(player.getUniqueId(), "BLOCK-" + x + " " + y + " " + z + " " + world)) {
-                ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(), "BLOCK-" + x + " " + y + " " + z + " " + world);
+            if (Main.instance.listeners.contains(player.getUniqueId(), typeBlock + x + " " + y + " " + z + " " + world)) {
+                ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(), typeBlock + x + " " + y + " " + z + " " + world);
 
                 Invocable invocable = (Invocable) listenerObject.engine;
                 try {
@@ -50,11 +52,12 @@ public class ActionBlocks implements Listener {
                 } catch (ScriptException | NoSuchMethodException e) {
                     e.printStackTrace();
                 }
+
                 return;
             }
 
-            if (Main.instance.scriptsManager.contains(x + " " + y + " " + z + " " + world)) {
-                ScriptObject scriptObject = Main.instance.scriptsManager.getObject(x + " " + y + " " + z + " " + world);
+            if (Main.instance.scriptsManager.contains(typeBlock + x + " " + y + " " + z + " " + world)) {
+                ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeBlock + x + " " + y + " " + z + " " + world);
 
                 try {
                     ScriptEngine engine = Main.instance.scriptsManager.engine;
@@ -64,7 +67,7 @@ public class ActionBlocks implements Listener {
                     Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
                     bindings.put("player", player);
                     bindings.put("event", event);
-                    bindings.put("CR", new ActionDefaults(x + " " + y + " " + z + " " + world, engine));
+                    bindings.put("CR", new ActionDefaults(typeBlock + x + " " + y + " " + z + " " + world, engine));
                     bindings.put("x", x);
                     bindings.put("y", y);
                     bindings.put("z", z);
@@ -87,10 +90,9 @@ public class ActionBlocks implements Listener {
         int y = event.getBlock().getLocation().getBlockY();
         int z = event.getBlock().getLocation().getBlockZ();
         String world = player.getWorld().getName();
-        String blockName = event.getBlock().getType().toString();
 
-        if (Main.instance.listeners.contains(player.getUniqueId(), "BREAK-" + x + " " + y + " " + z + " " + world)) {
-            ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(), "BREAK-" + x + " " + y + " " + z + " " + world);
+        if (Main.instance.listeners.contains(player.getUniqueId(), typeBreak + x + " " + y + " " + z + " " + world)) {
+            ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(), typeBreak + x + " " + y + " " + z + " " + world);
 
             Invocable invocable = (Invocable) listenerObject.engine;
             try {
@@ -101,8 +103,8 @@ public class ActionBlocks implements Listener {
             return;
         }
 
-        if (Main.instance.scriptsManager.contains(x + " " + y + " " + z + " " + world)) {
-            ScriptObject scriptObject = Main.instance.scriptsManager.getObject(x + " " + y + " " + z + " " + world);
+        if (Main.instance.scriptsManager.contains(typeBreak + x + " " + y + " " + z + " " + world)) {
+            ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeBreak + x + " " + y + " " + z + " " + world);
 
             try {
                 ScriptEngine engine = Main.instance.scriptsManager.engine;
@@ -112,7 +114,7 @@ public class ActionBlocks implements Listener {
                 Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
                 bindings.put("player", player);
                 bindings.put("event", event);
-                bindings.put("CR", new ActionDefaults(x + " " + y + " " + z + " " + world, engine));
+                bindings.put("CR", new ActionDefaults(typeBreak + x + " " + y + " " + z + " " + world, engine));
                 bindings.put("x", x);
                 bindings.put("y", y);
                 bindings.put("z", z);
@@ -125,8 +127,9 @@ public class ActionBlocks implements Listener {
             }
         }
 
-        if (Main.instance.listeners.contains(player.getUniqueId(), "BREAK-" + blockName)) {
-            ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(), "BREAK-" + blockName);
+        String blockData = event.getBlock().getTypeId() + ":" + event.getBlock().getData();
+        if (Main.instance.listeners.contains(player.getUniqueId(), typeBreak + blockData)) {
+            ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(), typeBreak + blockData);
 
             Invocable invocable = (Invocable) listenerObject.engine;
             try {
@@ -137,8 +140,8 @@ public class ActionBlocks implements Listener {
             return;
         }
 
-        if (Main.instance.scriptsManager.contains(blockName)) {
-            ScriptObject scriptObject = Main.instance.scriptsManager.getObject(blockName);
+        if (Main.instance.scriptsManager.contains(blockData)) {
+            ScriptObject scriptObject = Main.instance.scriptsManager.getObject(blockData);
 
             try {
                 ScriptEngine engine = Main.instance.scriptsManager.engine;
@@ -148,7 +151,7 @@ public class ActionBlocks implements Listener {
                 Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
                 bindings.put("player", player);
                 bindings.put("event", event);
-                bindings.put("CR", new ActionDefaults(blockName, engine));
+                bindings.put("CR", new ActionDefaults(typeBreak + blockData, engine));
                 bindings.put("x", x);
                 bindings.put("y", y);
                 bindings.put("z", z);

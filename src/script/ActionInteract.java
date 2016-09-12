@@ -4,21 +4,29 @@ import com.zeshanaslam.crimering.Main;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import javax.script.*;
 
-public class ActionConsume implements Listener {
+public class ActionInteract implements Listener {
 
     private final Main plugin;
+    private final String typeInteract = "INTERACT-";
 
-    public ActionConsume(Main plugin) {
+    public ActionInteract(Main plugin) {
         this.plugin = plugin;
     }
 
     @EventHandler
-    public void onConsume(PlayerItemConsumeEvent event) {
+    public void onInteract(PlayerInteractEvent event) {
+        // Only use right hand
+        if (event.getHand() == EquipmentSlot.OFF_HAND) {
+            return;
+        }
+
         Player player = event.getPlayer();
 
         ItemStack itemStack = event.getItem();
@@ -26,12 +34,8 @@ public class ActionConsume implements Listener {
         int material = itemStack.getTypeId();
         short data = itemStack.getDurability();
 
-        if (Main.instance.listeners.contains(player.getUniqueId(), "CONSUME-" + material + " " + data)) {
-            // Cancel event and remove item
-            event.setCancelled(true);
-            updateHand(player);
-
-            ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(), "CONSUME-" + material + " " + data);
+        if (Main.instance.listeners.contains(player.getUniqueId(), typeInteract + material + ":" + data)) {
+            ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(), typeInteract + material + ":" + data);
 
             Invocable invocable = (Invocable) listenerObject.engine;
             try {
@@ -42,12 +46,8 @@ public class ActionConsume implements Listener {
             return;
         }
 
-        if (Main.instance.scriptsManager.contains(material + " " + data)) {
-            // Cancel event and remove item
-            event.setCancelled(true);
-            updateHand(player);
-
-            ScriptObject scriptObject = Main.instance.scriptsManager.getObject(material + " " + data);
+        if (Main.instance.scriptsManager.contains(typeInteract + material + ":" + data)) {
+            ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeInteract + material + ":" + data);
 
             try {
                 ScriptEngine engine = Main.instance.scriptsManager.engine;
@@ -57,7 +57,7 @@ public class ActionConsume implements Listener {
                 Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
                 bindings.put("player", player);
                 bindings.put("event", event);
-                bindings.put("CR", new ActionDefaults(material + " " + data, engine));
+                bindings.put("CR", new ActionDefaults(typeInteract + material + ":" + data, engine));
                 bindings.put("id", material);
                 bindings.put("data", data);
 
@@ -65,14 +65,6 @@ public class ActionConsume implements Listener {
             } catch (ScriptException e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    private void updateHand(Player player) {
-        if (player.getInventory().getItemInMainHand().getAmount() > 1) {
-            player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount() - 1);
-        } else {
-            player.getInventory().setItemInMainHand(null);
         }
     }
 }

@@ -13,6 +13,8 @@ import javax.script.*;
 public class ActionRegions implements Listener {
 
     private final Main plugin;
+    private final String typeEnter = "REGION_ENTER-";
+    private final String typeLeave = "REGION_LEAVE-";
 
     public ActionRegions(Main plugin) {
         this.plugin = plugin;
@@ -22,8 +24,8 @@ public class ActionRegions implements Listener {
     public void onEnter(RegionEnterEvent event) {
         Player player = event.getPlayer();
 
-        if (Main.instance.listeners.contains(player.getUniqueId(), "REGION_ENTER-" + event.getRegion().getId())) {
-            ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(), "REGION_ENTER-" + event.getRegion().getId());
+        if (Main.instance.listeners.contains(player.getUniqueId(), typeEnter + event.getRegion().getId())) {
+            ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(), typeEnter + event.getRegion().getId());
 
             Invocable invocable = (Invocable) listenerObject.engine;
             try {
@@ -34,8 +36,8 @@ public class ActionRegions implements Listener {
             return;
         }
 
-        if (Main.instance.scriptsManager.contains(event.getRegion().getId())) {
-            ScriptObject scriptObject = Main.instance.scriptsManager.getObject(event.getRegion().getId());
+        if (Main.instance.scriptsManager.contains(typeEnter + event.getRegion().getId())) {
+            ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeEnter + event.getRegion().getId());
 
             try {
                 ScriptEngine engine = Main.instance.scriptsManager.engine;
@@ -46,7 +48,7 @@ public class ActionRegions implements Listener {
                 bindings.put("player", player);
                 bindings.put("event", event);
                 bindings.put("regionType", "enter");
-                bindings.put("CR", new ActionDefaults(event.getRegion().getId(), engine));
+                bindings.put("CR", new ActionDefaults(typeEnter + event.getRegion().getId(), engine));
 
                 compiledScript.eval(bindings);
             } catch (ScriptException e) {
@@ -59,8 +61,8 @@ public class ActionRegions implements Listener {
     public void onLeave(RegionLeaveEvent event) {
         Player player = event.getPlayer();
 
-        if (Main.instance.listeners.contains(player.getUniqueId(), "REGION_LEAVE-" + event.getRegion().getId())) {
-            ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(), "REGION_LEAVE-" + event.getRegion().getId());
+        if (Main.instance.listeners.contains(player.getUniqueId(), typeLeave + event.getRegion().getId())) {
+            ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(), typeLeave + event.getRegion().getId());
 
             Invocable invocable = (Invocable) listenerObject.engine;
             try {
@@ -71,8 +73,8 @@ public class ActionRegions implements Listener {
             return;
         }
 
-        if (Main.instance.scriptsManager.contains(event.getRegion().getId())) {
-            ScriptObject scriptObject = Main.instance.scriptsManager.getObject(event.getRegion().getId());
+        if (Main.instance.scriptsManager.contains(typeLeave + event.getRegion().getId())) {
+            ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeLeave + event.getRegion().getId());
 
             try {
                 ScriptEngine engine = Main.instance.scriptsManager.engine;
@@ -83,7 +85,7 @@ public class ActionRegions implements Listener {
                 bindings.put("player", player);
                 bindings.put("event", event);
                 bindings.put("regionType", "leave");
-                bindings.put("CR", new ActionDefaults(event.getRegion().getId(), engine));
+                bindings.put("CR", new ActionDefaults(typeLeave + event.getRegion().getId(), engine));
 
                 compiledScript.eval(bindings);
             } catch (ScriptException e) {

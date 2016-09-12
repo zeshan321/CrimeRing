@@ -15,6 +15,7 @@ import javax.script.*;
 public class ActionInv implements Listener {
 
     private final Main plugin;
+    private final String typeInv = "INVENTORY-";
 
     public ActionInv(Main plugin) {
         this.plugin = plugin;
@@ -35,10 +36,10 @@ public class ActionInv implements Listener {
 
         String invName = ChatColor.stripColor(event.getInventory().getName());
 
-        if (Main.instance.listeners.contains(player.getUniqueId(), "INVENTORY-" + event.getInventory().getName())) {
+        if (Main.instance.listeners.contains(player.getUniqueId(), typeInv + event.getInventory().getName())) {
             event.setCancelled(true);
 
-            ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(), "INVENTORY-" + event.getInventory().getName());
+            ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(), typeInv + event.getInventory().getName());
 
             Invocable invocable = (Invocable) listenerObject.engine;
             try {
@@ -49,10 +50,10 @@ public class ActionInv implements Listener {
             return;
         }
 
-        if (Main.instance.scriptsManager.contains(invName)) {
+        if (Main.instance.scriptsManager.contains(typeInv + invName)) {
             event.setCancelled(true);
 
-            ScriptObject scriptObject = Main.instance.scriptsManager.getObject(invName);
+            ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeInv + invName);
 
             try {
                 ScriptEngine engine = Main.instance.scriptsManager.engine;
@@ -62,7 +63,7 @@ public class ActionInv implements Listener {
                 Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
                 bindings.put("player", player);
                 bindings.put("event", event);
-                bindings.put("CR", new ActionDefaults(invName, engine));
+                bindings.put("CR", new ActionDefaults(typeInv + invName, engine));
 
                 compiledScript.eval(bindings);
             } catch (ScriptException e) {

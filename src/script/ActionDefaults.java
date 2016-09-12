@@ -895,7 +895,7 @@ public class ActionDefaults {
                 Main.instance.listeners.put(player.getUniqueId(), type + "-" + trigger, listenerObject);
                 break;
 
-            case "CONSUME":
+            case "INTERACT":
                 Main.instance.listeners.put(player.getUniqueId(), type + "-" + trigger, listenerObject);
                 break;
         }
@@ -945,7 +945,7 @@ public class ActionDefaults {
                 Main.instance.listeners.remove(player.getUniqueId(), type + "-" + trigger);
                 break;
 
-            case "CONSUME":
+            case "INTERACT":
                 Main.instance.listeners.remove(player.getUniqueId(), type + "-" + trigger);
                 break;
         }
@@ -989,6 +989,14 @@ public class ActionDefaults {
                     return;
                 }
             }
+        }
+    }
+
+    private void takeItemFromHand(Player player) {
+        if (player.getInventory().getItemInMainHand().getAmount() > 1) {
+            player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount() - 1);
+        } else {
+            player.getInventory().setItemInMainHand(null);
         }
     }
 

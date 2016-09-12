@@ -14,6 +14,8 @@ import javax.script.ScriptException;
 public class ActionEquip implements Listener {
 
     private final Plugin plugin;
+    private final String typeEquip = "EQUIP-";
+    private final String typeUnequip = "UNEQUIP-";
 
     public ActionEquip(Plugin plugin) {
         this.plugin = plugin;
@@ -23,8 +25,8 @@ public class ActionEquip implements Listener {
     public void onEquip(PlayerEquipEvent event) {
         Player player = event.getPlayer();
 
-        if (Main.instance.listeners.contains(player.getUniqueId(), "EQUIP-" + player.getUniqueId().toString())) {
-            ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(), "EQUIP-" + player.getUniqueId().toString());
+        if (Main.instance.listeners.contains(player.getUniqueId(), typeEquip + player.getUniqueId().toString())) {
+            ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(), typeEquip + player.getUniqueId().toString());
 
             Invocable invocable = (Invocable) listenerObject.engine;
             try {
@@ -39,8 +41,8 @@ public class ActionEquip implements Listener {
     public void onUnequip(PlayerUnequipEvent event) {
         Player player = event.getPlayer();
 
-        if (Main.instance.listeners.contains(player.getUniqueId(), "UNEQUIP-" + player.getUniqueId().toString())) {
-            ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(), "UNEQUIP-" + player.getUniqueId().toString());
+        if (Main.instance.listeners.contains(player.getUniqueId(), typeUnequip+ player.getUniqueId().toString())) {
+            ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(), typeUnequip + player.getUniqueId().toString());
 
             Invocable invocable = (Invocable) listenerObject.engine;
             try {
