@@ -29,6 +29,10 @@ public class ActionInteract implements Listener {
 
         Player player = event.getPlayer();
 
+        if (event.getItem() == null) {
+            return;
+        }
+
         ItemStack itemStack = event.getItem();
 
         int material = itemStack.getTypeId();
@@ -60,11 +64,26 @@ public class ActionInteract implements Listener {
                 bindings.put("CR", new ActionDefaults(typeInteract + material + ":" + data, engine));
                 bindings.put("id", material);
                 bindings.put("data", data);
+                bindings.put("clickType", clickType(event.getAction().toString()));
 
                 compiledScript.eval(bindings);
             } catch (ScriptException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    private String clickType(String interact) {
+        String type = "";
+
+        if (interact.contains("RIGHT")) {
+            type = "RIGHT";
+        }
+
+        if (interact.contains("LEFT")) {
+            type = "LEFT";
+        }
+
+        return type;
     }
 }

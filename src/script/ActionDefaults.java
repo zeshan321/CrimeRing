@@ -992,7 +992,7 @@ public class ActionDefaults {
         }
     }
 
-    private void takeItemFromHand(Player player) {
+    public void takeItemFromHand(Player player) {
         if (player.getInventory().getItemInMainHand().getAmount() > 1) {
             player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount() - 1);
         } else {

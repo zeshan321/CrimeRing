@@ -79,6 +79,43 @@ public class ActionBlocks implements Listener {
                     e.printStackTrace();
                 }
             }
+
+            String blockData = event.getClickedBlock().getTypeId() + ":" + event.getClickedBlock().getData();
+            if (Main.instance.listeners.contains(player.getUniqueId(), typeBlock + blockData)) {
+                ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(), typeBlock + blockData);
+
+                Invocable invocable = (Invocable) listenerObject.engine;
+                try {
+                    invocable.invokeFunction(listenerObject.method, event);
+                } catch (ScriptException | NoSuchMethodException e) {
+                    e.printStackTrace();
+                }
+                return;
+            }
+
+            if (Main.instance.scriptsManager.contains(typeBlock + blockData)) {
+                ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeBlock + blockData);
+
+                try {
+                    ScriptEngine engine = Main.instance.scriptsManager.engine;
+                    CompiledScript compiledScript = scriptObject.script;
+
+                    // Objects
+                    Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
+                    bindings.put("player", player);
+                    bindings.put("event", event);
+                    bindings.put("CR", new ActionDefaults(typeBlock + blockData, engine));
+                    bindings.put("x", x);
+                    bindings.put("y", y);
+                    bindings.put("z", z);
+                    bindings.put("world", world);
+                    bindings.put("blockLocation", event.getClickedBlock().getLocation());
+
+                    compiledScript.eval(bindings);
+                } catch (ScriptException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -140,8 +177,8 @@ public class ActionBlocks implements Listener {
             return;
         }
 
-        if (Main.instance.scriptsManager.contains(blockData)) {
-            ScriptObject scriptObject = Main.instance.scriptsManager.getObject(blockData);
+        if (Main.instance.scriptsManager.contains(typeBreak + blockData)) {
+            ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeBreak + blockData);
 
             try {
                 ScriptEngine engine = Main.instance.scriptsManager.engine;
