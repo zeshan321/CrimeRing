@@ -78,6 +78,8 @@ public class ActionBlocks implements Listener {
                 } catch (ScriptException e) {
                     e.printStackTrace();
                 }
+
+                return;
             }
 
             String blockData = event.getClickedBlock().getTypeId() + ":" + event.getClickedBlock().getData();
@@ -162,6 +164,8 @@ public class ActionBlocks implements Listener {
             } catch (ScriptException e) {
                 e.printStackTrace();
             }
+
+            return;
         }
 
         String blockData = event.getBlock().getTypeId() + ":" + event.getBlock().getData();
