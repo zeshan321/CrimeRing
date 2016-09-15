@@ -35,6 +35,7 @@ import renamer.RenamerManager;
 import resourcepack.ResourceCommand;
 import resourcepack.ResourceListener;
 import script.*;
+import utils.ItemUtils;
 import utils.ProtocolUtil;
 
 import java.io.File;
@@ -75,6 +76,9 @@ public class Main extends JavaPlugin {
 
         // Load entity manager
         entityManager = new EntityManager();
+
+        // Load stackable items
+        new ItemUtils().loadStackableItems();
 
         // Load worldguard
         worldGuardPlugin = (WorldGuardPlugin) getServer().getPluginManager().getPlugin("WorldGuard");
@@ -142,7 +146,6 @@ public class Main extends JavaPlugin {
         pm.registerEvents(new FakeblockListener(this), this);
         pm.registerEvents(new ActionEquip(this), this);
         pm.registerEvents(new ActionInteract(this), this);
-        pm.registerEvents(new StackEvent(this), this);
 
         // Commands
         getCommand("CRReload").setExecutor(new Reload(this));

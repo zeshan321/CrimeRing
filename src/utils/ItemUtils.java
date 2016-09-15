@@ -1,10 +1,15 @@
 package utils;
 
+import com.zeshanaslam.crimering.Main;
+import haveric.stackableItems.config.Config;
+import haveric.stackableItems.util.SIItems;
 import net.minecraft.server.v1_10_R1.EntityLiving;
 import net.minecraft.server.v1_10_R1.NBTTagCompound;
 import net.minecraft.server.v1_10_R1.NBTTagList;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
@@ -13,6 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -149,6 +155,41 @@ public class ItemUtils {
                     }
                 }
             }
+        }
+    }
+
+    public void loadStackableItems() {
+        String cfgMin = "MIN";
+        String cfgMax = "MAX";
+        int ITEM_DEFAULT = -1;
+
+        new File("plugins/StackableItems/items.yml").delete();
+
+        File itemsFile = new File("plugins/StackableItems/items.yml");
+        FileConfiguration itemsConfig = YamlConfiguration.loadConfiguration(itemsFile);
+
+        itemsConfig.addDefault("allWorlds.default." + cfgMin, ITEM_DEFAULT);
+        itemsConfig.addDefault("allWorlds.default." + cfgMax, ITEM_DEFAULT);
+        itemsConfig.addDefault("allWorlds.player.testPlayer." + cfgMin, ITEM_DEFAULT);
+        itemsConfig.addDefault("allWorlds.player.testPlayer." + cfgMax, ITEM_DEFAULT);
+        itemsConfig.addDefault("allWorlds.group.testGroup." + cfgMin, ITEM_DEFAULT);
+        itemsConfig.addDefault("allWorlds.group.testGroup." + cfgMax, ITEM_DEFAULT);
+        itemsConfig.addDefault("allWorlds.inventory.chest." + cfgMin, ITEM_DEFAULT);
+        itemsConfig.addDefault("allWorlds.inventory.chest." + cfgMax, ITEM_DEFAULT);
+
+        itemsConfig.addDefault("testWorld.default." + cfgMin, ITEM_DEFAULT);
+        itemsConfig.addDefault("testWorld.default." + cfgMax, ITEM_DEFAULT);
+        itemsConfig.options().copyDefaults(true);
+        Config.saveConfig(itemsConfig, itemsFile);
+
+        SIItems.reload();
+        for (String item : Main.instance.getConfig().getStringList("Stackable-items")) {
+            int amount = Integer.valueOf(item.split(" ")[1]);
+            int ID = Integer.valueOf(item.split(":")[0]);
+            short dura = Short.valueOf(item.split(":")[1].replace(" " + amount, ""));
+
+            Material material = Material.getMaterial(ID);
+            SIItems.setMax("allWorlds", "default", "", material, dura, amount);
         }
     }
 }

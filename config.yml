@@ -27,4 +27,5 @@ Save-worlds:
 - RaidWorld
 Resource-pack: "http://files.enjin.com/1274010/CrimeRing.zip"
 Resource-hash: ""
-Resource-kick: "&4CrimeRing requires you to use the config!"
+Resource-kick: "&4CrimeRing requires you to use the resource pack!"
+Stackable-items:

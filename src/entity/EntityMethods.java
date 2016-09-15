@@ -70,7 +70,7 @@ public class EntityMethods {
         if (script.equalsIgnoreCase("none")) {
             return;
         }
-        
+
         Invocable invocable = (Invocable) engine;
         try {
             invocable.invokeFunction(script);

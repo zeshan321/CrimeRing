@@ -41,7 +41,7 @@ public class ActionEquip implements Listener {
     public void onUnequip(PlayerUnequipEvent event) {
         Player player = event.getPlayer();
 
-        if (Main.instance.listeners.contains(player.getUniqueId(), typeUnequip+ player.getUniqueId().toString())) {
+        if (Main.instance.listeners.contains(player.getUniqueId(), typeUnequip + player.getUniqueId().toString())) {
             ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(), typeUnequip + player.getUniqueId().toString());
 
             Invocable invocable = (Invocable) listenerObject.engine;

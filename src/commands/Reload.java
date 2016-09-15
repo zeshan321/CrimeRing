@@ -8,6 +8,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import script.ListenerObject;
+import utils.ItemUtils;
 
 import java.util.Iterator;
 import java.util.UUID;
@@ -45,6 +46,9 @@ public class Reload implements CommandExecutor {
 
             plugin.listeners.putAll(temp);
             temp.clear();
+
+            // Reload stackable items
+            new ItemUtils().loadStackableItems();
 
             commandSender.sendMessage(ChatColor.RED + "CrimeRing has been reloaded!");
         }
