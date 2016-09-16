@@ -146,6 +146,7 @@ public class Main extends JavaPlugin {
         pm.registerEvents(new FakeblockListener(this), this);
         pm.registerEvents(new ActionEquip(this), this);
         pm.registerEvents(new ActionInteract(this), this);
+        pm.registerEvents(new ActionGrow(this), this);
 
         // Commands
         getCommand("CRReload").setExecutor(new Reload(this));

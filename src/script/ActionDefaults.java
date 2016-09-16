@@ -23,6 +23,7 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
+import particleeffect.ParticleEffect;
 import raids.PartyAPI;
 import raids.PartyObject;
 import utils.EnchantGlow;
@@ -898,6 +899,11 @@ public class ActionDefaults {
             case "INTERACT":
                 Main.instance.listeners.put(player.getUniqueId(), type + "-" + trigger, listenerObject);
                 break;
+
+            // 'GROW' will not work with listener
+            case "GROW":
+                Main.instance.listeners.put(player.getUniqueId(), type + "-" + trigger, listenerObject);
+                break;
         }
     }
 
@@ -946,6 +952,10 @@ public class ActionDefaults {
                 break;
 
             case "INTERACT":
+                Main.instance.listeners.remove(player.getUniqueId(), type + "-" + trigger);
+                break;
+
+            case "GROW":
                 Main.instance.listeners.remove(player.getUniqueId(), type + "-" + trigger);
                 break;
         }
@@ -1016,5 +1026,18 @@ public class ActionDefaults {
 
     public boolean hasPotionEffect(Player player, String type) {
         return player.hasPotionEffect(PotionEffectType.getByName(type));
+    }
+
+    public void showParticlesAll(String type, Location location, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
+        ParticleEffect.valueOf(type).display(offsetX, offsetY, offsetZ, speed, amount, location, new ArrayList<>(Bukkit.getOnlinePlayers()));
+    }
+
+    public void showParticles(String type, Player player, Location location, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
+        ParticleEffect.valueOf(type).display(offsetX, offsetY, offsetZ, speed, amount, location, player);
+    }
+
+    public void setBlockAtLocation(Location location, String type, int data) {
+        location.getWorld().getBlockAt(location).setType(Material.valueOf(type));
+        location.getWorld().getBlockAt(location).setData((byte) data);
     }
 }
