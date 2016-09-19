@@ -25,7 +25,7 @@ import java.util.List;
 
 public class ItemUtils {
 
-    private static NBTTagCompound getTag(org.bukkit.inventory.ItemStack item) {
+    public NBTTagCompound getTag(org.bukkit.inventory.ItemStack item) {
         if ((item instanceof CraftItemStack)) {
             try {
                 Field field = CraftItemStack.class.getDeclaredField("handle");

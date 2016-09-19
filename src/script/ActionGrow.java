@@ -23,7 +23,6 @@ public class ActionGrow implements Listener {
     @EventHandler
     public void onGrow(BlockGrowEvent event) {
         Block old = event.getBlock();
-        Block newBlock = event.getNewState().getBlock();
 
         BlockState oldState = old.getState();
         BlockState newState = event.getNewState();

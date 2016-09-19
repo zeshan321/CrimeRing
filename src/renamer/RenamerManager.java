@@ -8,6 +8,7 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.zeshanaslam.crimering.FileHandler;
 import com.zeshanaslam.crimering.Main;
 import org.bukkit.ChatColor;
+import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -54,7 +55,11 @@ public class RenamerManager {
                         ItemStack[] read = packet.getItemArrayModifier().read(0);
 
                         for (int i = 0; i < read.length; i++) {
-                            read[i] = renameItem(read[i]);
+                            ItemStack itemStack = renameItem(read[i]);
+
+                            if (itemStack != null) {
+                                read[i] = renameItem(read[i]);
+                            }
                         }
 
                         packet.getItemArrayModifier().write(0, read);
@@ -73,24 +78,59 @@ public class RenamerManager {
     }
 
     private ItemStack renameItem(ItemStack itemStack) {
-        if (itemStack == null || itemStack.hasItemMeta()) {
+        if (itemStack == null) {
             return itemStack;
         }
 
-        if (!items.containsKey(itemStack.getTypeId() + ":" + itemStack.getDurability())) {
-            return itemStack;
+        String name = CraftItemStack.asNMSCopy(itemStack).getName();
+
+        if (name.contains("Potion")) {
+            if (!items.containsKey(name)) {
+                return itemStack;
+            }
+
+            RenamerObject renamerObject = items.get(name);
+
+            ItemMeta itemMeta = itemStack.getItemMeta();
+            itemMeta.setDisplayName(renamerObject.name);
+
+            if (renamerObject.lore != null) {
+                itemMeta.setLore(renamerObject.lore);
+            }
+
+            itemStack.setItemMeta(itemMeta);
+        } else {
+            if (itemStack.hasItemMeta()) {
+                return itemStack;
+            }
+
+            if (items.containsKey(itemStack.getTypeId() + ":" + itemStack.getDurability())) {
+
+                RenamerObject renamerObject = items.get(itemStack.getTypeId() + ":" + itemStack.getDurability());
+
+                ItemMeta itemMeta = itemStack.getItemMeta();
+                itemMeta.setDisplayName(renamerObject.name);
+
+                if (renamerObject.lore != null) {
+                    itemMeta.setLore(renamerObject.lore);
+                }
+
+                itemStack.setItemMeta(itemMeta);
+            }
+
+            if (items.containsKey(name)) {
+                RenamerObject renamerObject = items.get(name);
+
+                ItemMeta itemMeta = itemStack.getItemMeta();
+                itemMeta.setDisplayName(renamerObject.name);
+
+                if (renamerObject.lore != null) {
+                    itemMeta.setLore(renamerObject.lore);
+                }
+
+                itemStack.setItemMeta(itemMeta);
+            }
         }
-
-        RenamerObject renamerObject = items.get(itemStack.getTypeId() + ":" + itemStack.getDurability());
-
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.setDisplayName(renamerObject.name);
-
-        if (renamerObject.lore != null) {
-            itemMeta.setLore(renamerObject.lore);
-        }
-
-        itemStack.setItemMeta(itemMeta);
 
         return itemStack;
     }
