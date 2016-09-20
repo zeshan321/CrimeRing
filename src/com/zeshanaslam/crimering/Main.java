@@ -1,6 +1,7 @@
 package com.zeshanaslam.crimering;
 
-import bank.BankListener;
+import brewing.BrewListener;
+import brewing.BrewingManager;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.ListenerPriority;
@@ -49,6 +50,7 @@ public class Main extends JavaPlugin {
     public RaidManager raidManager;
     public EntityManager entityManager;
     public RenamerManager renamerManager;
+    public BrewingManager brewingManager;
     public WorldGuardPlugin worldGuardPlugin;
     public ArrayList<String> flag = new ArrayList<>();
     public HashMap<String, Integer> values = new HashMap<>();
@@ -65,6 +67,10 @@ public class Main extends JavaPlugin {
         // Load script manager
         scriptsManager = new ScriptsManager();
         scriptsManager.load();
+
+        // Load brewing manager
+        brewingManager = new BrewingManager();
+        brewingManager.load();
 
         // Load renamer manager
         renamerManager = new RenamerManager();
@@ -141,12 +147,12 @@ public class Main extends JavaPlugin {
         pm.registerEvents(new PlayerEvents(this), this);
         pm.registerEvents(new ResourceListener(this), this);
         pm.registerEvents(new OffHand(this), this);
-        pm.registerEvents(new BankListener(this), this);
         pm.registerEvents(new ScriptListener(this), this);
         pm.registerEvents(new FakeblockListener(this), this);
         pm.registerEvents(new ActionEquip(this), this);
         pm.registerEvents(new ActionInteract(this), this);
         pm.registerEvents(new ActionGrow(this), this);
+        pm.registerEvents(new BrewListener(this), this);
 
         // Commands
         getCommand("CRReload").setExecutor(new Reload(this));

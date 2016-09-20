@@ -192,4 +192,38 @@ public class ItemUtils {
             SIItems.setMax("allWorlds", "default", "", material, dura, amount);
         }
     }
+
+    public boolean isSameItem(ItemStack one, ItemStack two) {
+        boolean negativeDurAllowed = false;
+        boolean same = false;
+
+        if (one != null && two != null) {
+            boolean sameType = one.getType() == two.getType();
+            boolean sameDur = one.getDurability() == two.getDurability();
+            boolean negativeDur = (one.getDurability() == Short.MAX_VALUE) || (two.getDurability() == Short.MAX_VALUE);
+
+            boolean sameEnchant = false;
+            boolean noEnchant = one.getEnchantments() == null && two.getEnchantments() == null;
+            if (!noEnchant) {
+                sameEnchant = one.getEnchantments().equals(two.getEnchantments());
+            }
+
+            boolean sameMeta = false;
+            boolean noMeta = one.getItemMeta() == null && two.getItemMeta() == null;
+
+            if (!noMeta) {
+                // Handles an empty slot being compared
+                if (one.getItemMeta() == null || two.getItemMeta() == null) {
+                    sameMeta = false;
+                } else {
+                    sameMeta = one.getItemMeta().equals(two.getItemMeta());
+                }
+            }
+
+            if (sameType && (sameDur || (negativeDurAllowed && negativeDur)) && (sameEnchant || noEnchant) && (sameMeta || noMeta)) {
+                same = true;
+            }
+        }
+        return same;
+    }
 }

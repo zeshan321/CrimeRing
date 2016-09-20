@@ -29,6 +29,7 @@ public class Reload implements CommandExecutor {
             // Reload managers
             plugin.scriptsManager.load();
             plugin.renamerManager.load();
+            plugin.brewingManager.load();
 
             // Reload script listeners
             Table<UUID, String, ListenerObject> temp = HashBasedTable.create();
