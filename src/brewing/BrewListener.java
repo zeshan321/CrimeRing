@@ -86,7 +86,7 @@ public class BrewListener implements Listener {
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 int fuel = brewer.getHolder().getFuelLevel();
                 BrewingStand brewingStand = (BrewingStand) state;
-                BrewObject brewObject = getBrew(brewer);
+                BrewObject brewObject = getBrew(brewer, player);
 
                 String id = brewery.getWorld().getName() + " " + brewery.getX() + " " + brewery.getY() + " " + brewery.getZ();
                 if (brewObject == null) {
@@ -107,7 +107,7 @@ public class BrewListener implements Listener {
         }
     }
 
-    private BrewObject getBrew(BrewerInventory brewer) {
+    private BrewObject getBrew(BrewerInventory brewer, Player player) {
         String slot1 = "0:0 1";
         String slot2 = "0:0 1";
         String slot3 = "0:0 1";
@@ -129,6 +129,6 @@ public class BrewListener implements Listener {
             slot4 = brewer.getItem(3).getTypeId() + ":" + brewer.getItem(3).getDurability() + " " + brewer.getItem(3).getAmount();
         }
 
-        return plugin.brewingManager.getBrew(slot1, slot2, slot3, slot4);
+        return plugin.brewingManager.getBrew(player, slot1, slot2, slot3, slot4);
     }
 }

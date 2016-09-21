@@ -53,6 +53,7 @@ public class Main extends JavaPlugin {
     public BrewingManager brewingManager;
     public WorldGuardPlugin worldGuardPlugin;
     public ArrayList<String> flag = new ArrayList<>();
+    public ArrayList<UUID> resourcepack = new ArrayList<>();
     public HashMap<String, Integer> values = new HashMap<>();
     public HashMap<String, String> globalFlags = new HashMap<>();
     public HashMap<String, String> fakeBlocks = new HashMap<>();
@@ -362,8 +363,8 @@ public class Main extends JavaPlugin {
 
         // Kick for not having resource pack
         getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
-            Bukkit.getOnlinePlayers().stream().filter(players -> !players.hasMetadata("hasResource")).forEach(players -> {
-                players.removeMetadata("hasResource", this);
+            Bukkit.getOnlinePlayers().stream().filter(players -> !resourcepack.contains(players.getUniqueId())).forEach(players -> {
+                resourcepack.remove(players.getUniqueId());
                 players.kickPlayer(ChatColor.translateAlternateColorCodes('&', getConfig().getString("Resource-kick")));
             });
         }, 20L * 30, 20L * 30);

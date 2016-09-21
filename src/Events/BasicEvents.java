@@ -159,10 +159,6 @@ public class BasicEvents implements Listener {
             return;
         }
 
-        if (event.getEntity().getType() == EntityType.SILVERFISH || event.getEntity().getType() == EntityType.PIG_ZOMBIE) {
-            return;
-        }
-
         event.setCancelled(true);
     }
 

@@ -47,10 +47,6 @@ public class ActionNPC implements Listener {
             return;
         }
 
-        if (!(player.getLocation().distance(interacted.getLocation()) <= 2)) {
-            return;
-        }
-
         if (Main.instance.listeners.contains(player.getUniqueId(), typeNPC + interacted.getCustomName())) {
             ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(), typeNPC + interacted.getCustomName());
 

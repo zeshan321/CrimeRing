@@ -10,6 +10,7 @@ public class BrewObject {
     public String slotC2;
     public String slotC3;
     public String slotC4;
+    public String perm = null;
     public int fuel;
     public int duration;
     public long start;

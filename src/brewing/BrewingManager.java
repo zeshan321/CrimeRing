@@ -5,6 +5,7 @@ import com.zeshanaslam.crimering.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.BrewingStand;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.BrewerInventory;
 import org.bukkit.inventory.InventoryView;
@@ -97,17 +98,29 @@ public class BrewingManager {
             int duration = fileHandler.getInteger(key + ".duration");
             int fuel = fileHandler.getInteger(key + ".fuel");
 
-            brewObjectList.add(new BrewObject(slot1, slot2, slot3, slot4, slotC1, slotC2, slotC3, slotC4, fuel, duration));
+            BrewObject brewObject = new BrewObject(slot1, slot2, slot3, slot4, slotC1, slotC2, slotC3, slotC4, fuel, duration);
+
+            if (fileHandler.contains(key + ".perm")) {
+                brewObject.perm = fileHandler.getString(key + ".perm");
+            }
+
+            brewObjectList.add(brewObject);
         }
     }
 
-    public BrewObject getBrew(String slot1, String slot2, String slot3, String slot4) {
+    public BrewObject getBrew(Player player, String slot1, String slot2, String slot3, String slot4) {
         BrewObject brewObject = null;
 
         for (BrewObject object : brewObjectList) {
 
             if (object.slot1.equals(slot1) && object.slot2.equals(slot2) && object.slot3.equals(slot3) && object.slot4.equals(slot4)) {
-                brewObject = object;
+                if (object.perm == null) {
+                    brewObject = object;
+                } else {
+                    if (player.hasPermission(brewObject.perm)) {
+                        brewObject = object;
+                    }
+                }
                 break;
             }
         }

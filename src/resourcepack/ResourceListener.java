@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 
@@ -40,10 +41,15 @@ public class ResourceListener implements Listener {
     }
 
     @EventHandler
+    public void onLeave(PlayerQuitEvent event) {
+        plugin.resourcepack.remove(event.getPlayer().getUniqueId());
+    }
+
+    @EventHandler
     public void onStatus(PlayerResourcePackStatusEvent event) {
         plugin.getServer().getScheduler().runTask(plugin, () -> {
             if (event.getStatus() == PlayerResourcePackStatusEvent.Status.ACCEPTED || event.getStatus() == PlayerResourcePackStatusEvent.Status.SUCCESSFULLY_LOADED) {
-                event.getPlayer().setMetadata("hasResource", new FixedMetadataValue(plugin, true));
+                plugin.resourcepack.add(event.getPlayer().getUniqueId());
                 return;
             }
 
