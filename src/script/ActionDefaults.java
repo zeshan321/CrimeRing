@@ -12,6 +12,7 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftEntity;
 import org.bukkit.entity.*;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -1039,5 +1040,17 @@ public class ActionDefaults {
     public void setBlockAtLocation(Location location, String type, int data) {
         location.getWorld().getBlockAt(location).setType(Material.valueOf(type));
         location.getWorld().getBlockAt(location).setData((byte) data);
+    }
+
+    public void sendConsoleMessage(String message) {
+        System.out.println(message);
+    }
+
+    public Inventory createRecipeViewer(Player player, String type, String title) {
+        return Bukkit.createInventory(player, InventoryType.valueOf(type), "Recipe Viewer: " + title);
+    }
+
+    public ItemStack createItemStack(int id, int amount, int data) {
+        return new ItemStack(id, amount, (short) data);
     }
 }

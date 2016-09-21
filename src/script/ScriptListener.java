@@ -5,8 +5,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -97,6 +99,18 @@ public class ScriptListener implements Listener {
             if (flag.startsWith("DEATH-" + player.getUniqueId().toString())) {
                 flagIter.remove();
             }
+        }
+    }
+
+    // Deny using recipe viewer inventories
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onClick(InventoryClickEvent event) {
+        if (event.getClickedInventory() == null || event.getClickedInventory().getTitle() == null) {
+            return;
+        }
+
+        if (event.getClickedInventory().getTitle().contains("Recipe Viewer:")) {
+            event.setCancelled(true);
         }
     }
 }

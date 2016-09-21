@@ -46,14 +46,18 @@ public class Main extends JavaPlugin {
 
     public static Main instance;
 
+    // Managers
     public ScriptsManager scriptsManager;
     public RaidManager raidManager;
     public EntityManager entityManager;
     public RenamerManager renamerManager;
     public BrewingManager brewingManager;
     public WorldGuardPlugin worldGuardPlugin;
+
+    // Lists and maps
     public ArrayList<String> flag = new ArrayList<>();
     public ArrayList<UUID> resourcepack = new ArrayList<>();
+    public ArrayList<String> debug = new ArrayList<>();
     public HashMap<String, Integer> values = new HashMap<>();
     public HashMap<String, String> globalFlags = new HashMap<>();
     public HashMap<String, String> fakeBlocks = new HashMap<>();

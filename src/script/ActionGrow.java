@@ -28,11 +28,11 @@ public class ActionGrow implements Listener {
         BlockState newState = event.getNewState();
 
         String data = typeGrow + oldState.getTypeId() + ":" + oldState.getRawData() + " " + newState.getTypeId() + ":" + newState.getRawData();
-        if (Main.instance.scriptsManager.contains(data)) {
-            ScriptObject scriptObject = Main.instance.scriptsManager.getObject(data);
+        if (plugin.scriptsManager.contains(data)) {
+            ScriptObject scriptObject = plugin.scriptsManager.getObject(data);
 
             try {
-                ScriptEngine engine = Main.instance.scriptsManager.engine;
+                ScriptEngine engine = plugin.scriptsManager.engine;
                 CompiledScript compiledScript = scriptObject.script;
 
                 // Objects

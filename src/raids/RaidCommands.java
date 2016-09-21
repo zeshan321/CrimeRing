@@ -21,7 +21,7 @@ public class RaidCommands implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
         if (commandLabel.equalsIgnoreCase("raid")) {
             if (args.length == 0) {
-                sender.sendMessage(ChatColor.GOLD + "/raid leave - This command will kick you and your party from the raid.");
+                sender.sendMessage(ChatColor.GOLD + "/raid leave - This command will kick you from the raid.");
 
                 if (sender.isOp()) {
                     sender.sendMessage(ChatColor.GOLD + "/raid kick <name> - This command will kick the player and his party from a raid.");

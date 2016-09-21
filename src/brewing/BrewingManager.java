@@ -67,15 +67,20 @@ public class BrewingManager {
             }
 
             Bukkit.getOnlinePlayers().stream().filter(players -> players.getOpenInventory() != null && players.getOpenInventory().getTopInventory().getType() == InventoryType.BREWING).forEach(players -> {
-                BrewerInventory brewer = (BrewerInventory) players.getOpenInventory().getTopInventory();
-                Block brewery = brewer.getHolder().getBlock();
+                if (players.getOpenInventory().getTopInventory() instanceof BrewerInventory) {
+                    BrewerInventory brewer = (BrewerInventory) players.getOpenInventory().getTopInventory();
 
-                String id = brewery.getWorld().getName() + " " + brewery.getX() + " " + brewery.getY() + " " + brewery.getZ();
-                BrewObject brewObject = brews.get(id);
+                    if (brewer != null && brewer.getHolder() != null && brewer.getHolder().getBlock() != null) {
+                        Block brewery = brewer.getHolder().getBlock();
 
-                if (brewObject != null) {
-                    InventoryView view = players.getOpenInventory();
-                    view.setProperty(InventoryView.Property.BREW_TIME, toIntExact(((brewObject.start / 1000) + brewObject.duration) - (System.currentTimeMillis() / 1000)));
+                        String id = brewery.getWorld().getName() + " " + brewery.getX() + " " + brewery.getY() + " " + brewery.getZ();
+                        BrewObject brewObject = brews.get(id);
+
+                        if (brewObject != null) {
+                            InventoryView view = players.getOpenInventory();
+                            view.setProperty(InventoryView.Property.BREW_TIME, toIntExact(((brewObject.start / 1000) + brewObject.duration) - (System.currentTimeMillis() / 1000)));
+                        }
+                    }
                 }
             });
         }, 0L, 1L);
