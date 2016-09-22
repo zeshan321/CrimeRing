@@ -1,7 +1,6 @@
 package script;
 
 import com.zeshanaslam.crimering.Main;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -48,7 +47,7 @@ public class ActionInv implements Listener {
             return;
         }
 
-        String invName = event.getInventory().getName().replace("&", "§");
+        String invName = event.getInventory().getName().replace("§", "&");
         if (Main.instance.scriptsManager.contains(typeInv + invName)) {
             event.setCancelled(true);
 

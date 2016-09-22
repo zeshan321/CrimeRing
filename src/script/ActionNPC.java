@@ -1,7 +1,6 @@
 package script;
 
 import com.zeshanaslam.crimering.Main;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -59,7 +58,7 @@ public class ActionNPC implements Listener {
             return;
         }
 
-        String customName = interacted.getCustomName().replace("&", "§");
+        String customName = interacted.getCustomName().replace("§", "&");
         if (Main.instance.scriptsManager.contains(typeNPC + customName)) {
             ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeNPC + customName);
 
