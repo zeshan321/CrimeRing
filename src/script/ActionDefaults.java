@@ -27,7 +27,6 @@ import org.bukkit.scoreboard.ScoreboardManager;
 import particleeffect.ParticleEffect;
 import raids.PartyAPI;
 import raids.PartyObject;
-import utils.EnchantGlow;
 import utils.ItemUtils;
 import utils.MessageUtil;
 
@@ -50,105 +49,6 @@ public class ActionDefaults {
         loc.setPitch(pitch);
 
         player.teleport(loc);
-    }
-
-    public void openInv(Player player, String filename) {
-        if (!FileHandler.fileExists("plugins/CrimeRing/inv/" + filename + ".yml")) {
-            if (player.isOp()) {
-                player.sendMessage(ChatColor.RED + "Error: Unable to create inventory: " + filename);
-            }
-
-            System.out.println(ChatColor.RED + "Error: Unable to create inventory: " + filename);
-            return;
-        }
-
-        FileHandler fileHandler = new FileHandler("plugins/CrimeRing/inv/" + filename + ".yml");
-
-        try {
-            Inventory inventory = Bukkit.createInventory(null, fileHandler.getInteger("Info.Size"), fileHandler.getString("Info.Title").replaceAll("<player>", player.getName()).replaceAll("&", "§"));
-
-            String material;
-            String displayName;
-            String lore;
-            String perm = null;
-            boolean usingPerm = false;
-            int position;
-            int bytedata = 0;
-            int amount = 0;
-
-            for (String s : fileHandler.getKeys()) {
-
-                if (s.equals("Info")) {
-                    continue;
-                }
-
-                material = fileHandler.getString(s + ".Material");
-                displayName = fileHandler.getString(s + ".Name").replaceAll("&", "§");
-                lore = fileHandler.getString(s + ".Lore").replaceAll("&", "§");
-                position = fileHandler.getInteger(s + ".Pos");
-
-                if (!(fileHandler.contains(s + ".Amount"))) {
-                    amount = 1;
-                }
-
-                if (fileHandler.contains(s + ".Amount")) {
-                    amount = fileHandler.getInteger(s + ".Amount");
-                }
-
-                if (!(fileHandler.contains(s + ".Meta"))) {
-                    bytedata = 0;
-                }
-
-                if (fileHandler.contains(s + ".Meta")) {
-                    bytedata = fileHandler.getInteger(s + ".Meta");
-                }
-
-                if (fileHandler.contains(s + ".Perm")) {
-                    perm = fileHandler.getString(s + ".Perm");
-                    usingPerm = true;
-                }
-
-                if (!usingPerm) {
-                    if (!(fileHandler.contains(s + ".Meta"))) {
-                        inventory.setItem(position, new ItemUtils().createItem(Material.getMaterial(material), displayName, lore));
-                    }
-
-                    if (fileHandler.contains(s + ".Meta")) {
-                        inventory.setItem(position, new ItemUtils().createItem(Material.getMaterial(material), displayName, lore, amount, bytedata));
-                    }
-
-                    if (fileHandler.contains(s + ".Glow")) {
-                        ItemStack item = inventory.getItem(position);
-                        EnchantGlow.addGlow(item);
-                        inventory.setItem(position, item);
-                    }
-
-                }
-                if (usingPerm && player.hasPermission(perm)) {
-                    if (!(fileHandler.contains(s + ".Meta"))) {
-                        inventory.setItem(position, new ItemUtils().createItem(Material.getMaterial(material), displayName, lore));
-                    }
-
-                    if (fileHandler.contains(s + ".Meta")) {
-                        inventory.setItem(position, new ItemUtils().createItem(Material.getMaterial(material), displayName, lore, amount, bytedata));
-                    }
-
-                    if (fileHandler.contains(s + ".Glow")) {
-                        ItemStack item = inventory.getItem(position);
-                        EnchantGlow.addGlow(item);
-                        inventory.setItem(position, item);
-                    }
-                }
-            }
-
-            player.openInventory(inventory);
-        } catch (NullPointerException e) {
-            if (player.isOp()) {
-                player.sendMessage(ChatColor.RED + "Error: Unable to create inventory: " + filename);
-            }
-
-            System.out.println(ChatColor.RED + "Error: Unable to create inventory: " + filename);
-        }
     }
 
     public void openRaid(Player player, String filename) {
@@ -719,6 +619,22 @@ public class ActionDefaults {
         Main.instance.playerTasks.put(task.getTaskId(), player.getUniqueId());
     }
 
+    public void runScript(Player player, String name) {
+        ScriptObject scriptObject = Main.instance.scriptsManager.getObject(name);
+
+        try {
+            ScriptEngine engine = Main.instance.scriptsManager.engine;
+            CompiledScript compiledScript = scriptObject.script;
+
+            // Objects
+            Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
+            bindings.put("player", player);
+
+            compiledScript.eval(bindings);
+        } catch (ScriptException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void teleportEntity(LivingEntity entity, String world, int x, int y, int z, float yaw, float pitch) {
         Location loc = new Location(Bukkit.getWorld(world), x, y, z);
@@ -1046,11 +962,26 @@ public class ActionDefaults {
         System.out.println(message);
     }
 
-    public Inventory createRecipeViewer(Player player, String type, String title) {
-        return Bukkit.createInventory(player, InventoryType.valueOf(type), "Recipe Viewer: " + title);
+    public Inventory createInventory(Player player, String type, String title) {
+        return Bukkit.createInventory(player, InventoryType.valueOf(type), title);
+    }
+
+    public Inventory createInventory(Player player, String title, int size) {
+        return Bukkit.createInventory(player, size, title);
     }
 
     public ItemStack createItemStack(int id, int amount, int data) {
         return new ItemStack(id, amount, (short) data);
+    }
+
+    public ItemStack createItemStackWithMeta(int id, int amount, int data, String display, String lore) {
+        ItemStack itemStack = new ItemStack(id, amount, (short) data);
+
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        itemMeta.setDisplayName(display);
+        itemMeta.setLore(Arrays.asList(lore.split("\\n")));
+
+        itemStack.setItemMeta(itemMeta);
+        return itemStack;
     }
 }

@@ -109,7 +109,7 @@ public class ScriptListener implements Listener {
             return;
         }
 
-        if (event.getClickedInventory().getTitle().contains("Recipe Viewer:")) {
+        if (event.getClickedInventory().getTitle().contains("Recipe:")) {
             event.setCancelled(true);
         }
     }

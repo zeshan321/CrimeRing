@@ -59,8 +59,9 @@ public class ActionNPC implements Listener {
             return;
         }
 
-        if (Main.instance.scriptsManager.contains(typeNPC + ChatColor.stripColor(interacted.getCustomName()))) {
-            ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeNPC + ChatColor.stripColor(interacted.getCustomName()));
+        String customName = interacted.getCustomName().replace("&", "§");
+        if (Main.instance.scriptsManager.contains(typeNPC + customName)) {
+            ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeNPC + customName);
 
             try {
                 ScriptEngine engine = Main.instance.scriptsManager.engine;
@@ -70,7 +71,7 @@ public class ActionNPC implements Listener {
                 Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
                 bindings.put("player", player);
                 bindings.put("event", event);
-                bindings.put("CR", new ActionDefaults(typeNPC + ChatColor.stripColor(interacted.getCustomName()), engine));
+                bindings.put("CR", new ActionDefaults(typeNPC + customName, engine));
                 bindings.put("x", interacted.getLocation().getBlockX());
                 bindings.put("y", interacted.getLocation().getBlockY());
                 bindings.put("z", interacted.getLocation().getBlockZ());

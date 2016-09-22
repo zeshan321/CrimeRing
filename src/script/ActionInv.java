@@ -34,8 +34,6 @@ public class ActionInv implements Listener {
 
         Player player = (Player) event.getWhoClicked();
 
-        String invName = ChatColor.stripColor(event.getInventory().getName());
-
         if (Main.instance.listeners.contains(player.getUniqueId(), typeInv + event.getInventory().getName())) {
             event.setCancelled(true);
 
@@ -50,6 +48,7 @@ public class ActionInv implements Listener {
             return;
         }
 
+        String invName = event.getInventory().getName().replace("&", "§");
         if (Main.instance.scriptsManager.contains(typeInv + invName)) {
             event.setCancelled(true);
 
