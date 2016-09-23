@@ -57,7 +57,6 @@ public class Main extends JavaPlugin {
     // Lists and maps
     public ArrayList<String> flag = new ArrayList<>();
     public ArrayList<UUID> resourcepack = new ArrayList<>();
-    public ArrayList<String> debug = new ArrayList<>();
     public HashMap<String, Integer> values = new HashMap<>();
     public HashMap<String, String> globalFlags = new HashMap<>();
     public HashMap<String, String> fakeBlocks = new HashMap<>();
