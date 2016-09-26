@@ -6,6 +6,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.zeshanaslam.crimering.FileHandler;
 import com.zeshanaslam.crimering.Main;
 import me.robin.battlelevels.api.BattleLevelsAPI;
+import merchant.MoneyUtil;
 import net.elseland.xikage.MythicMobs.API.Bukkit.BukkitMobsAPI;
 import net.elseland.xikage.MythicMobs.API.Exceptions.InvalidMobTypeException;
 import org.bukkit.*;
@@ -983,5 +984,21 @@ public class ActionDefaults {
 
         itemStack.setItemMeta(itemMeta);
         return itemStack;
+    }
+
+    public int getItemWorth(ItemStack itemStack) {
+        return new MoneyUtil().getItemWorth(itemStack);
+    }
+
+    public void addInvBills(Player player, int amount) {
+        new MoneyUtil().giveBills(player, amount);
+    }
+
+    public void takeInvMoney(Player player, int amount) {
+        new MoneyUtil().takeMoney(player, amount);
+    }
+
+    public int getInvMoney(Player player) {
+        return new MoneyUtil().getInvMoney(player);
     }
 }

@@ -9,6 +9,8 @@ import com.zeshanaslam.crimering.FileHandler;
 import com.zeshanaslam.crimering.Main;
 import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -49,6 +51,7 @@ public class RenamerManager {
             public void onPacketSending(PacketEvent event) {
                 PacketContainer packet = event.getPacket();
                 PacketType type = packet.getType();
+                Player player = event.getPlayer();
 
                 if (type == PacketType.Play.Server.WINDOW_ITEMS) {
                     try {
@@ -59,6 +62,13 @@ public class RenamerManager {
 
                             if (itemStack != null) {
                                 read[i] = renameItem(read[i]);
+
+                                if (player.getOpenInventory() == null) {
+                                    player.getInventory().setItem(i, read[i]);
+                                } else {
+                                    InventoryView inventory = player.getOpenInventory();
+                                    inventory.setItem(i, read[i]);
+                                }
                             }
                         }
 
@@ -69,6 +79,7 @@ public class RenamerManager {
                 } else {
                     try {
                         packet.getItemModifier().write(0, renameItem(packet.getItemModifier().read(0)));
+                        //System.out.println(packet.getShorts().getField(1));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

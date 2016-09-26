@@ -37,6 +37,14 @@ public class ResourceListener implements Listener {
                 e.printStackTrace();
             }
         }, 20L);
+
+        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+            Player player = event.getPlayer();
+
+            if (!(plugin.resourcepack.contains(event.getPlayer().getUniqueId()))) {
+                player.kickPlayer(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("Resource-kick")));
+            }
+        }, 20L * 30);
     }
 
     @EventHandler

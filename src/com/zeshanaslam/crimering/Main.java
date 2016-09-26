@@ -20,8 +20,6 @@ import entity.EntityObject;
 import events.*;
 import fakeblocks.FakeblockCommand;
 import fakeblocks.FakeblockListener;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -363,14 +361,6 @@ public class Main extends JavaPlugin {
                 }
             }
         }, 20L * 60, 20L * 60);
-
-        // Kick for not having resource pack
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
-            Bukkit.getOnlinePlayers().stream().filter(players -> !resourcepack.contains(players.getUniqueId())).forEach(players -> {
-                resourcepack.remove(players.getUniqueId());
-                players.kickPlayer(ChatColor.translateAlternateColorCodes('&', getConfig().getString("Resource-kick")));
-            });
-        }, 20L * 30, 20L * 30);
     }
 
     public void onDisable() {
