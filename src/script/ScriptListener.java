@@ -3,10 +3,12 @@ package script;
 import com.zeshanaslam.crimering.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -97,6 +99,21 @@ public class ScriptListener implements Listener {
             String flag = flagIter.next();
 
             if (flag.startsWith("DEATH-" + player.getUniqueId().toString())) {
+                flagIter.remove();
+            }
+        }
+    }
+
+    // Clear run function later on death
+    @EventHandler
+    public void onEntityDeath(EntityDeathEvent event) {
+        Entity entity = event.getEntity();
+
+        Iterator<String> flagIter = plugin.globalFlags.keySet().iterator();
+        while (flagIter.hasNext()) {
+            String key = flagIter.next();
+
+            if (key.startsWith("DEATH-" + entity.getUniqueId().toString())) {
                 flagIter.remove();
             }
         }

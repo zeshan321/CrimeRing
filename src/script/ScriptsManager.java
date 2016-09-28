@@ -64,6 +64,10 @@ public class ScriptsManager {
         System.out.println("[CR] Loaded " + loaded + " scripts.");
     }
 
+    public void clear() {
+        scriptData.clear();
+    }
+
     public boolean contains(String key) {
         return scriptData.containsKey(key);
     }

@@ -28,6 +28,11 @@ public class EntityManager {
         entityHider = new EntityHider(Main.instance, EntityHider.Policy.BLACKLIST);
     }
 
+    public void clear() {
+        entityObjectList.clear();
+        entityUUID.clear();
+    }
+
     public void createEntityWithSkin(Player player, String type, String name, String skin, boolean hidden, String world, int x, int y, int z, float yaw, float pitch) {
         if (getEntityObject(player, name) != null) {
             EntityObject entityObject = getEntityObject(player, name);

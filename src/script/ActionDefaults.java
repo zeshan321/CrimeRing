@@ -6,7 +6,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.zeshanaslam.crimering.FileHandler;
 import com.zeshanaslam.crimering.Main;
 import me.robin.battlelevels.api.BattleLevelsAPI;
-import merchant.MoneyUtil;
+import merchants.api.Merchant;
 import net.elseland.xikage.MythicMobs.API.Bukkit.BukkitMobsAPI;
 import net.elseland.xikage.MythicMobs.API.Exceptions.InvalidMobTypeException;
 import org.bukkit.*;
@@ -30,6 +30,7 @@ import raids.PartyAPI;
 import raids.PartyObject;
 import utils.ItemUtils;
 import utils.MessageUtil;
+import utils.MoneyUtil;
 
 import javax.script.*;
 import java.util.*;
@@ -601,6 +602,31 @@ public class ActionDefaults {
         }, seconds * 20);
     }
 
+    public Object runScriptFunction(Player player, String name, Object... args) {
+        Object object = null;
+
+        ScriptObject scriptObject = Main.instance.scriptsManager.getObject(name);
+
+        try {
+            ScriptEngine engine = Main.instance.scriptsManager.engine;
+            CompiledScript compiledScript = scriptObject.script;
+
+            // Objects
+            Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
+            bindings.put("player", player);
+            bindings.put("CR", new ActionDefaults(scriptID, engine));
+
+            compiledScript.eval(bindings);
+
+            Invocable invocable = (Invocable) engine;
+            object = invocable.invokeFunction(name, args);
+        } catch (ScriptException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+
+        return object;
+    }
+
     // Cancels on player death
     public void runFunctionLater(Player player, String name, int seconds) {
         BukkitTask task = new BukkitRunnable() {
@@ -1000,5 +1026,17 @@ public class ActionDefaults {
 
     public int getInvMoney(Player player) {
         return new MoneyUtil().getInvMoney(player);
+    }
+
+    public Merchant createTrade(String title) {
+        return Main.instance.merchantAPI.newMerchant(title);
+    }
+
+    public void addTrade(Merchant merchant, ItemStack in, ItemStack out) {
+        merchant.addOffer(Main.instance.merchantAPI.newOffer(in, out));
+    }
+
+    public void openTrade(Player player, Merchant merchant) {
+        merchant.addCustomer(player);
     }
 }

@@ -113,6 +113,11 @@ public class BrewingManager {
         }
     }
 
+    public void clear() {
+        brewObjectList.clear();
+        brews.clear();
+    }
+
     public BrewObject getBrew(Player player, String slot1, String slot2, String slot3, String slot4) {
         BrewObject brewObject = null;
 

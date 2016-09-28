@@ -40,6 +40,10 @@ public class RenamerManager {
         }
     }
 
+    public void clear() {
+        items.clear();
+    }
+
     public void loadListeners() {
         Set<PacketType> packets = new HashSet<>();
         packets.add(PacketType.Play.Server.SET_SLOT);

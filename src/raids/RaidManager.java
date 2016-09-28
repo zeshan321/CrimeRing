@@ -27,6 +27,13 @@ public class RaidManager {
     public List<InviteObject> invites = new ArrayList<>();
     public HashMap<String, String> raidNames = new HashMap<>();
 
+    public void clear() {
+        raids.clear();
+        parties.clear();
+        invites.clear();
+        raidNames.clear();
+    }
+
     public void openRaidMenu(Player player, String filename) {
         FileHandler fileHandler = new FileHandler("plugins/CrimeRing/raids/" + filename + ".yml");
         Inventory inventory = Bukkit.createInventory(null, 18, ChatColor.RED + "Raid: " + fileHandler.getString("info.name"));

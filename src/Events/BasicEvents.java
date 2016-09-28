@@ -177,6 +177,8 @@ public class BasicEvents implements Listener {
                     event.setCancelled(true);
                 }
             }
+        } else {
+            event.setCancelled(true);
         }
     }
 

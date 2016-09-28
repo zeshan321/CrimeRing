@@ -20,6 +20,9 @@ import entity.EntityObject;
 import events.*;
 import fakeblocks.FakeblockCommand;
 import fakeblocks.FakeblockListener;
+import merchants.SMerchantAPI;
+import merchants.api.MerchantAPI;
+import merchants.api.Merchants;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -51,6 +54,7 @@ public class Main extends JavaPlugin {
     public RenamerManager renamerManager;
     public BrewingManager brewingManager;
     public WorldGuardPlugin worldGuardPlugin;
+    public MerchantAPI merchantAPI;
 
     // Lists and maps
     public ArrayList<String> flag = new ArrayList<>();
@@ -65,6 +69,11 @@ public class Main extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
         instance = this;
+
+        // Setup merchant api
+        MerchantAPI api = (MerchantAPI) new SMerchantAPI();
+        Merchants.set(api);
+        merchantAPI = api;
 
         // Load script manager
         scriptsManager = new ScriptsManager();
@@ -364,6 +373,14 @@ public class Main extends JavaPlugin {
     }
 
     public void onDisable() {
+        // Clear lists in case of reload
+        scriptsManager.clear();
+        raidManager.clear();
+        entityManager.clear();
+        brewingManager.clear();
+        renamerManager.clear();
+
+        // Save config
         saveConfig();
 
         // Clear dead bodies
