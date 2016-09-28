@@ -67,7 +67,7 @@ public class SContainerMerchant extends ContainerMerchant {
      * Sets the slot at the raw index.
      *
      * @param index the index
-     * @param slot the slot
+     * @param slot  the slot
      */
     void setSlot(int index, Slot slot) {
         // Set the raw index of the slot

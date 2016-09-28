@@ -92,7 +92,7 @@ public class RenamerManager {
         });
     }
 
-    private ItemStack renameItem(ItemStack itemStack) {
+    public ItemStack renameItem(ItemStack itemStack) {
         if (itemStack == null) {
             return itemStack;
         }

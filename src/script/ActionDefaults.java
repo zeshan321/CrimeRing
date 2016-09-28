@@ -31,6 +31,7 @@ import raids.PartyObject;
 import utils.ItemUtils;
 import utils.MessageUtil;
 import utils.MoneyUtil;
+import utils.ProtocolUtil;
 
 import javax.script.*;
 import java.util.*;
@@ -1029,11 +1030,29 @@ public class ActionDefaults {
     }
 
     public Merchant createTrade(String title) {
-        return Main.instance.merchantAPI.newMerchant(title);
+        Merchant merchant = Main.instance.merchantAPI.newMerchant(title);
+        merchant.setTitle(title, false);
+
+        return merchant;
     }
 
-    public void addTrade(Merchant merchant, ItemStack in, ItemStack out) {
-        merchant.addOffer(Main.instance.merchantAPI.newOffer(in, out));
+    public void addTrade(Merchant merchant, ItemStack first, ItemStack result) {
+        ProtocolUtil protocolUtil = new ProtocolUtil();
+
+        first = protocolUtil.setItemHideFlags(Main.instance.renamerManager.renameItem(first));
+        result = protocolUtil.setItemHideFlags(Main.instance.renamerManager.renameItem(result));
+
+        merchant.addOffer(Main.instance.merchantAPI.newOffer(result, first));
+    }
+
+    public void addTrade(Merchant merchant, ItemStack first, ItemStack second, ItemStack result) {
+        ProtocolUtil protocolUtil = new ProtocolUtil();
+
+        first = protocolUtil.setItemHideFlags(Main.instance.renamerManager.renameItem(first));
+        second = protocolUtil.setItemHideFlags(Main.instance.renamerManager.renameItem(second));
+        result = protocolUtil.setItemHideFlags(Main.instance.renamerManager.renameItem(result));
+
+        merchant.addOffer(Main.instance.merchantAPI.newOffer(result, first, second));
     }
 
     public void openTrade(Player player, Merchant merchant) {

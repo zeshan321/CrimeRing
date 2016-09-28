@@ -47,7 +47,7 @@ public class Merchants {
     /**
      * Creates a new {@link Merchant} with the specified title.
      *
-     * @param title The title
+     * @param title     The title
      * @param jsonTitle Whether the title is in json format
      * @return The merchant
      */
@@ -58,8 +58,8 @@ public class Merchants {
     /**
      * Creates a new {@link MerchantOffer} with the trade items.
      *
-     * @param result The resulting item stack
-     * @param firstItem The first item stack
+     * @param result     The resulting item stack
+     * @param firstItem  The first item stack
      * @param secondItem The second item stack
      * @return The merchant offer
      */
@@ -71,7 +71,7 @@ public class Merchants {
     /**
      * Creates a new {@link MerchantOffer} with the trade items.
      *
-     * @param result The resulting item stack
+     * @param result    The resulting item stack
      * @param firstItem The first item stack
      * @return The merchant offer
      */

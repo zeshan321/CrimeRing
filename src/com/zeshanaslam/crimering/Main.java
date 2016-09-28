@@ -71,7 +71,7 @@ public class Main extends JavaPlugin {
         instance = this;
 
         // Setup merchant api
-        MerchantAPI api = (MerchantAPI) new SMerchantAPI();
+        MerchantAPI api = new SMerchantAPI();
         Merchants.set(api);
         merchantAPI = api;
 

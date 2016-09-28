@@ -50,7 +50,7 @@ public interface Merchant {
     /**
      * Sets the title of the merchant.
      *
-     * @param title The title
+     * @param title     The title
      * @param jsonTitle Whether the title is in json format
      */
     void setTitle(String title, boolean jsonTitle);

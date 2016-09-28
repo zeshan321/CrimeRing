@@ -92,7 +92,7 @@ public interface MerchantOffer {
     /**
      * Gets whether the offer is locked. This will happen if the amount of
      * uses exceeds the maximum amount of uses.
-     *
+     * <p>
      * <p>
      * This feature will be handled different in versions before 1.4,
      * because this the version was that the feature implemented was.
