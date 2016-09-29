@@ -4,6 +4,7 @@ import com.zeshanaslam.crimering.Main;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -28,6 +29,24 @@ public class EntityListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Main.instance.entityManager.entityObjectList.stream().filter(entityObject -> entityObject.hidden).forEach(entityObject -> Main.instance.entityManager.entityHider.hideEntity(event.getPlayer(), entityObject.entity));
+    }
+
+    @EventHandler
+    public void onDeath(EntityDeathEvent event) {
+        Iterator<EntityObject> iterator = Main.instance.entityManager.entityObjectList.iterator();
+
+        while (iterator.hasNext()) {
+            EntityObject entityObject = iterator.next();
+
+            if (entityObject.entity.getUniqueId() == event.getEntity().getUniqueId()) {
+                plugin.entityManager.entityUUID.remove(entityObject.entity.getUniqueId());
+
+                entityObject.entity.remove();
+
+                iterator.remove();
+
+            }
+        }
     }
 
     @EventHandler

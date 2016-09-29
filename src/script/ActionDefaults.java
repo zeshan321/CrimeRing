@@ -2,6 +2,7 @@ package script;
 
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.zeshanaslam.crimering.FileHandler;
 import com.zeshanaslam.crimering.Main;
@@ -1057,5 +1058,36 @@ public class ActionDefaults {
 
     public void openTrade(Player player, Merchant merchant) {
         merchant.addCustomer(player);
+    }
+
+    public boolean isDay(Player player) {
+        long time = player.getWorld().getTime();
+
+        return time < 12300 || time > 23850;
+    }
+
+    public boolean isInRegion(Player player, String regionName) {
+        boolean isInRegion = false;
+
+        ApplicableRegionSet applicableRegions = Main.instance.worldGuardPlugin.getRegionManager(player.getWorld()).getApplicableRegions(player.getLocation());
+        for (ProtectedRegion region : applicableRegions) {
+            if (region.getId().equals(regionName)) {
+                isInRegion = true;
+            }
+        }
+
+        return isInRegion;
+    }
+
+    public void spawnPlayerMob(Player player, String type, String world, int amount, int x, int y, int z) {
+        BukkitMobsAPI bukkitMobsAPI = new BukkitMobsAPI();
+        try {
+            for (int i = 1; i < amount + 1; i++) {
+                Entity entity = bukkitMobsAPI.spawnMythicMob(bukkitMobsAPI.getMythicMob(type), new Location(Bukkit.getWorld(world), x, y, z));
+                Bukkit.getOnlinePlayers().stream().filter(players -> players != player).forEach(players -> Main.instance.entityManager.entityHider.hideEntity(players, entity));
+            }
+        } catch (InvalidMobTypeException e) {
+            e.printStackTrace();
+        }
     }
 }

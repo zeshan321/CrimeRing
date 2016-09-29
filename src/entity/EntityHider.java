@@ -12,15 +12,20 @@ import com.google.common.collect.Table;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.plugin.Plugin;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import static com.comphenix.protocol.PacketType.Play.Server.*;
@@ -44,6 +49,9 @@ public class EntityHider implements Listener {
     // Listeners
     private Listener bukkitListener;
     private PacketAdapter protocolListener;
+
+    // Entities list
+    private List<Entity> hiddenEntites = new ArrayList<>();
 
     /**
      * Construct a new entity hider.
@@ -164,6 +172,17 @@ public class EntityHider implements Listener {
             }
 
             @EventHandler
+            public void onEntityDamage(EntityDamageByEntityEvent e) {
+                if (e.getDamager() instanceof Player) {
+                    Player player = (Player) e.getDamager();
+
+                    if (!canSee(player, e.getEntity())) {
+                        e.setCancelled(true);
+                    }
+                }
+            }
+
+            @EventHandler
             public void onChunkUnload(ChunkUnloadEvent e) {
                 for (Entity entity : e.getChunk().getEntities()) {
                     removeEntity(entity, false);
@@ -173,6 +192,17 @@ public class EntityHider implements Listener {
             @EventHandler
             public void onPlayerQuit(PlayerQuitEvent e) {
                 removePlayer(e.getPlayer());
+            }
+
+            @EventHandler(priority = EventPriority.HIGHEST)
+            public void onTarget(EntityTargetEvent event){
+                if (event.getTarget() instanceof Player){
+                   Player player = (Player) event.getTarget();
+
+                    if (!canSee(player, event.getEntity())) {
+                        event.setCancelled(true);
+                    }
+                }
             }
         };
     }
