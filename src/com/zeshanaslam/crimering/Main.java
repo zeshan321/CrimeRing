@@ -179,6 +179,7 @@ public class Main extends JavaPlugin {
         getCommand("npcclear").setExecutor(new NPCClear(this));
         getCommand("crrpupdate").setExecutor(new ResourceCommand(this));
         getCommand("CRFakeBlocks").setExecutor(new FakeblockCommand(this));
+        getCommand("CRRunscript").setExecutor(new RunScript(this));
 
         ProtocolUtil protocolUtil = new ProtocolUtil();
 

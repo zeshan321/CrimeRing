@@ -195,9 +195,9 @@ public class EntityHider implements Listener {
             }
 
             @EventHandler(priority = EventPriority.HIGHEST)
-            public void onTarget(EntityTargetEvent event){
-                if (event.getTarget() instanceof Player){
-                   Player player = (Player) event.getTarget();
+            public void onTarget(EntityTargetEvent event) {
+                if (event.getTarget() instanceof Player) {
+                    Player player = (Player) event.getTarget();
 
                     if (!canSee(player, event.getEntity())) {
                         event.setCancelled(true);

@@ -1079,12 +1079,17 @@ public class ActionDefaults {
         return isInRegion;
     }
 
-    public void spawnPlayerMob(Player player, String type, String world, int amount, int x, int y, int z) {
+    public void spawnPlayerMob(Player player, boolean target, String type, String world, int amount, int x, int y, int z) {
         BukkitMobsAPI bukkitMobsAPI = new BukkitMobsAPI();
         try {
             for (int i = 1; i < amount + 1; i++) {
                 Entity entity = bukkitMobsAPI.spawnMythicMob(bukkitMobsAPI.getMythicMob(type), new Location(Bukkit.getWorld(world), x, y, z));
                 Bukkit.getOnlinePlayers().stream().filter(players -> players != player).forEach(players -> Main.instance.entityManager.entityHider.hideEntity(players, entity));
+
+                if (target) {
+                    Creature creature = (Creature) entity;
+                    creature.setTarget(player);
+                }
             }
         } catch (InvalidMobTypeException e) {
             e.printStackTrace();

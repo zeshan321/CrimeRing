@@ -32,3 +32,5 @@ commands:
     description: Updates resource pack.
   CRFakeBlocks:
     description: Fake blocks command.
+  CRRunscript:
+    description: Runs script.
