@@ -46,6 +46,7 @@ public class RunScript implements CommandExecutor {
                         // Objects
                         Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
                         bindings.put("player", player);
+                        bindings.put("CR", new ActionDefaults(script, engine));
 
                         compiledScript.eval(bindings);
                     } catch (ScriptException e) {
