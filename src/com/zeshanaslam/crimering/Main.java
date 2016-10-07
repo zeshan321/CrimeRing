@@ -23,6 +23,7 @@ import fakeblocks.FakeblockListener;
 import merchants.SMerchantAPI;
 import merchants.api.MerchantAPI;
 import merchants.api.Merchants;
+import net.elseland.xikage.MythicMobs.API.Bukkit.BukkitMobsAPI;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -55,6 +56,7 @@ public class Main extends JavaPlugin {
     public BrewingManager brewingManager;
     public WorldGuardPlugin worldGuardPlugin;
     public MerchantAPI merchantAPI;
+    public BukkitMobsAPI mythicAPI;
 
     // Lists and maps
     public ArrayList<String> flag = new ArrayList<>();
@@ -69,6 +71,9 @@ public class Main extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
         instance = this;
+
+        // Hook into MythicMobs
+        mythicAPI = new BukkitMobsAPI();
 
         // Setup merchant api
         MerchantAPI api = new SMerchantAPI();

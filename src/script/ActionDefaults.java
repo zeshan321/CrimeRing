@@ -10,6 +10,7 @@ import me.robin.battlelevels.api.BattleLevelsAPI;
 import merchants.api.Merchant;
 import net.elseland.xikage.MythicMobs.API.Bukkit.BukkitMobsAPI;
 import net.elseland.xikage.MythicMobs.API.Exceptions.InvalidMobTypeException;
+import net.elseland.xikage.MythicMobs.API.ThreatTables;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftEntity;
@@ -1079,20 +1080,31 @@ public class ActionDefaults {
         return isInRegion;
     }
 
-    public void spawnPlayerMob(Player player, boolean target, String type, String world, int amount, int x, int y, int z) {
-        BukkitMobsAPI bukkitMobsAPI = new BukkitMobsAPI();
+    public List<Entity> createMythicEntity(String name, int amount, String world, int x, int y, int z) {
+        List<Entity> entities = new ArrayList<>();
+
         try {
             for (int i = 1; i < amount + 1; i++) {
-                Entity entity = bukkitMobsAPI.spawnMythicMob(bukkitMobsAPI.getMythicMob(type), new Location(Bukkit.getWorld(world), x, y, z));
-                Bukkit.getOnlinePlayers().stream().filter(players -> players != player).forEach(players -> Main.instance.entityManager.entityHider.hideEntity(players, entity));
+                Entity entity = Main.instance.mythicAPI.spawnMythicMob(Main.instance.mythicAPI.getMythicMob(name), new Location(Bukkit.getWorld(world), x, y, z));
 
-                if (target) {
-                    Creature creature = (Creature) entity;
-                    creature.setTarget(player);
-                }
+                entities.add(entity);
             }
         } catch (InvalidMobTypeException e) {
             e.printStackTrace();
         }
+
+        return entities;
+    }
+
+    public void hideEntityForOthers(Player player, Entity entity) {
+        Bukkit.getOnlinePlayers().stream().filter(players -> players != player).forEach(players -> Main.instance.entityManager.entityHider.hideEntity(players, entity));
+    }
+
+    public void showEntity(Player player, Entity entity) {
+        Main.instance.entityManager.entityHider.showEntity(player, entity);
+    }
+
+    public void setMMTarget(Entity entity, Player target) {
+        ThreatTables.taunt(entity, target);
     }
 }
