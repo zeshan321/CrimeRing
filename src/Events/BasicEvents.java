@@ -7,6 +7,7 @@ import customevents.ArrowHitBlockEvent;
 import net.minecraft.server.v1_10_R1.EnumItemSlot;
 import net.minecraft.server.v1_10_R1.PacketPlayOutEntityEquipment;
 import org.bukkit.*;
+import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
@@ -24,10 +25,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemDamageEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.ItemStack;
 import raids.PartyAPI;
@@ -300,5 +298,29 @@ public class BasicEvents implements Listener {
 
         // Remove raid items
         new ItemUtils().clearRaidItems(player);
+    }
+
+    // Temp event
+    @EventHandler
+    public void onMove(PlayerMoveEvent event) {
+        Player player = event.getPlayer();
+
+        World world = player.getLocation().getWorld();
+        if (world.getName().equals("world")) {
+            Chunk chunk = player.getLocation().getChunk();
+
+            int cX = chunk.getX() * 16;
+            int cZ = chunk.getZ() * 16;
+            Biome biome = player.getLocation().getWorld().getBiome(cX, cZ);
+            if (biome == Biome.SKY || biome == Biome.VOID || biome == Biome.HELL) {
+                player.sendMessage(ChatColor.RED + "CR found '" + biome.name() + "' Biome. Fixing it... (Re-log for chunk updates)");
+
+                for (int x = 0; x < 16; x++) {
+                    for (int z = 0; z < 16; z++) {
+                        world.setBiome(cX + x, cZ + z, Biome.FOREST);
+                    }
+                }
+            }
+        }
     }
 }
