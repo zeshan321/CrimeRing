@@ -1107,4 +1107,15 @@ public class ActionDefaults {
     public void setMMTarget(Entity entity, Player target) {
         ThreatTables.taunt(entity, target);
     }
+
+    /*public void castMMSkill(Entity entity, String skill) {
+        Main.instance.mythicAPI.castSkill(entity, skill);
+    }*/
+
+    public boolean isOnBlock(Player player, String type) {
+        Location loc = player.getPlayer().getLocation();
+        loc.setY(loc.getY() - 1);
+
+        return loc.getWorld().getBlockAt(loc).getType().toString().equals(type);
+    }
 }

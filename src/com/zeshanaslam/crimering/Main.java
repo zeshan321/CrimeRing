@@ -169,6 +169,7 @@ public class Main extends JavaPlugin {
         pm.registerEvents(new ActionInteract(this), this);
         pm.registerEvents(new ActionGrow(this), this);
         pm.registerEvents(new BrewListener(this), this);
+        pm.registerEvents(new CitizensShoot(this), this);
 
         // Commands
         getCommand("CRReload").setExecutor(new Reload(this));
