@@ -28,7 +28,7 @@ public class CitizensShoot implements Listener {
         Collection<Entity> eTargets = new ArrayList<>();
         eTargets.add(player);
 
-        for (Entity entity: getNearbyCitizens(player.getLocation(), 10)) {
+        for (Entity entity : getNearbyCitizens(player.getLocation(), 10)) {
             MythicMob mob = Main.instance.mythicAPI.getMythicMobInstance(entity).getType();
 
             String skill = "citizenToFlee" + mob.getInternalName().replace("Citizen", "");
@@ -36,10 +36,10 @@ public class CitizensShoot implements Listener {
         }
     }
 
-    private List<Entity> getNearbyCitizens(Location location, int range){
+    private List<Entity> getNearbyCitizens(Location location, int range) {
         List<Entity> entities = new ArrayList<>();
 
-        for (Entity entity: location.getWorld().getEntities()) {
+        for (Entity entity : location.getWorld().getEntities()) {
             if (entity.getLocation().distance(location) > range) {
                 continue;
             }

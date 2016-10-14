@@ -33,6 +33,8 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
 import packets.WrapperPlayClientWindowClick;
+import perks.PerkManager;
+import perks.cop.GlowPerk;
 import raids.*;
 import renamer.RenamerManager;
 import resourcepack.ResourceCommand;
@@ -57,6 +59,7 @@ public class Main extends JavaPlugin {
     public WorldGuardPlugin worldGuardPlugin;
     public MerchantAPI merchantAPI;
     public BukkitMobsAPI mythicAPI;
+    public PerkManager perkManager;
 
     // Lists and maps
     public ArrayList<String> flag = new ArrayList<>();
@@ -71,6 +74,9 @@ public class Main extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
         instance = this;
+
+        // Setup perk manager
+        perkManager = new PerkManager();
 
         // Hook into MythicMobs
         mythicAPI = new BukkitMobsAPI();
@@ -170,6 +176,9 @@ public class Main extends JavaPlugin {
         pm.registerEvents(new ActionGrow(this), this);
         pm.registerEvents(new BrewListener(this), this);
         pm.registerEvents(new CitizensShoot(this), this);
+
+        // Register cop perks
+        pm.registerEvents(new GlowPerk(this), this);
 
         // Commands
         getCommand("CRReload").setExecutor(new Reload(this));
