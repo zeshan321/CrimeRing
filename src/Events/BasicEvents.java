@@ -1,9 +1,9 @@
 package events;
 
 import com.nitnelave.CreeperHeal.block.BurntBlockManager;
-import com.shampaggon.crackshot.events.WeaponHitBlockEvent;
 import com.shampaggon.crackshot.events.WeaponScopeEvent;
 import com.zeshanaslam.crimering.Main;
+import customevents.ArrowHitBlockEvent;
 import net.minecraft.server.v1_10_R1.EnumItemSlot;
 import net.minecraft.server.v1_10_R1.PacketPlayOutEntityEquipment;
 import org.bukkit.*;
@@ -239,12 +239,17 @@ public class BasicEvents implements Listener {
 
     // Glass regen
     @EventHandler
-    public void onHitGlass(WeaponHitBlockEvent event) {
+    public void onArrowHitGlass(ArrowHitBlockEvent event) {
         if (event.getBlock().getType() == Material.GLASS || event.getBlock().getType() == Material.THIN_GLASS) {
             BurntBlockManager.recordBurntBlock(event.getBlock());
 
             event.getBlock().getWorld().playSound(event.getBlock().getLocation(), Sound.BLOCK_GLASS_BREAK, 10, 1);
             event.getBlock().breakNaturally();
+
+            // Remove arrow on hit
+            if (!event.getArrow().isDead()) {
+                event.getArrow().remove();
+            }
         }
 
         if (event.getBlock().getType() == Material.STAINED_GLASS || event.getBlock().getType() == Material.STAINED_GLASS_PANE) {
@@ -256,6 +261,11 @@ public class BasicEvents implements Listener {
 
             event.getBlock().getWorld().playSound(event.getBlock().getLocation(), Sound.BLOCK_GLASS_BREAK, 10, 1);
             event.getBlock().breakNaturally();
+
+            // Remove arrow on hit
+            if (!event.getArrow().isDead()) {
+                event.getArrow().remove();
+            }
         }
     }
 

@@ -1,11 +1,12 @@
-package events;
+package customevents;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 
-public class PlayerUnequipEvent extends Event {
+
+public class PlayerEquipEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
 
@@ -16,11 +17,11 @@ public class PlayerUnequipEvent extends Event {
     /**
      * Constructor
      *
-     * @param player player un-equipping the item
-     * @param item   item that was un-equipped
+     * @param player player equipping an item
+     * @param item   item that was equipped
      * @param slot   the slot the item was unequipped from
      */
-    public PlayerUnequipEvent(Player player, ItemStack item, int slot) {
+    public PlayerEquipEvent(Player player, ItemStack item, int slot) {
         this.player = player;
         this.item = item;
         this.slot = slot;
@@ -34,14 +35,14 @@ public class PlayerUnequipEvent extends Event {
     }
 
     /**
-     * @return player un-equipping the item
+     * @return plyer that equipped the item
      */
     public Player getPlayer() {
         return player;
     }
 
     /**
-     * @return item that was un-equipped
+     * @return item that was equipped
      */
     public ItemStack getItem() {
         return item;

@@ -14,6 +14,8 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import commands.*;
+import customevents.PlayerEquipEvent;
+import customevents.PlayerUnequipEvent;
 import entity.EntityListener;
 import entity.EntityManager;
 import entity.EntityObject;
@@ -176,6 +178,7 @@ public class Main extends JavaPlugin {
         pm.registerEvents(new ActionGrow(this), this);
         pm.registerEvents(new BrewListener(this), this);
         pm.registerEvents(new CitizensShoot(this), this);
+        pm.registerEvents(new ArrowHitBlockListener(this), this);
 
         // Register cop perks
         pm.registerEvents(new GlowPerk(this), this);

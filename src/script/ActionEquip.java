@@ -1,8 +1,8 @@
 package script;
 
 import com.zeshanaslam.crimering.Main;
-import events.PlayerEquipEvent;
-import events.PlayerUnequipEvent;
+import customevents.PlayerEquipEvent;
+import customevents.PlayerUnequipEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
