@@ -33,7 +33,6 @@ import raids.PartyObject;
 import utils.ItemUtils;
 import utils.MessageUtil;
 import utils.MoneyUtil;
-import utils.ProtocolUtil;
 
 import javax.script.*;
 import java.util.*;
@@ -1039,20 +1038,16 @@ public class ActionDefaults {
     }
 
     public void addTrade(Merchant merchant, ItemStack first, ItemStack result) {
-        ProtocolUtil protocolUtil = new ProtocolUtil();
-
-        first = protocolUtil.setItemHideFlags(Main.instance.renamerManager.renameItem(first));
-        result = protocolUtil.setItemHideFlags(Main.instance.renamerManager.renameItem(result));
+        first = Main.instance.renamerManager.renameItem(first);
+        result = Main.instance.renamerManager.renameItem(result);
 
         merchant.addOffer(Main.instance.merchantAPI.newOffer(result, first));
     }
 
     public void addTrade(Merchant merchant, ItemStack first, ItemStack second, ItemStack result) {
-        ProtocolUtil protocolUtil = new ProtocolUtil();
-
-        first = protocolUtil.setItemHideFlags(Main.instance.renamerManager.renameItem(first));
-        second = protocolUtil.setItemHideFlags(Main.instance.renamerManager.renameItem(second));
-        result = protocolUtil.setItemHideFlags(Main.instance.renamerManager.renameItem(result));
+        first = Main.instance.renamerManager.renameItem(first);
+        second = Main.instance.renamerManager.renameItem(second);
+        result = Main.instance.renamerManager.renameItem(result);
 
         merchant.addOffer(Main.instance.merchantAPI.newOffer(result, first, second));
     }
@@ -1104,13 +1099,24 @@ public class ActionDefaults {
         Main.instance.entityManager.entityHider.showEntity(player, entity);
     }
 
+    public String getMMInternalName(Entity entity) {
+        return Main.instance.mythicAPI.getMythicMobInstance(entity).getType().getInternalName();
+    }
+
     public void setMMTarget(Entity entity, Player target) {
         ThreatTables.taunt(entity, target);
     }
 
-    /*public void castMMSkill(Entity entity, String skill) {
+    public void castMMSkill(Entity entity, String skill) {
         Main.instance.mythicAPI.castSkill(entity, skill);
-    }*/
+    }
+
+    public void castMMSkill(Player player, Entity entity, String skill) {
+        Collection<Entity> eTargets = new ArrayList<>();
+        eTargets.add(player);
+
+        Main.instance.mythicAPI.castSkill(entity, skill, player, player.getLocation(), eTargets, null, 1.0F);
+    }
 
     public boolean isOnBlock(Player player, String type) {
         Location loc = player.getPlayer().getLocation();
