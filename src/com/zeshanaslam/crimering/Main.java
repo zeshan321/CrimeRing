@@ -22,6 +22,9 @@ import entity.EntityObject;
 import events.*;
 import fakeblocks.FakeblockCommand;
 import fakeblocks.FakeblockListener;
+import locks.LockListener;
+import locks.LockManager;
+import locks.LocksCreate;
 import merchants.SMerchantAPI;
 import merchants.api.MerchantAPI;
 import merchants.api.Merchants;
@@ -62,6 +65,7 @@ public class Main extends JavaPlugin {
     public MerchantAPI merchantAPI;
     public BukkitMobsAPI mythicAPI;
     public PerkManager perkManager;
+    public LockManager lockManager;
 
     // Lists and maps
     public ArrayList<String> flag = new ArrayList<>();
@@ -76,6 +80,9 @@ public class Main extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
         instance = this;
+
+        // Setup lock manager
+        lockManager = new LockManager();
 
         // Setup perk manager
         perkManager = new PerkManager();
@@ -149,10 +156,16 @@ public class Main extends JavaPlugin {
             playerDir.mkdir();
         }
 
-        // Player data dir
+        // Fakeblocks data dir
         File fakeDir = new File("plugins/CrimeRing/fakeblocks/");
         if (!fakeDir.exists()) {
             fakeDir.mkdir();
+        }
+
+        // Locks data dir
+        File locksDir = new File("plugins/CrimeRing/locks/");
+        if (!locksDir.exists()) {
+            locksDir.mkdir();
         }
 
         // events
@@ -179,6 +192,8 @@ public class Main extends JavaPlugin {
         pm.registerEvents(new BrewListener(this), this);
         pm.registerEvents(new CitizensShoot(this), this);
         pm.registerEvents(new ArrowHitBlockListener(this), this);
+        pm.registerEvents(new LocksCreate(this), this);
+        pm.registerEvents(new LockListener(this), this);
 
         // Register cop perks
         pm.registerEvents(new GlowPerk(this), this);
@@ -198,6 +213,7 @@ public class Main extends JavaPlugin {
         getCommand("crrpupdate").setExecutor(new ResourceCommand(this));
         getCommand("CRFakeBlocks").setExecutor(new FakeblockCommand(this));
         getCommand("CRRunscript").setExecutor(new RunScript(this));
+        getCommand("CRLock").setExecutor(new LocksCreate(this));
 
         ProtocolUtil protocolUtil = new ProtocolUtil();
 
@@ -401,6 +417,9 @@ public class Main extends JavaPlugin {
 
         // Save config
         saveConfig();
+
+        // Close all locked doors
+        lockManager.removeUnlocked();
 
         // Clear dead bodies
         Iterator it = BodiesEvents.bodies.entrySet().iterator();

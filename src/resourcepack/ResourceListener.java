@@ -44,7 +44,7 @@ public class ResourceListener implements Listener {
             if (!(plugin.resourcepack.contains(event.getPlayer().getUniqueId()))) {
                 player.kickPlayer(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("Resource-kick")));
             }
-        }, 20L * 30);
+        }, 20L * 180);
     }
 
     @EventHandler

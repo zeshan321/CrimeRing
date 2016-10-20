@@ -20,5 +20,7 @@
     <orderEntry type="library" name="BattleLevels (1)" level="project" />
     <orderEntry type="library" name="StackableItems" level="project" />
     <orderEntry type="library" name="PacketListenerAPI_v3.4.4" level="project" />
+    <orderEntry type="library" name="BlockStore" level="project" />
+    <orderEntry type="library" name="PhatLoots" level="project" />
   </component>
 </module>

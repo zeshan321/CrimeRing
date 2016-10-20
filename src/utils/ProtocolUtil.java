@@ -101,4 +101,50 @@ public class ProtocolUtil {
 
         return setTag(i, tag);
     }
+
+    public org.bukkit.inventory.ItemStack setItemNBT(org.bukkit.inventory.ItemStack i, String key, String value) {
+        if (i == null) {
+            return i;
+        }
+
+        if (i.getType() == Material.BOOK_AND_QUILL) {
+            return i;
+        }
+
+        if (!(i instanceof CraftItemStack)) {
+            i = CraftItemStack.asCraftCopy(i);
+        }
+
+        NBTTagCompound tag = getTag(i);
+
+        if (tag == null) {
+            tag = new NBTTagCompound();
+        }
+
+        tag.setString(key, value);
+
+        return setTag(i, tag);
+    }
+
+    public String getItemNBT(org.bukkit.inventory.ItemStack i, String key) {
+        if (i == null) {
+            return "";
+        }
+
+        if (i.getType() == Material.BOOK_AND_QUILL) {
+            return "";
+        }
+
+        if (!(i instanceof CraftItemStack)) {
+            i = CraftItemStack.asCraftCopy(i);
+        }
+
+        NBTTagCompound tag = getTag(i);
+
+        if (tag == null) {
+            return "";
+        }
+
+        return tag.getString(key);
+    }
 }
