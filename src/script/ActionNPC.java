@@ -1,6 +1,7 @@
 package script;
 
 import com.zeshanaslam.crimering.Main;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -35,6 +36,10 @@ public class ActionNPC implements Listener {
 
         if (!(event.getRightClicked() instanceof LivingEntity)) {
             return;
+        }
+
+        if (event.getRightClicked().getType() == EntityType.VILLAGER) {
+            event.setCancelled(true);
         }
 
         LivingEntity interacted = (LivingEntity) event.getRightClicked();

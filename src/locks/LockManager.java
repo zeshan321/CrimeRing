@@ -4,15 +4,16 @@ import com.zeshanaslam.crimering.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.UUID;
 
 public class LockManager {
 
+    private final int duration = 30;
     public HashMap<UUID, String> assign = new HashMap<>();
     public HashMap<String, Long> unlocked = new HashMap<>();
     public HashMap<UUID, String> lastOrder = new HashMap<>();
-
-    private final int duration = 30;
 
     public LockManager() {
         assign.clear();
@@ -29,7 +30,7 @@ public class LockManager {
 
     public void removeUnlocked() {
         Iterator<String> iterator = unlocked.keySet().iterator();
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             String key = iterator.next();
             long start = unlocked.get(key);
 

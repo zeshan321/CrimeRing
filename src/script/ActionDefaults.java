@@ -1091,6 +1091,19 @@ public class ActionDefaults {
         return entities;
     }
 
+    public Entity createMythicEntity(String name, String world, int x, int y, int z) {
+        Entity entity = null;
+
+        try {
+            entity = Main.instance.mythicAPI.spawnMythicMob(Main.instance.mythicAPI.getMythicMob(name), new Location(Bukkit.getWorld(world), x, y, z));
+        } catch (InvalidMobTypeException e) {
+            e.printStackTrace();
+        }
+
+        return entity;
+    }
+
+
     public void hideEntityForOthers(Player player, Entity entity) {
         Bukkit.getOnlinePlayers().stream().filter(players -> players != player).forEach(players -> Main.instance.entityManager.entityHider.hideEntity(players, entity));
     }
@@ -1124,4 +1137,57 @@ public class ActionDefaults {
 
         return loc.getWorld().getBlockAt(loc).getType().toString().equals(type);
     }
+
+    public List<Player> getParty(Player player) {
+        PartyAPI partyAPI = new PartyAPI();
+        PartyObject party = partyAPI.getParty(player);
+        List<Player> players = new ArrayList<>();
+
+        if (party == null) {
+            players.add(player);
+            return players;
+        }
+
+        return party.getMembers();
+    }
+
+    public List<Player> getParty(Player player, int radius) {
+        PartyAPI partyAPI = new PartyAPI();
+        PartyObject party = partyAPI.getParty(player);
+        List<Player> players = new ArrayList<>();
+
+        if (party == null) {
+            players.add(player);
+            return players;
+        }
+
+        for (Player members : party.getMembers()) {
+            if (player.getLocation().distance(members.getLocation()) <= radius) {
+                players.add(members);
+            }
+        }
+
+        return players;
+    }
+
+    public List<Location> getRandomLocations(Location origin, int radius, int amount) {
+        List<Location> locations = new ArrayList<>();
+
+        while (amount != 0) {
+            Location location = new Location(origin.getWorld(), 0, 0, 0);
+
+            location.setX(origin.getX() + Math.random() * radius * 2 - radius);
+            location.setZ(origin.getZ() + Math.random() * radius * 2 - radius);
+
+            location.setY(origin.getWorld().getHighestBlockAt(location.getBlockX(), location.getBlockZ()).getY());
+
+            if (!location.getWorld().getBlockAt(location).getType().isSolid()) {
+                locations.add(location);
+                amount--;
+            }
+        }
+
+        return locations;
+    }
+
 }
