@@ -1,6 +1,7 @@
 package script;
 
 import com.zeshanaslam.crimering.Main;
+import net.sothatsit.blockstore.BlockStoreApi;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -36,7 +37,13 @@ public class ActionBlocks implements Listener {
             return;
         }
 
+
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.LEFT_CLICK_BLOCK) {
+
+            // Check if block is locked
+            if (BlockStoreApi.containsBlockMeta(event.getClickedBlock(), plugin, "CRLock")) {
+                return;
+            }
 
             int x = event.getClickedBlock().getLocation().getBlockX();
             int y = event.getClickedBlock().getLocation().getBlockY();

@@ -6,6 +6,11 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.zeshanaslam.crimering.FileHandler;
 import com.zeshanaslam.crimering.Main;
+import me.libraryaddict.disguise.DisguiseAPI;
+import me.libraryaddict.disguise.disguisetypes.DisguiseType;
+import me.libraryaddict.disguise.disguisetypes.MiscDisguise;
+import me.libraryaddict.disguise.disguisetypes.MobDisguise;
+import me.libraryaddict.disguise.disguisetypes.PlayerDisguise;
 import me.robin.battlelevels.api.BattleLevelsAPI;
 import merchants.api.Merchant;
 import net.elseland.xikage.MythicMobs.API.Bukkit.BukkitMobsAPI;
@@ -1131,6 +1136,41 @@ public class ActionDefaults {
         Main.instance.mythicAPI.castSkill(entity, skill, player, player.getLocation(), eTargets, null, 1.0F);
     }
 
+    public void disguiseEntity(Entity entity, String type, String name) {
+        type = type.toUpperCase();
+
+        switch (type) {
+            case "PLAYER":
+                PlayerDisguise playerDisguise = new PlayerDisguise(name);
+                DisguiseAPI.disguiseToAll(entity, playerDisguise);
+                break;
+
+            case "MOB":
+                MobDisguise mobDisguise = new MobDisguise(DisguiseType.valueOf(name));
+                DisguiseAPI.disguiseToAll(entity, mobDisguise);
+                break;
+
+            case "MISC":
+                MiscDisguise miscDisguise = new MiscDisguise(DisguiseType.valueOf(name));
+                DisguiseAPI.disguiseToAll(entity, miscDisguise);
+                break;
+
+            case "FALLING_BLOCK":
+                String[] data = name.split(" ");
+
+                int id = Integer.valueOf(data[0]);
+                int dura = Integer.valueOf(data[1]);
+
+                MiscDisguise fallingBlock = new MiscDisguise(DisguiseType.FALLING_BLOCK, id, dura);
+                DisguiseAPI.disguiseToAll(entity, fallingBlock);
+                break;
+
+            default:
+                DisguiseAPI.undisguiseToAll(entity);
+                break;
+        }
+    }
+
     public boolean isOnBlock(Player player, String type) {
         Location loc = player.getPlayer().getLocation();
         loc.setY(loc.getY() - 1);
@@ -1170,7 +1210,7 @@ public class ActionDefaults {
         return players;
     }
 
-    public List<Location> getRandomLocations(Location origin, int radius, int amount) {
+    public List<Location> getRandomLocations(Location origin, int radius, int amount, boolean safe) {
         List<Location> locations = new ArrayList<>();
 
         while (amount != 0) {
@@ -1179,7 +1219,9 @@ public class ActionDefaults {
             location.setX(origin.getX() + Math.random() * radius * 2 - radius);
             location.setZ(origin.getZ() + Math.random() * radius * 2 - radius);
 
-            location.setY(origin.getWorld().getHighestBlockAt(location.getBlockX(), location.getBlockZ()).getY());
+            if (safe) {
+                location.setY(origin.getWorld().getHighestBlockAt(location.getBlockX(), location.getBlockZ()).getY());
+            }
 
             if (!location.getWorld().getBlockAt(location).getType().isSolid()) {
                 locations.add(location);
