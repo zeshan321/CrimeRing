@@ -1221,6 +1221,8 @@ public class ActionDefaults {
 
             if (safe) {
                 location.setY(origin.getWorld().getHighestBlockAt(location.getBlockX(), location.getBlockZ()).getY());
+            } else {
+                location.setY(origin.getY() + Math.random() * radius * 2 - radius);
             }
 
             if (!location.getWorld().getBlockAt(location).getType().isSolid()) {

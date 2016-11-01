@@ -40,15 +40,19 @@ public class ActionBlocks implements Listener {
 
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.LEFT_CLICK_BLOCK) {
 
-            // Check if block is locked
-            if (BlockStoreApi.containsBlockMeta(event.getClickedBlock(), plugin, "CRLock")) {
-                return;
-            }
-
             int x = event.getClickedBlock().getLocation().getBlockX();
             int y = event.getClickedBlock().getLocation().getBlockY();
             int z = event.getClickedBlock().getLocation().getBlockZ();
             String world = player.getWorld().getName();
+
+            // Check if block is locked
+            if (BlockStoreApi.containsBlockMeta(event.getClickedBlock(), plugin, "CRLock")) {
+                String lockType = BlockStoreApi.getBlockMeta(event.getClickedBlock(), plugin, "CRLock").toString();
+
+                if (!plugin.lockManager.unlocked.containsKey(lockType + " " + x + " " + y + " " + z + " " + world)) {
+                    return;
+                }
+            }
 
             if (Main.instance.listeners.contains(player.getUniqueId(), typeBlock + x + " " + y + " " + z + " " + world)) {
                 ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(), typeBlock + x + " " + y + " " + z + " " + world);
