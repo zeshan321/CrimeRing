@@ -23,5 +23,8 @@
     <orderEntry type="library" name="BlockStore" level="project" />
     <orderEntry type="library" name="PhatLoots" level="project" />
     <orderEntry type="library" name="Questionable" level="project" />
+    <orderEntry type="library" name="ParticleAPI_v2.1.1" level="project" />
+    <orderEntry type="library" name="VehiclesAPI(8.0)" level="project" />
+    <orderEntry type="library" name="Citizens" level="project" />
   </component>
 </module>

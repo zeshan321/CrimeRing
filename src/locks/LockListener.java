@@ -112,6 +112,10 @@ public class LockListener implements Listener {
     public void onClick(InventoryClickEvent event) {
         Inventory inventory = event.getClickedInventory();
 
+        if (inventory == null || inventory.getTitle() == null) {
+            return;
+        }
+
         if (!inventory.getTitle().equals("Lock picking")) {
             return;
         }

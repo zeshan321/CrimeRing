@@ -32,7 +32,7 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
-import particleeffect.ParticleEffect;
+import org.inventivetalent.particle.ParticleEffect;
 import raids.PartyAPI;
 import raids.PartyObject;
 import utils.ItemUtils;
@@ -980,11 +980,14 @@ public class ActionDefaults {
     }
 
     public void showParticlesAll(String type, Location location, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
-        ParticleEffect.valueOf(type).display(offsetX, offsetY, offsetZ, speed, amount, location, new ArrayList<>(Bukkit.getOnlinePlayers()));
+        ParticleEffect.valueOf(type).send(Bukkit.getOnlinePlayers(), location, offsetX, offsetY, offsetZ, speed, amount);
     }
 
     public void showParticles(String type, Player player, Location location, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
-        ParticleEffect.valueOf(type).display(offsetX, offsetY, offsetZ, speed, amount, location, player);
+        List<Player> players = new ArrayList<>();
+        players.add(player);
+
+        ParticleEffect.valueOf(type).send(players, location, offsetX, offsetY, offsetZ, speed, amount);
     }
 
     public void setBlockAtLocation(Location location, String type, int data) {
@@ -1165,7 +1168,7 @@ public class ActionDefaults {
                 DisguiseAPI.disguiseToAll(entity, fallingBlock);
                 break;
 
-            default:
+            case "REMOVE":
                 DisguiseAPI.undisguiseToAll(entity);
                 break;
         }
