@@ -26,6 +26,7 @@ public class PlayerEvents implements Listener {
         }
 
         FileHandler fileHandler = new FileHandler(("plugins/CrimeRing/player/" + player.getUniqueId().toString()));
+        fileHandler.set("in-name", player.getName());
         fileHandler.set("tutorial", false);
         fileHandler.set("skill-points", 0);
 
