@@ -27,6 +27,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -1264,5 +1265,15 @@ public class ActionDefaults {
 
     public void withdrawMoney(Player player, double amount) {
         Main.instance.economy.withdrawPlayer(player, amount);
+    }
+
+    public ItemStack getPlayerHead(String name) {
+        ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
+
+        SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
+        skullMeta.setOwner(name);
+        skull.setItemMeta(skullMeta);
+
+        return skull;
     }
 }

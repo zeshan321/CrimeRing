@@ -4,6 +4,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Multimap;
 import com.zeshanaslam.crimering.FileHandler;
+import com.zeshanaslam.crimering.Main;
 import org.bukkit.ChatColor;
 
 import javax.script.*;
@@ -59,6 +60,9 @@ public class ScriptsManager {
         }
 
         System.out.println("[CR] Loaded " + loaded + " scripts.");
+
+        Main.instance.listeners.clear();
+        System.out.println("[CR] Cleared listeners.");
     }
 
     public void clear() {
