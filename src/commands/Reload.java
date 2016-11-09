@@ -41,7 +41,7 @@ public class Reload implements CommandExecutor {
                 System.out.println(cell.getColumnKey());
                 cellIterator.remove();
 
-                ListenerObject listenerObject = new ListenerObject(cell.getValue().scriptID, plugin.scriptsManager.getObject(cell.getValue().scriptID).script.getEngine(), cell.getValue().method);
+                ListenerObject listenerObject = new ListenerObject(cell.getValue().scriptID, plugin.scriptsManager.engine, cell.getValue().method);
                 temp.put(cell.getRowKey(), cell.getColumnKey(), listenerObject);
             }
 

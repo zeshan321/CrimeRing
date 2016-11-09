@@ -17,12 +17,9 @@ public class ScriptsManager {
     public ScriptEngine engine;
     private Multimap<String, ScriptObject> scriptData = HashMultimap.create();
 
-
-    public ScriptsManager() {
-        this.engine = new ScriptEngineManager().getEngineByName("nashorn");
-    }
-
     public void load() {
+        this.engine = new ScriptEngineManager().getEngineByName("nashorn");
+
         scriptData.clear();
 
         FileHandler imports = new FileHandler("plugins/CrimeRing/scripts.yml");
