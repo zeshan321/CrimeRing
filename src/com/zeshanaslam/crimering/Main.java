@@ -86,7 +86,7 @@ public class Main extends JavaPlugin {
         saveDefaultConfig();
         instance = this;
 
-        // Hook into valut
+        // Hook into vault
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp != null) {
             economy = (Economy)rsp.getProvider();
