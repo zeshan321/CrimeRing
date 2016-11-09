@@ -35,6 +35,7 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
+import org.inventivetalent.glow.GlowAPI;
 import org.inventivetalent.particle.ParticleEffect;
 import raids.PartyAPI;
 import raids.PartyObject;
@@ -1123,6 +1124,10 @@ public class ActionDefaults {
         Main.instance.entityManager.entityHider.showEntity(player, entity);
     }
 
+    public void setGlowForEntity(Player player, Entity entity, String color) {
+        GlowAPI.setGlowing(entity, GlowAPI.Color.valueOf(color), player);
+    }
+
     public String getMMInternalName(Entity entity) {
         return Main.instance.mythicAPI.getMythicMobInstance(entity).getType().getInternalName();
     }
@@ -1247,5 +1252,17 @@ public class ActionDefaults {
         PacketPlayOutCustomSoundEffect packet = new PacketPlayOutCustomSoundEffect(name, SoundCategory.valueOf(category), x, y, z, volume, pitch);
 
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+    }
+
+    public void depositMoney(Player player, double amount) {
+        Main.instance.economy.depositPlayer(player.getName(), amount);
+    }
+
+    public double getBalance(Player player) {
+        return Main.instance.economy.getBalance(player.getName());
+    }
+
+    public void withdrawMoney(Player player, double amount) {
+        Main.instance.economy.withdrawPlayer(player, amount);
     }
 }

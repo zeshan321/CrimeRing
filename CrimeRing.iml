@@ -26,5 +26,6 @@
     <orderEntry type="library" name="ParticleAPI_v2.1.1" level="project" />
     <orderEntry type="library" name="VehiclesAPI(8.0)" level="project" />
     <orderEntry type="library" name="Citizens" level="project" />
+    <orderEntry type="library" name="Vault" level="project" />
   </component>
 </module>

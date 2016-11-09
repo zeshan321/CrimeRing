@@ -29,12 +29,14 @@ import merchants.SMerchantAPI;
 import merchants.api.MerchantAPI;
 import merchants.api.Merchants;
 import net.elseland.xikage.MythicMobs.API.Bukkit.BukkitMobsAPI;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
 import packets.WrapperPlayClientWindowClick;
@@ -54,6 +56,9 @@ import java.util.*;
 public class Main extends JavaPlugin {
 
     public static Main instance;
+
+    // Hooks
+    public Economy economy;
 
     // Managers
     public ScriptsManager scriptsManager;
@@ -80,6 +85,12 @@ public class Main extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
         instance = this;
+
+        // Hook into valut
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp != null) {
+            economy = (Economy)rsp.getProvider();
+        }
 
         // Setup lock manager
         lockManager = new LockManager();

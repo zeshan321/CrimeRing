@@ -4,7 +4,7 @@ version: 1.0
 author: Zeshan Aslam
 description: >
              CrimeRing Plugin.
-depend: [ProtocolLib, StackableItems, BlockStore, PhatLoots]
+depend: [ProtocolLib, StackableItems, BlockStore, PhatLoots, Valut]
 commands:
   CRReload:
     description: Relaods config.
