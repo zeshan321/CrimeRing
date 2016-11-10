@@ -658,6 +658,46 @@ public class ActionDefaults {
         Main.instance.playerTasks.put(task.getTaskId(), player.getUniqueId());
     }
 
+    // Repeating function
+    public void repeatFunction(String name, int seconds) {
+        final int[] id = {0};
+
+        id[0] = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.instance, () -> {
+            int task = id[0];
+
+            Invocable invocable = (Invocable) engine;
+            try {
+                invocable.invokeFunction(name, task);
+            } catch (ScriptException | NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+
+        }, 0L, seconds * 20);
+    }
+
+    public void repeatFunction(Player player, String name, int seconds) {
+        final int[] id = {0};
+
+        id[0] = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.instance, () -> {
+            int task = id[0];
+
+            Main.instance.playerTasks.remove(task);
+            Invocable invocable = (Invocable) engine;
+            try {
+                invocable.invokeFunction(name, task);
+            } catch (ScriptException | NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+
+        }, 0L, seconds * 20);
+
+        Main.instance.playerTasks.put(id[0], player.getUniqueId());
+    }
+
+    public void cancelTask(int id) {
+        Bukkit.getScheduler().cancelTask(id);
+    }
+
     public void runScript(Player player, String name) {
         ScriptObject scriptObject = Main.instance.scriptsManager.getObject(name);
 
@@ -1027,6 +1067,56 @@ public class ActionDefaults {
         return itemStack;
     }
 
+    public ItemStack setItemStackMeta(ItemStack itemStack, String display, String lore) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        itemMeta.setDisplayName(display);
+        itemMeta.setLore(Arrays.asList(lore.split("\\n")));
+
+        itemStack.setItemMeta(itemMeta);
+
+        return itemStack;
+    }
+
+    public ItemStack getPlayerHead(String name) {
+        ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
+
+        SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
+        skullMeta.setOwner(name);
+        skull.setItemMeta(skullMeta);
+
+        return skull;
+    }
+
+    public String getItemDisplay(ItemStack itemStack) {
+        String name = null;
+
+        if (itemStack.hasItemMeta()) {
+            ItemMeta itemMeta = itemStack.getItemMeta();
+
+            if (itemMeta.hasDisplayName()) {
+                name = itemMeta.getDisplayName();
+            }
+        }
+
+        return name;
+    }
+
+    public String getItemLore(ItemStack itemStack) {
+        String lore = "";
+
+        if (itemStack.hasItemMeta()) {
+            ItemMeta itemMeta = itemStack.getItemMeta();
+
+            if (itemMeta.hasLore()) {
+                for (String s: itemMeta.getLore()) {
+                    lore = lore + s;
+                }
+            }
+        }
+
+        return lore;
+    }
+
     public int getItemWorth(ItemStack itemStack) {
         return new MoneyUtil().getItemWorth(itemStack);
     }
@@ -1079,6 +1169,19 @@ public class ActionDefaults {
         boolean isInRegion = false;
 
         ApplicableRegionSet applicableRegions = Main.instance.worldGuardPlugin.getRegionManager(player.getWorld()).getApplicableRegions(player.getLocation());
+        for (ProtectedRegion region : applicableRegions) {
+            if (region.getId().equals(regionName)) {
+                isInRegion = true;
+            }
+        }
+
+        return isInRegion;
+    }
+
+    public boolean isInRegion(Entity entity, String regionName) {
+        boolean isInRegion = false;
+
+        ApplicableRegionSet applicableRegions = Main.instance.worldGuardPlugin.getRegionManager(entity.getWorld()).getApplicableRegions(entity.getLocation());
         for (ProtectedRegion region : applicableRegions) {
             if (region.getId().equals(regionName)) {
                 isInRegion = true;
@@ -1265,15 +1368,5 @@ public class ActionDefaults {
 
     public void withdrawMoney(Player player, double amount) {
         Main.instance.economy.withdrawPlayer(player, amount);
-    }
-
-    public ItemStack getPlayerHead(String name) {
-        ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
-
-        SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-        skullMeta.setOwner(name);
-        skull.setItemMeta(skullMeta);
-
-        return skull;
     }
 }

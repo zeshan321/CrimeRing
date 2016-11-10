@@ -89,7 +89,7 @@ public class Main extends JavaPlugin {
         // Hook into vault
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp != null) {
-            economy = (Economy)rsp.getProvider();
+            economy = (Economy) rsp.getProvider();
         }
 
         // Setup lock manager
