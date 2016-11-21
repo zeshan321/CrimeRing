@@ -1,5 +1,8 @@
 package script;
 
+import com.enjin.officialplugin.points.ErrorConnectingToEnjinException;
+import com.enjin.officialplugin.points.PlayerDoesNotExistException;
+import com.enjin.officialplugin.points.PointsAPI;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
@@ -1368,5 +1371,21 @@ public class ActionDefaults {
 
     public void withdrawMoney(Player player, double amount) {
         Main.instance.economy.withdrawPlayer(player, amount);
+    }
+
+    public void addTokens(Player player, int amount) {
+        PointsAPI.modifyPointsToPlayerAsynchronously(player.getName(), amount, PointsAPI.Type.AddPoints);
+    }
+
+    public void removeTokens(Player player, int amount) {
+        PointsAPI.modifyPointsToPlayerAsynchronously(player.getName(), amount, PointsAPI.Type.RemovePoints);
+    }
+
+    public int getTokens(Player player) {
+        try {
+            return PointsAPI.getPointsForPlayer(player.getName());
+        } catch (Exception e) {
+            return -1;
+        }
     }
 }

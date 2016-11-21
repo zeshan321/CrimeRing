@@ -27,5 +27,6 @@
     <orderEntry type="library" name="VehiclesAPI(8.0)" level="project" />
     <orderEntry type="library" name="Citizens" level="project" />
     <orderEntry type="library" name="Vault" level="project" />
+    <orderEntry type="library" name="EnjinMinecraftPlugin" level="project" />
   </component>
 </module>
