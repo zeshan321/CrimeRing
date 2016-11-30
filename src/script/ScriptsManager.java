@@ -47,11 +47,8 @@ public class ScriptsManager {
 
                 script = ChatColor.translateAlternateColorCodes('&', String.join("\n", script).replace("\n", "").replace("\t", ""));
 
-                Compilable compilableEngine = (Compilable) engine;
-                CompiledScript compiledScript = compilableEngine.compile(script);
-
-                scriptData.put(data, new ScriptObject(data, dir, compiledScript));
-            } catch (ScriptException | IOException e) {
+                scriptData.put(data, new ScriptObject(data, dir, script));
+            } catch (IOException e) {
                 System.out.println("[CR] Error for file: " + dir);
                 e.printStackTrace();
             }

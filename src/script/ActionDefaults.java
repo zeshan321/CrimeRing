@@ -591,15 +591,17 @@ public class ActionDefaults {
             ScriptObject scriptObject = Main.instance.scriptsManager.getObject(name);
 
             try {
-                ScriptEngine engine = Main.instance.scriptsManager.engine;
-                CompiledScript compiledScript = scriptObject.script;
+                ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 
                 // Objects
-                Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
+                Bindings bindings = engine.createBindings();
                 bindings.put("player", player);
                 bindings.put("CR", new ActionDefaults(scriptID, engine));
 
-                compiledScript.eval(bindings);
+                ScriptContext scriptContext = engine.getContext();
+                scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+
+                engine.eval(scriptObject.scriptData, scriptContext);
             } catch (ScriptException e) {
                 e.printStackTrace();
             }
@@ -615,31 +617,6 @@ public class ActionDefaults {
                 e.printStackTrace();
             }
         }, seconds * 20);
-    }
-
-    public Object runScriptFunction(Player player, String name, Object... args) {
-        Object object = null;
-
-        ScriptObject scriptObject = Main.instance.scriptsManager.getObject(name);
-
-        try {
-            ScriptEngine engine = Main.instance.scriptsManager.engine;
-            CompiledScript compiledScript = scriptObject.script;
-
-            // Objects
-            Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
-            bindings.put("player", player);
-            bindings.put("CR", new ActionDefaults(scriptID, engine));
-
-            compiledScript.eval(bindings);
-
-            Invocable invocable = (Invocable) engine;
-            object = invocable.invokeFunction(name, args);
-        } catch (ScriptException | NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-
-        return object;
     }
 
     // Cancels on player death
@@ -705,14 +682,16 @@ public class ActionDefaults {
         ScriptObject scriptObject = Main.instance.scriptsManager.getObject(name);
 
         try {
-            ScriptEngine engine = Main.instance.scriptsManager.engine;
-            CompiledScript compiledScript = scriptObject.script;
+            ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 
             // Objects
-            Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
+            Bindings bindings = engine.createBindings();
             bindings.put("player", player);
 
-            compiledScript.eval(bindings);
+            ScriptContext scriptContext = engine.getContext();
+            scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+
+            engine.eval(scriptObject.scriptData, scriptContext);
         } catch (ScriptException e) {
             e.printStackTrace();
         }
@@ -1387,5 +1366,11 @@ public class ActionDefaults {
         } catch (Exception e) {
             return -1;
         }
+    }
+
+    public boolean canEntitySeePlayer(Entity entity, Player player) {
+        Creature creature = (Creature) entity;
+
+        return creature.hasLineOfSight(player);
     }
 }

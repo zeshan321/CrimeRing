@@ -32,11 +32,10 @@ public class ActionGrow implements Listener {
             ScriptObject scriptObject = plugin.scriptsManager.getObject(data);
 
             try {
-                ScriptEngine engine = plugin.scriptsManager.engine;
-                CompiledScript compiledScript = scriptObject.script;
+                ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 
                 // Objects
-                Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
+                Bindings bindings = engine.createBindings();
                 bindings.put("player", player);
                 bindings.put("event", event);
                 bindings.put("CR", new ActionDefaults(data, engine));
@@ -52,7 +51,10 @@ public class ActionGrow implements Listener {
                 bindings.put("newZ", newState.getLocation().getZ());
                 bindings.put("world", newState.getLocation().getWorld().getName());
 
-                compiledScript.eval(bindings);
+                ScriptContext scriptContext = engine.getContext();
+                scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+
+                engine.eval(scriptObject.scriptData, scriptContext);
             } catch (ScriptException e) {
                 e.printStackTrace();
             }

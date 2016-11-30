@@ -71,11 +71,11 @@ public class ActionBlocks implements Listener {
                 ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeBlock + x + " " + y + " " + z + " " + world);
 
                 try {
-                    ScriptEngine engine = Main.instance.scriptsManager.engine;
-                    CompiledScript compiledScript = scriptObject.script;
+                    ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 
                     // Objects
-                    Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
+                    Bindings bindings = engine.createBindings();
+
                     bindings.put("player", player);
                     bindings.put("event", event);
                     bindings.put("CR", new ActionDefaults(typeBlock + x + " " + y + " " + z + " " + world, engine));
@@ -85,7 +85,10 @@ public class ActionBlocks implements Listener {
                     bindings.put("world", world);
                     bindings.put("blockLocation", event.getClickedBlock().getLocation());
 
-                    compiledScript.eval(bindings);
+                    ScriptContext scriptContext = engine.getContext();
+                    scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+
+                    engine.eval(scriptObject.scriptData, scriptContext);
                 } catch (ScriptException e) {
                     e.printStackTrace();
                 }
@@ -110,11 +113,10 @@ public class ActionBlocks implements Listener {
                 ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeBlock + blockData);
 
                 try {
-                    ScriptEngine engine = Main.instance.scriptsManager.engine;
-                    CompiledScript compiledScript = scriptObject.script;
+                    ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 
                     // Objects
-                    Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
+                    Bindings bindings = engine.createBindings();
                     bindings.put("player", player);
                     bindings.put("event", event);
                     bindings.put("CR", new ActionDefaults(typeBlock + blockData, engine));
@@ -124,7 +126,10 @@ public class ActionBlocks implements Listener {
                     bindings.put("world", world);
                     bindings.put("blockLocation", event.getClickedBlock().getLocation());
 
-                    compiledScript.eval(bindings);
+                    ScriptContext scriptContext = engine.getContext();
+                    scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+
+                    engine.eval(scriptObject.scriptData, scriptContext);
                 } catch (ScriptException e) {
                     e.printStackTrace();
                 }
@@ -157,11 +162,10 @@ public class ActionBlocks implements Listener {
             ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeBreak + x + " " + y + " " + z + " " + world);
 
             try {
-                ScriptEngine engine = Main.instance.scriptsManager.engine;
-                CompiledScript compiledScript = scriptObject.script;
+                ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 
                 // Objects
-                Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
+                Bindings bindings = engine.createBindings();
                 bindings.put("player", player);
                 bindings.put("event", event);
                 bindings.put("CR", new ActionDefaults(typeBreak + x + " " + y + " " + z + " " + world, engine));
@@ -171,7 +175,10 @@ public class ActionBlocks implements Listener {
                 bindings.put("world", world);
                 bindings.put("blockLocation", event.getBlock().getLocation());
 
-                compiledScript.eval(bindings);
+                ScriptContext scriptContext = engine.getContext();
+                scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+
+                engine.eval(scriptObject.scriptData, scriptContext);
             } catch (ScriptException e) {
                 e.printStackTrace();
             }
@@ -196,11 +203,10 @@ public class ActionBlocks implements Listener {
             ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeBreak + blockData);
 
             try {
-                ScriptEngine engine = Main.instance.scriptsManager.engine;
-                CompiledScript compiledScript = scriptObject.script;
+                ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 
                 // Objects
-                Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
+                Bindings bindings = engine.createBindings();
                 bindings.put("player", player);
                 bindings.put("event", event);
                 bindings.put("CR", new ActionDefaults(typeBreak + blockData, engine));
@@ -210,7 +216,10 @@ public class ActionBlocks implements Listener {
                 bindings.put("world", world);
                 bindings.put("blockLocation", event.getBlock().getLocation());
 
-                compiledScript.eval(bindings);
+                ScriptContext scriptContext = engine.getContext();
+                scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+
+                engine.eval(scriptObject.scriptData, scriptContext);
             } catch (ScriptException e) {
                 e.printStackTrace();
             }

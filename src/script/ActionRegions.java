@@ -40,17 +40,19 @@ public class ActionRegions implements Listener {
             ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeEnter + event.getRegion().getId());
 
             try {
-                ScriptEngine engine = Main.instance.scriptsManager.engine;
-                CompiledScript compiledScript = scriptObject.script;
+                ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 
                 // Objects
-                Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
+                Bindings bindings = engine.createBindings();
                 bindings.put("player", player);
                 bindings.put("event", event);
                 bindings.put("regionType", "enter");
                 bindings.put("CR", new ActionDefaults(typeEnter + event.getRegion().getId(), engine));
 
-                compiledScript.eval(bindings);
+                ScriptContext scriptContext = engine.getContext();
+                scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+
+                engine.eval(scriptObject.scriptData, scriptContext);
             } catch (ScriptException e) {
                 e.printStackTrace();
             }
@@ -77,17 +79,19 @@ public class ActionRegions implements Listener {
             ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeLeave + event.getRegion().getId());
 
             try {
-                ScriptEngine engine = Main.instance.scriptsManager.engine;
-                CompiledScript compiledScript = scriptObject.script;
+                ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 
                 // Objects
-                Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
+                Bindings bindings = engine.createBindings();
                 bindings.put("player", player);
                 bindings.put("event", event);
                 bindings.put("regionType", "leave");
                 bindings.put("CR", new ActionDefaults(typeLeave + event.getRegion().getId(), engine));
 
-                compiledScript.eval(bindings);
+                ScriptContext scriptContext = engine.getContext();
+                scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+
+                engine.eval(scriptObject.scriptData, scriptContext);
             } catch (ScriptException e) {
                 e.printStackTrace();
             }

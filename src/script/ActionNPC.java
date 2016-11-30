@@ -68,11 +68,10 @@ public class ActionNPC implements Listener {
             ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeNPC + customName);
 
             try {
-                ScriptEngine engine = Main.instance.scriptsManager.engine;
-                CompiledScript compiledScript = scriptObject.script;
+                ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 
                 // Objects
-                Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
+                Bindings bindings = engine.createBindings();
                 bindings.put("player", player);
                 bindings.put("event", event);
                 bindings.put("CR", new ActionDefaults(typeNPC + customName, engine));
@@ -81,7 +80,10 @@ public class ActionNPC implements Listener {
                 bindings.put("z", interacted.getLocation().getBlockZ());
                 bindings.put("world", interacted.getLocation().getWorld().getName());
 
-                compiledScript.eval(bindings);
+                ScriptContext scriptContext = engine.getContext();
+                scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+
+                engine.eval(scriptObject.scriptData, scriptContext);
             } catch (ScriptException e) {
                 e.printStackTrace();
             }

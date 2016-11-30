@@ -45,11 +45,10 @@ public class ActionDeath implements Listener {
                 ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeEntity + event.getEntity().getType().toString());
 
                 try {
-                    ScriptEngine engine = Main.instance.scriptsManager.engine;
-                    CompiledScript compiledScript = scriptObject.script;
+                    ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 
                     // Objects
-                    Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
+                    Bindings bindings = engine.createBindings();
                     bindings.put("player", player);
                     bindings.put("event", event);
                     bindings.put("CR", new ActionDefaults(typeEntity + event.getEntity().getType().toString(), engine));
@@ -59,7 +58,10 @@ public class ActionDeath implements Listener {
                     bindings.put("Z", event.getEntity().getLocation().getZ());
                     bindings.put("world", event.getEntity().getLocation().getWorld().getName());
 
-                    compiledScript.eval(bindings);
+                    ScriptContext scriptContext = engine.getContext();
+                    scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+
+                    engine.eval(scriptObject.scriptData, scriptContext);
                 } catch (ScriptException e) {
                     e.printStackTrace();
                 }
@@ -81,11 +83,10 @@ public class ActionDeath implements Listener {
                 ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeEntity + event.getEntity().getCustomName());
 
                 try {
-                    ScriptEngine engine = Main.instance.scriptsManager.engine;
-                    CompiledScript compiledScript = scriptObject.script;
+                    ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 
                     // Objects
-                    Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
+                    Bindings bindings = engine.createBindings();
                     bindings.put("player", player);
                     bindings.put("event", event);
                     bindings.put("CR", new ActionDefaults(typeEntity + event.getEntity().getCustomName(), engine));
@@ -95,7 +96,10 @@ public class ActionDeath implements Listener {
                     bindings.put("Z", event.getEntity().getLocation().getZ());
                     bindings.put("world", event.getEntity().getLocation().getWorld().getName());
 
-                    compiledScript.eval(bindings);
+                    ScriptContext scriptContext = engine.getContext();
+                    scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+
+                    engine.eval(scriptObject.scriptData, scriptContext);
                 } catch (ScriptException e) {
                     e.printStackTrace();
                 }
@@ -124,11 +128,10 @@ public class ActionDeath implements Listener {
                 ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typePlayer + player.getName());
 
                 try {
-                    ScriptEngine engine = Main.instance.scriptsManager.engine;
-                    CompiledScript compiledScript = scriptObject.script;
+                    ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 
                     // Objects
-                    Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
+                    Bindings bindings = engine.createBindings();
                     bindings.put("player", player);
                     bindings.put("event", event);
                     bindings.put("CR", new ActionDefaults(typePlayer + player.getName(), engine));
@@ -138,7 +141,10 @@ public class ActionDeath implements Listener {
                     bindings.put("Z", player.getLocation().getZ());
                     bindings.put("world", player.getLocation().getWorld().getName());
 
-                    compiledScript.eval(bindings);
+                    ScriptContext scriptContext = engine.getContext();
+                    scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+
+                    engine.eval(scriptObject.scriptData, scriptContext);
                 } catch (ScriptException e) {
                     e.printStackTrace();
                 }
