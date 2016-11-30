@@ -1,7 +1,5 @@
 package script;
 
-import javax.script.CompiledScript;
-
 public class ScriptObject {
 
     public String id;
@@ -9,7 +7,7 @@ public class ScriptObject {
     public String scriptData;
 
 
-    public ScriptObject(String id, String dir,  String scriptData) {
+    public ScriptObject(String id, String dir, String scriptData) {
         this.id = id;
         this.dir = dir;
         this.scriptData = scriptData;

@@ -7,7 +7,8 @@ import com.zeshanaslam.crimering.FileHandler;
 import com.zeshanaslam.crimering.Main;
 import org.bukkit.ChatColor;
 
-import javax.script.*;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;

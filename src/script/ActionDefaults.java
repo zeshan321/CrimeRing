@@ -1,7 +1,5 @@
 package script;
 
-import com.enjin.officialplugin.points.ErrorConnectingToEnjinException;
-import com.enjin.officialplugin.points.PlayerDoesNotExistException;
 import com.enjin.officialplugin.points.PointsAPI;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
@@ -1090,7 +1088,7 @@ public class ActionDefaults {
             ItemMeta itemMeta = itemStack.getItemMeta();
 
             if (itemMeta.hasLore()) {
-                for (String s: itemMeta.getLore()) {
+                for (String s : itemMeta.getLore()) {
                     lore = lore + s;
                 }
             }

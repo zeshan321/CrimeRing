@@ -1,5 +1,6 @@
 package com.zeshanaslam.crimering;
 
+import ambientsounds.AmbientManager;
 import brewing.BrewListener;
 import brewing.BrewingManager;
 import com.comphenix.protocol.PacketType;
@@ -71,6 +72,8 @@ public class Main extends JavaPlugin {
     public BukkitMobsAPI mythicAPI;
     public PerkManager perkManager;
     public LockManager lockManager;
+    public AmbientManager ambientManager;
+    public ActionDefaults actionDefaults;
 
     // Lists and maps
     public ArrayList<String> flag = new ArrayList<>();
@@ -91,6 +94,12 @@ public class Main extends JavaPlugin {
         if (rsp != null) {
             economy = (Economy) rsp.getProvider();
         }
+
+        // General and limited methods for non scripting
+        actionDefaults = new ActionDefaults(null, null);
+
+        // Setup ambient manager
+        ambientManager = new AmbientManager();
 
         // Setup lock manager
         lockManager = new LockManager();
