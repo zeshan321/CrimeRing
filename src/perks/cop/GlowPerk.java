@@ -17,7 +17,7 @@ public class GlowPerk implements Listener {
     private final Main plugin;
 
     private final String glowPerkPerm = "CR.glow";
-    private final int glowPerkTimer = 5 * 60;
+    private final int glowPerkTimer = 300;
 
     public GlowPerk(Main plugin) {
         this.plugin = plugin;

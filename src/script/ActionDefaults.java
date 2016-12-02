@@ -685,6 +685,7 @@ public class ActionDefaults {
             // Objects
             Bindings bindings = engine.createBindings();
             bindings.put("player", player);
+            bindings.put("CR", new ActionDefaults(scriptID, engine));
 
             ScriptContext scriptContext = engine.getContext();
             scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
