@@ -41,10 +41,8 @@ public class FileHandler {
 
     public static boolean fileExists(String path) {
         File file = new File(path);
-        if (!(file.exists())) {
-            return false;
-        }
-        return true;
+
+        return file.exists();
     }
 
     private void load() {

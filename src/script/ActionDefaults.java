@@ -17,6 +17,8 @@ import merchants.api.Merchant;
 import net.elseland.xikage.MythicMobs.API.Bukkit.BukkitMobsAPI;
 import net.elseland.xikage.MythicMobs.API.Exceptions.InvalidMobTypeException;
 import net.elseland.xikage.MythicMobs.API.ThreatTables;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.minecraft.server.v1_10_R1.AxisAlignedBB;
 import net.minecraft.server.v1_10_R1.PacketPlayOutCustomSoundEffect;
 import net.minecraft.server.v1_10_R1.SoundCategory;
 import org.bukkit.*;
@@ -37,6 +39,8 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
+import org.inventivetalent.bossbar.BossBar;
+import org.inventivetalent.bossbar.BossBarAPI;
 import org.inventivetalent.glow.GlowAPI;
 import org.inventivetalent.particle.ParticleEffect;
 import raids.PartyAPI;
@@ -44,6 +48,7 @@ import raids.PartyObject;
 import utils.ItemUtils;
 import utils.MessageUtil;
 import utils.MoneyUtil;
+import utils.TargetHelper;
 
 import javax.script.*;
 import java.util.*;
@@ -382,7 +387,7 @@ public class ActionDefaults {
 
     public int getSkillPoint(Player player) {
         if (FileHandler.fileExists("plugins/CrimeRing/player/" + player.getUniqueId().toString())) {
-            return 0;
+            return -1;
         }
 
         FileHandler fileHandler = new FileHandler(("plugins/CrimeRing/player/" + player.getUniqueId().toString()));
@@ -1367,9 +1372,55 @@ public class ActionDefaults {
         }
     }
 
-    public boolean canEntitySeePlayer(Entity entity, Player player) {
-        Creature creature = (Creature) entity;
+    public List<Player> getPlayersInCone(Entity entity, int arc, int range) {
+        List<Player> players = new ArrayList<>();
+        List<LivingEntity> livingEntities = TargetHelper.getConeTargets((LivingEntity) entity, arc, range);
 
-        return creature.hasLineOfSight(player);
+        for (LivingEntity livingEntity: livingEntities) {
+            if (!(livingEntity instanceof Player)) {
+                continue;
+            }
+
+            if (!TargetHelper.isObstructed(entity.getLocation(), livingEntity.getLocation())) {
+                players.add((Player) livingEntity);
+            }
+        }
+
+        return players;
+    }
+
+    public BossBar createBossBar(Player player, String text, String color, String style, int timeout) {
+        BossBar bossBar = BossBarAPI.addBar(new TextComponent(text),
+                BossBarAPI.Color.valueOf(color),
+                BossBarAPI.Style.valueOf(style),
+                0.0f);
+
+        bossBar.addPlayer(player);
+
+        return bossBar;
+    }
+
+    public BossBar getBossBar(Player player, String style) {
+        for (BossBar bossBar : BossBarAPI.getBossBars(player)) {
+            if (bossBar.getStyle() == BossBarAPI.Style.valueOf(style)) {
+                return bossBar;
+            }
+        }
+
+        return null;
+    }
+
+    public void addBossBarProgress(BossBar bossBar, int amount) {
+        float progress = bossBar.getProgress();
+
+        if (progress + amount > 1) {
+            bossBar.setProgress(1.0f);
+        } else {
+            bossBar.setProgress(progress + amount);
+        }
+    }
+
+    public void removeAllBossBars(Player player) {
+        BossBarAPI.removeAllBars(player);
     }
 }

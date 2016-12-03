@@ -28,5 +28,6 @@
     <orderEntry type="library" name="Citizens" level="project" />
     <orderEntry type="library" name="Vault" level="project" />
     <orderEntry type="library" name="EnjinMinecraftPlugin" level="project" />
+    <orderEntry type="library" name="BossBarAPI_v2.4.1" level="project" />
   </component>
 </module>
