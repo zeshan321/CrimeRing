@@ -12,9 +12,9 @@ import java.util.UUID;
 public class AmbientManager {
 
     private final String[] sounds = new String[]{"1", "2", "3", "4", "5", "6", "7", "8", "9"};
-    private Random random;
     public HashMap<UUID, AmbientObject> timer = new HashMap<>();
     public int time = 35;
+    private Random random;
 
     public AmbientManager() {
         random = new Random();

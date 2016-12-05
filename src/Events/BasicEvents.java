@@ -164,7 +164,7 @@ public class BasicEvents implements Listener {
         if (event.getRemover() instanceof Projectile) {
             event.setCancelled(true);
         }
-        
+
         if (event.getRemover() instanceof Player) {
             Player player = (Player) event.getRemover();
 
@@ -230,7 +230,7 @@ public class BasicEvents implements Listener {
 
     @EventHandler
     public void onHangingBreak(HangingBreakEvent event) {
-        if (event.getCause() == HangingBreakEvent.RemoveCause.ENTITY ||event.getCause() == HangingBreakEvent.RemoveCause.EXPLOSION || event.getCause() == HangingBreakEvent.RemoveCause.PHYSICS) {
+        if (event.getCause() == HangingBreakEvent.RemoveCause.ENTITY || event.getCause() == HangingBreakEvent.RemoveCause.EXPLOSION || event.getCause() == HangingBreakEvent.RemoveCause.PHYSICS) {
             event.setCancelled(true);
         }
     }
