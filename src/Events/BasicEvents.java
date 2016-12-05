@@ -12,6 +12,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -232,6 +233,23 @@ public class BasicEvents implements Listener {
     public void onHangingBreak(HangingBreakEvent event) {
         if (event.getCause() == HangingBreakEvent.RemoveCause.ENTITY || event.getCause() == HangingBreakEvent.RemoveCause.EXPLOSION || event.getCause() == HangingBreakEvent.RemoveCause.PHYSICS) {
             event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onItemframeDamage(EntityDamageByEntityEvent event) {
+        if (event.getEntity() instanceof ItemFrame) {
+            if (event.getDamager() instanceof Player) {
+                Player player = (Player) event.getDamager();
+
+                if (player.isOp() && player.getInventory().getItemInMainHand().getType().equals(Material.PAINTING)) {
+                    return;
+                }
+
+                event.setCancelled(true);
+            } else {
+                event.setCancelled(true);
+            }
         }
     }
 
