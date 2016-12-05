@@ -1,6 +1,7 @@
 package script;
 
 import com.enjin.officialplugin.points.PointsAPI;
+import com.shampaggon.crackshot.CSUtility;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
@@ -18,7 +19,6 @@ import net.elseland.xikage.MythicMobs.API.Bukkit.BukkitMobsAPI;
 import net.elseland.xikage.MythicMobs.API.Exceptions.InvalidMobTypeException;
 import net.elseland.xikage.MythicMobs.API.ThreatTables;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.minecraft.server.v1_10_R1.AxisAlignedBB;
 import net.minecraft.server.v1_10_R1.PacketPlayOutCustomSoundEffect;
 import net.minecraft.server.v1_10_R1.SoundCategory;
 import org.bukkit.*;
@@ -1026,6 +1026,13 @@ public class ActionDefaults {
         location.getWorld().getBlockAt(location).setData((byte) data);
     }
 
+    public void setBlockAtLocation(String world, int x, int y, int z, int id, int data) {
+        Location location = new Location(Bukkit.getWorld(world), x, y, z);
+
+        location.getWorld().getBlockAt(location).setTypeId(id);
+        location.getWorld().getBlockAt(location).setData((byte) data);
+    }
+
     public void sendConsoleMessage(String message) {
         System.out.println(message);
     }
@@ -1376,7 +1383,7 @@ public class ActionDefaults {
         List<Player> players = new ArrayList<>();
         List<LivingEntity> livingEntities = TargetHelper.getConeTargets((LivingEntity) entity, arc, range);
 
-        for (LivingEntity livingEntity: livingEntities) {
+        for (LivingEntity livingEntity : livingEntities) {
             if (!(livingEntity instanceof Player)) {
                 continue;
             }
@@ -1410,7 +1417,7 @@ public class ActionDefaults {
         return null;
     }
 
-    public void addBossBarProgress(BossBar bossBar, int amount) {
+    public void addBossBarProgress(BossBar bossBar, float amount) {
         float progress = bossBar.getProgress();
 
         if (progress + amount > 1) {
@@ -1422,5 +1429,13 @@ public class ActionDefaults {
 
     public void removeAllBossBars(Player player) {
         BossBarAPI.removeAllBars(player);
+    }
+
+    public void addDetectionToEntity(Entity entity, String script) {
+        Main.instance.entityDetection.addEntity(entity, script);
+    }
+
+    public String getWeaponTitle(ItemStack item) {
+        return new CSUtility().getWeaponTitle(item);
     }
 }

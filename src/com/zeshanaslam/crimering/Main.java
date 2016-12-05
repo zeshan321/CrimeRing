@@ -17,6 +17,7 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import commands.*;
 import customevents.PlayerEquipEvent;
 import customevents.PlayerUnequipEvent;
+import detection.EntityDetection;
 import entity.EntityListener;
 import entity.EntityManager;
 import entity.EntityObject;
@@ -74,6 +75,7 @@ public class Main extends JavaPlugin {
     public LockManager lockManager;
     public AmbientManager ambientManager;
     public ActionDefaults actionDefaults;
+    public EntityDetection entityDetection;
 
     // Lists and maps
     public ArrayList<String> flag = new ArrayList<>();
@@ -97,6 +99,9 @@ public class Main extends JavaPlugin {
 
         // General and limited methods for non scripting
         actionDefaults = new ActionDefaults(null, null);
+
+        // Setup entity detection manager
+        entityDetection = new EntityDetection();
 
         // Setup ambient manager
         ambientManager = new AmbientManager();
