@@ -196,6 +196,26 @@ public class ActionDefaults {
         return amount;
     }
 
+    public List<Entity> getAllEntitiesInRegion(String world, String regionName) {
+        List<Entity> entityList = new ArrayList<>();
+
+        ProtectedRegion rg = Main.instance.worldGuardPlugin.getRegionManager(Bukkit.getWorld(world)).getRegion(regionName);
+
+        if (rg != null) {
+            Region region = new CuboidRegion(rg.getMaximumPoint(), rg.getMinimumPoint());
+            Location centerLoc = new Location(Bukkit.getWorld(world), region.getCenter().getX(), region.getCenter().getY(), region.getCenter().getZ());
+            Collection<Entity> entities = Bukkit.getWorld(world).getNearbyEntities(centerLoc, region.getWidth() / 2, region.getHeight() / 2, region.getLength() / 2);
+
+            for (Entity entity : entities) {
+                if (entity instanceof Monster && !entity.isDead()) {
+                    entityList.add(entity);
+                }
+            }
+        }
+
+        return entityList;
+    }
+
     public void runCommand(String command) {
         Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
     }
@@ -953,33 +973,29 @@ public class ActionDefaults {
         }
     }
 
-    public void setItemframeItem(String world, int x, int y, int z, String type, int data) {
-        ItemStack itemStack = new ItemStack(Material.valueOf(type));
+    public void setItemframeItem(String world, int x, int y, int z, int id, int data) {
+        ItemStack itemStack = new ItemStack(id);
 
         if (data > 0)
             itemStack.setDurability((short) data);
 
         Location location = new Location(Bukkit.getWorld(world), x, y, z);
-        for (Entity entity : location.getWorld().getEntities()) {
-            if (entity.getLocation().distance(location) <= 2) {
-                if (entity instanceof ItemFrame) {
-                    ItemFrame itemFrame = (ItemFrame) entity;
-                    itemFrame.setItem(itemStack);
-                    return;
-                }
+
+        for (Entity entity: location.getWorld().getNearbyEntities(location, 0.5, 0.5, 0.5)) {
+            if (entity instanceof ItemFrame) {
+                ItemFrame itemFrame = (ItemFrame) entity;
+                itemFrame.setItem(itemStack);
             }
         }
     }
 
     public void setItemframeRotation(String world, int x, int y, int z, String rotation) {
         Location location = new Location(Bukkit.getWorld(world), x, y, z);
-        for (Entity entity : location.getWorld().getEntities()) {
-            if (entity.getLocation().distance(location) <= 2) {
-                if (entity instanceof ItemFrame) {
-                    ItemFrame itemFrame = (ItemFrame) entity;
-                    itemFrame.setRotation(Rotation.valueOf(rotation));
-                    return;
-                }
+
+        for (Entity entity: location.getWorld().getNearbyEntities(location, 0.5, 0.5, 0.5)) {
+            if (entity instanceof ItemFrame) {
+                ItemFrame itemFrame = (ItemFrame) entity;
+                itemFrame.setRotation(Rotation.valueOf(rotation));
             }
         }
     }
@@ -1437,5 +1453,9 @@ public class ActionDefaults {
 
     public String getWeaponTitle(ItemStack item) {
         return new CSUtility().getWeaponTitle(item);
+    }
+
+    public void setBlocks(String world, int x1, int y1, int z1, int x2, int y2, int z2, int id, int data) {
+        runCommand("credit " + world + " " + x1 + " " + y1 + " " + z1 + " " + x2 + " " + y2 + " " + z2 + " " + id + " " + data);
     }
 }

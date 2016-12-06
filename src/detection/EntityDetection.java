@@ -19,8 +19,7 @@ public class EntityDetection {
     private List<String> remove = new ArrayList<>();
 
     public EntityDetection() {
-        new BukkitRunnable() {
-            public void run() {
+        Main.instance.getServer().getScheduler().scheduleSyncRepeatingTask(Main.instance, () -> {
                 bars.clear();
                 remove.clear();
 
@@ -71,11 +70,21 @@ public class EntityDetection {
                         }
                     }
                 }
-            }
-        }.runTaskTimer(Main.instance, 0L, 20L);
+        }, 0, 20L);
     }
 
     public void addEntity(Entity entity, String script) {
-        list.add(new EntityDetectionObject(entity, script));
+        boolean exists = false;
+
+        for (EntityDetectionObject object: list) {
+            if (object.entity.getUniqueId() == entity.getUniqueId() && object.script == script) {
+                exists = true;
+                break;
+            }
+        }
+
+        if (!exists) {
+            list.add(new EntityDetectionObject(entity, script));
+        }
     }
 }
