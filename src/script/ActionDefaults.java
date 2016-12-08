@@ -406,11 +406,11 @@ public class ActionDefaults {
     }
 
     public int getSkillPoint(Player player) {
-        if (FileHandler.fileExists("plugins/CrimeRing/player/" + player.getUniqueId().toString())) {
+        if (!FileHandler.fileExists("plugins/CrimeRing/player/" + player.getUniqueId().toString())) {
             return -1;
         }
 
-        FileHandler fileHandler = new FileHandler(("plugins/CrimeRing/player/" + player.getUniqueId().toString()));
+        FileHandler fileHandler = new FileHandler("plugins/CrimeRing/player/" + player.getUniqueId().toString());
 
         return fileHandler.getInteger("skill-points");
     }
