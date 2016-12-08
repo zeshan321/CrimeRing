@@ -61,6 +61,6 @@ public class AmbientManager {
 
     public void startCity(Player player) {
         String track = "ambient.city." + sounds[random.nextInt(sounds.length)];
-        Main.instance.actionDefaults.playCustomSound(player, track, "AMBIENT", player.getLocation().getBlockX(), player.getLocation().getBlockY(), player.getLocation().getBlockZ(), Float.MAX_VALUE, 0);
+        Main.instance.actionDefaults.playCustomSound(player, track, "AMBIENT", player.getLocation().getBlockX(), player.getLocation().getBlockY(), player.getLocation().getBlockZ(), Float.MAX_VALUE, 1);
     }
 }

@@ -1359,9 +1359,6 @@ public class ActionDefaults {
     }
 
     public void playCustomSound(Player player, String name, String category, int x, int y, int z, float volume, float pitch) {
-        // Volume: 1 is 100%, can be more
-        // Pitch: between 0.5 and 2.0. Default is 0
-
         PacketPlayOutCustomSoundEffect packet = new PacketPlayOutCustomSoundEffect(name, SoundCategory.valueOf(category), x, y, z, volume, pitch);
 
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
