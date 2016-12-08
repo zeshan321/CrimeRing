@@ -15,10 +15,11 @@ public class EntityDetection {
 
     private List<EntityDetectionObject> list = new ArrayList<>();
     private List<UUID> bars = new ArrayList<>();
+    private List<String> remove = new ArrayList<>();
 
     public EntityDetection() {
         Main.instance.getServer().getScheduler().scheduleSyncRepeatingTask(Main.instance, () -> {
-            List<String> remove = new ArrayList<>();
+            remove.clear();
             bars.clear();
 
             Iterator<EntityDetectionObject> iterator = list.iterator();
@@ -54,6 +55,17 @@ public class EntityDetection {
                             break;
                         }
                     }
+                }
+            }
+
+            // Remove left objects
+            iterator = list.iterator();
+
+            while (iterator.hasNext()) {
+                EntityDetectionObject object = iterator.next();
+
+                if (remove.contains(object.script)) {
+                    iterator.remove();
                 }
             }
 
