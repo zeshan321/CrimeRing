@@ -25,25 +25,12 @@ public class ActionNPC implements Listener {
     public void onEntityInteract(PlayerInteractEntityEvent event) {
         Player player = event.getPlayer();
 
-        // Only use right hand
-        if (event.getHand() == EquipmentSlot.OFF_HAND) {
-            return;
-        }
-
-        if (ActionCommands.clicks.containsKey(player.getName())) {
-            return;
-        }
-
-        if (!(event.getRightClicked() instanceof LivingEntity)) {
-            return;
-        }
-
         if (event.getRightClicked().getType() == EntityType.VILLAGER) {
             event.setCancelled(true);
         }
 
-        LivingEntity interacted = (LivingEntity) event.getRightClicked();
-        if (interacted.getCustomName() == null) {
+        // Only use right hand
+        if (event.getHand() == EquipmentSlot.OFF_HAND) {
             return;
         }
 
@@ -51,66 +38,100 @@ public class ActionNPC implements Listener {
             return;
         }
 
-        if (Main.instance.listeners.contains(player.getUniqueId(), typeNPC + interacted.getCustomName())) {
-            ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(), typeNPC + interacted.getCustomName());
 
-            Invocable invocable = (Invocable) listenerObject.engine;
-            try {
-                invocable.invokeFunction(listenerObject.method, event);
-            } catch (ScriptException | NoSuchMethodException e) {
-                e.printStackTrace();
+        if (event.getRightClicked() instanceof LivingEntity) {
+            LivingEntity interacted = (LivingEntity) event.getRightClicked();
+
+            if (interacted.getCustomName() == null) {
+                if (Main.instance.scriptsManager.contains(typeNPC + event.getRightClicked().getType().name())) {
+                    ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeNPC +  event.getRightClicked().getType().name());
+
+                    try {
+                        ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+
+                        // Objects
+                        Bindings bindings = engine.createBindings();
+                        bindings.put("player", player);
+                        bindings.put("event", event);
+                        bindings.put("CR", new ActionDefaults(typeNPC + event.getRightClicked().getType().name(), engine));
+                        bindings.put("x", event.getRightClicked().getLocation().getBlockX());
+                        bindings.put("y", event.getRightClicked().getLocation().getBlockY());
+                        bindings.put("z", event.getRightClicked().getLocation().getBlockZ());
+                        bindings.put("world", event.getRightClicked().getLocation().getWorld().getName());
+
+                        ScriptContext scriptContext = engine.getContext();
+                        scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+
+                        engine.eval(scriptObject.scriptData, scriptContext);
+                    } catch (ScriptException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return;
             }
-            return;
-        }
 
-        String customName = interacted.getCustomName().replace("§", "&");
-        if (Main.instance.scriptsManager.contains(typeNPC + customName)) {
-            ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeNPC + customName);
+            if (Main.instance.listeners.contains(player.getUniqueId(), typeNPC + interacted.getCustomName())) {
+                ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(), typeNPC + interacted.getCustomName());
 
-            try {
-                ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
-
-                // Objects
-                Bindings bindings = engine.createBindings();
-                bindings.put("player", player);
-                bindings.put("event", event);
-                bindings.put("CR", new ActionDefaults(typeNPC + customName, engine));
-                bindings.put("x", interacted.getLocation().getBlockX());
-                bindings.put("y", interacted.getLocation().getBlockY());
-                bindings.put("z", interacted.getLocation().getBlockZ());
-                bindings.put("world", interacted.getLocation().getWorld().getName());
-
-                ScriptContext scriptContext = engine.getContext();
-                scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
-
-                engine.eval(scriptObject.scriptData, scriptContext);
-            } catch (ScriptException e) {
-                e.printStackTrace();
+                Invocable invocable = (Invocable) listenerObject.engine;
+                try {
+                    invocable.invokeFunction(listenerObject.method, event);
+                } catch (ScriptException | NoSuchMethodException e) {
+                    e.printStackTrace();
+                }
+                return;
             }
-        }
 
-        if (Main.instance.scriptsManager.contains(typeNPC + event.getRightClicked().getType().name())) {
-            ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeNPC +  event.getRightClicked().getType().name());
+            String customName = interacted.getCustomName().replace("§", "&");
+            if (Main.instance.scriptsManager.contains(typeNPC + customName)) {
+                ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeNPC + customName);
 
-            try {
-                ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+                try {
+                    ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 
-                // Objects
-                Bindings bindings = engine.createBindings();
-                bindings.put("player", player);
-                bindings.put("event", event);
-                bindings.put("CR", new ActionDefaults(typeNPC + customName, engine));
-                bindings.put("x", interacted.getLocation().getBlockX());
-                bindings.put("y", interacted.getLocation().getBlockY());
-                bindings.put("z", interacted.getLocation().getBlockZ());
-                bindings.put("world", interacted.getLocation().getWorld().getName());
+                    // Objects
+                    Bindings bindings = engine.createBindings();
+                    bindings.put("player", player);
+                    bindings.put("event", event);
+                    bindings.put("CR", new ActionDefaults(typeNPC + customName, engine));
+                    bindings.put("x", interacted.getLocation().getBlockX());
+                    bindings.put("y", interacted.getLocation().getBlockY());
+                    bindings.put("z", interacted.getLocation().getBlockZ());
+                    bindings.put("world", interacted.getLocation().getWorld().getName());
 
-                ScriptContext scriptContext = engine.getContext();
-                scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+                    ScriptContext scriptContext = engine.getContext();
+                    scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
 
-                engine.eval(scriptObject.scriptData, scriptContext);
-            } catch (ScriptException e) {
-                e.printStackTrace();
+                    engine.eval(scriptObject.scriptData, scriptContext);
+                } catch (ScriptException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        } else {
+            if (Main.instance.scriptsManager.contains(typeNPC + event.getRightClicked().getType().name())) {
+                ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeNPC +  event.getRightClicked().getType().name());
+
+                try {
+                    ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+
+                    // Objects
+                    Bindings bindings = engine.createBindings();
+                    bindings.put("player", player);
+                    bindings.put("event", event);
+                    bindings.put("CR", new ActionDefaults(typeNPC + event.getRightClicked().getType().name(), engine));
+                    bindings.put("x", event.getRightClicked().getLocation().getBlockX());
+                    bindings.put("y", event.getRightClicked().getLocation().getBlockY());
+                    bindings.put("z", event.getRightClicked().getLocation().getBlockZ());
+                    bindings.put("world", event.getRightClicked().getLocation().getWorld().getName());
+
+                    ScriptContext scriptContext = engine.getContext();
+                    scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+
+                    engine.eval(scriptObject.scriptData, scriptContext);
+                } catch (ScriptException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
