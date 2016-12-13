@@ -1000,6 +1000,19 @@ public class ActionDefaults {
         }
     }
 
+    public boolean itemframeHasItem(Entity entity, ItemStack itemStack) {
+        if (entity instanceof ItemFrame) {
+            ItemFrame itemFrame = (ItemFrame) entity;
+            ItemStack frame = itemFrame.getItem();
+
+            if (frame != null) {
+                return frame.getTypeId() == itemStack.getTypeId() && frame.getDurability() == frame.getDurability();
+            }
+        }
+
+        return false;
+    }
+
     public void takeItemFromHand(Player player) {
         if (player.getInventory().getItemInMainHand().getAmount() > 1) {
             player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount() - 1);
@@ -1454,5 +1467,23 @@ public class ActionDefaults {
 
     public void setBlocks(String world, int x1, int y1, int z1, int x2, int y2, int z2, int id, int data) {
         runCommand("credit " + world + " " + x1 + " " + y1 + " " + z1 + " " + x2 + " " + y2 + " " + z2 + " " + id + " " + data);
+    }
+
+    public void giveLootbag(Player player) {
+        player.getInventory().setItemInOffHand(this.getItem("LootBag", 1));
+    }
+
+    public boolean hasLootbag(Player player) {
+        ItemStack itemStack = player.getInventory().getItemInOffHand();
+
+        if (itemStack != null) {
+            return itemStack.getType() == Material.DIAMOND_HOE && itemStack.getDurability() == 497;
+        }
+
+        return false;
+    }
+
+    public void removeLootbag(Player player) {
+        player.getInventory().setItemInOffHand(null);
     }
 }

@@ -334,6 +334,10 @@ public class Main extends JavaPlugin {
                     plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
                         ItemStack itemStack = event.getPlayer().getInventory().getItemInOffHand();
 
+                        if (itemStack.getType() == Material.DIAMOND_HOE && itemStack.getDurability() == 497) {
+                            return;
+                        }
+
                         event.getPlayer().getInventory().setItemInOffHand(null);
                         event.getPlayer().getInventory().addItem(itemStack);
                         event.getPlayer().updateInventory();
