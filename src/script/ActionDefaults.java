@@ -1466,7 +1466,7 @@ public class ActionDefaults {
     }
 
     public void setBlocks(String world, int x1, int y1, int z1, int x2, int y2, int z2, int id, int data) {
-        runCommand("credit " + world + " " + x1 + " " + y1 + " " + z1 + " " + x2 + " " + y2 + " " + z2 + " " + id + " " + data);
+        runCommand("credit " + world + " " + x1 + " " + y1 + " " + z1 + " " + x2 + " " + y2 + " " + z2 + " " + Material.getMaterial(id).name() + " " + data);
     }
 
     public void giveLootbag(Player player) {
