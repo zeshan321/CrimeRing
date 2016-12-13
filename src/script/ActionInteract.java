@@ -72,6 +72,30 @@ public class ActionInteract implements Listener {
                 e.printStackTrace();
             }
         }
+
+        if (Main.instance.scriptsManager.contains(typeInteract + "*")) {
+            ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeInteract + "*");
+
+            try {
+                ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+
+                // Objects
+                Bindings bindings = engine.createBindings();
+                bindings.put("player", player);
+                bindings.put("event", event);
+                bindings.put("CR", new ActionDefaults(typeInteract + material + ":" + data, engine));
+                bindings.put("id", material);
+                bindings.put("data", data);
+                bindings.put("clickType", clickType(event.getAction().toString()));
+
+                ScriptContext scriptContext = engine.getContext();
+                scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+
+                engine.eval(scriptObject.scriptData, scriptContext);
+            } catch (ScriptException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private String clickType(String interact) {
