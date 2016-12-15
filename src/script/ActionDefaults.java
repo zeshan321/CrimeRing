@@ -320,6 +320,30 @@ public class ActionDefaults {
         player.getInventory().addItem(item);
     }
 
+    public ItemStack getItem(Player player, String name, int amount, boolean remove) {
+        FileHandler fileHandler = new FileHandler("plugins/CrimeRing/items/" + name + ".yml");
+
+        ItemStack item = fileHandler.getItemStack("Item");
+        item.setAmount(amount);
+
+        // Add 'Raid Item' to lore
+        if (remove) {
+            ItemMeta itemMeta = item.getItemMeta();
+            List<String> lore = new ArrayList<>();
+
+            if (itemMeta.hasLore()) {
+                lore = itemMeta.getLore();
+            }
+
+            lore.add(ChatColor.GOLD + "Raid Item");
+            itemMeta.setLore(lore);
+
+            item.setItemMeta(itemMeta);
+        }
+
+        return item;
+    }
+
     public void dropItemAtLocation(Location location, String name, int amount, boolean remove) {
         FileHandler fileHandler = new FileHandler("plugins/CrimeRing/items/" + name + ".yml");
 
@@ -989,6 +1013,18 @@ public class ActionDefaults {
         }
     }
 
+    public void setItemframeItem(Entity entity, int id, int data) {
+        ItemStack itemStack = new ItemStack(id);
+
+        if (data > 0)
+            itemStack.setDurability((short) data);
+
+        if (entity instanceof ItemFrame) {
+            ItemFrame itemFrame = (ItemFrame) entity;
+            itemFrame.setItem(itemStack);
+        }
+    }
+
     public void setItemframeRotation(String world, int x, int y, int z, String rotation) {
         Location location = new Location(Bukkit.getWorld(world), x, y, z);
 
@@ -998,6 +1034,19 @@ public class ActionDefaults {
                 itemFrame.setRotation(Rotation.valueOf(rotation));
             }
         }
+    }
+
+    public boolean itemframeHasItem(Entity entity) {
+        if (entity instanceof ItemFrame) {
+            ItemFrame itemFrame = (ItemFrame) entity;
+            ItemStack frame = itemFrame.getItem();
+
+            if (frame != null) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public boolean itemframeHasItem(Entity entity, ItemStack itemStack) {
@@ -1470,7 +1519,7 @@ public class ActionDefaults {
     }
 
     public void giveLootbag(Player player) {
-        player.getInventory().setItemInOffHand(this.getItem("LootBag", 1));
+        player.getInventory().setItemInOffHand(this.getItem(player, "LootBag", 1, true));
     }
 
     public boolean hasLootbag(Player player) {
