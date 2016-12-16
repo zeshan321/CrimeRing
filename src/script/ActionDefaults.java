@@ -196,7 +196,7 @@ public class ActionDefaults {
         return amount;
     }
 
-    public List<Entity> getAllEntitiesInRegion(String world, String regionName) {
+    public List<Entity> getAllEntitiesInRegion(String world, String regionName, boolean monsterOnly) {
         List<Entity> entityList = new ArrayList<>();
 
         ProtectedRegion rg = Main.instance.worldGuardPlugin.getRegionManager(Bukkit.getWorld(world)).getRegion(regionName);
@@ -207,7 +207,11 @@ public class ActionDefaults {
             Collection<Entity> entities = Bukkit.getWorld(world).getNearbyEntities(centerLoc, region.getWidth() / 2, region.getHeight() / 2, region.getLength() / 2);
 
             for (Entity entity : entities) {
-                if (entity instanceof Monster && !entity.isDead()) {
+                if (monsterOnly) {
+                    if (entity instanceof Monster && !entity.isDead()) {
+                        entityList.add(entity);
+                    }
+                } else {
                     entityList.add(entity);
                 }
             }
