@@ -110,6 +110,7 @@ public class Main extends JavaPlugin {
 
         // Setup lock manager
         lockManager = new LockManager();
+        lockManager.start();
 
         // Setup perk manager
         perkManager = new PerkManager();

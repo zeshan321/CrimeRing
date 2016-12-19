@@ -3,7 +3,6 @@ package locks;
 import com.codisimus.plugins.phatloots.PhatLootsAPI;
 import com.codisimus.plugins.phatloots.events.PrePlayerLootEvent;
 import com.zeshanaslam.crimering.Main;
-import net.sothatsit.blockstore.BlockStoreApi;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -61,8 +60,8 @@ public class LockListener implements Listener {
             return;
         }
 
-        if (BlockStoreApi.containsBlockMeta(block, plugin, "CRLock")) {
-            String lockType = BlockStoreApi.getBlockMeta(block, plugin, "CRLock").toString();
+        if (Main.instance.lockManager.locks.containsKey(block.getX() + " " + block.getY() + " " + block.getZ() + " " + block.getWorld().getName())) {
+            String lockType = Main.instance.lockManager.locks.get(block.getX() + " " + block.getY() + " " + block.getZ() + " " + block.getWorld().getName());
 
             if (!plugin.lockManager.unlocked.containsKey(lockType + " " + block.getX() + " " + block.getY() + " " + block.getZ() + " " + block.getWorld().getName())) {
                 event.setCancelled(true);
@@ -87,8 +86,8 @@ public class LockListener implements Listener {
         Player player = event.getLooter();
         Block block = event.getChest().getBlock();
 
-        if (BlockStoreApi.containsBlockMeta(block, plugin, "CRLock")) {
-            String lockType = BlockStoreApi.getBlockMeta(block, plugin, "CRLock").toString();
+        if (Main.instance.lockManager.locks.containsKey(block.getX() + " " + block.getY() + " " + block.getZ() + " " + block.getWorld().getName())) {
+            String lockType = Main.instance.lockManager.locks.get(block.getX() + " " + block.getY() + " " + block.getZ() + " " + block.getWorld().getName());
 
             if (!plugin.lockManager.unlocked.containsKey(lockType + " " + block.getX() + " " + block.getY() + " " + block.getZ() + " " + block.getWorld().getName())) {
                 event.setCancelled(true);
@@ -189,7 +188,7 @@ public class LockListener implements Listener {
                 }
             }
 
-            if (BlockStoreApi.containsBlockMeta(block, plugin, "CRLock"))
+            if (Main.instance.lockManager.locks.containsKey(block.getX() + " " + block.getY() + " " + block.getZ() + " " + block.getWorld().getName()))
                 it.remove();
         }
     }

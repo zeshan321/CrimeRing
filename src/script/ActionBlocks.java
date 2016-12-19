@@ -1,7 +1,6 @@
 package script;
 
 import com.zeshanaslam.crimering.Main;
-import net.sothatsit.blockstore.BlockStoreApi;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -46,8 +45,8 @@ public class ActionBlocks implements Listener {
             String world = player.getWorld().getName();
 
             // Check if block is locked
-            if (BlockStoreApi.containsBlockMeta(event.getClickedBlock(), plugin, "CRLock")) {
-                String lockType = BlockStoreApi.getBlockMeta(event.getClickedBlock(), plugin, "CRLock").toString();
+            if (Main.instance.lockManager.locks.containsKey(x + " " + y + " " + z + " " + world)) {
+                String lockType = Main.instance.lockManager.locks.get(x + " " + y + " " + z + " " + world);
 
                 if (!plugin.lockManager.unlocked.containsKey(lockType + " " + x + " " + y + " " + z + " " + world)) {
                     return;

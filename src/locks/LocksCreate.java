@@ -2,7 +2,6 @@ package locks;
 
 import com.zeshanaslam.crimering.FileHandler;
 import com.zeshanaslam.crimering.Main;
-import net.sothatsit.blockstore.BlockStoreApi;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
@@ -109,6 +108,10 @@ public class LocksCreate implements CommandExecutor, Listener {
     public void onClick(InventoryClickEvent event) {
         Inventory inventory = event.getClickedInventory();
 
+        if (event.getCurrentItem() == null || inventory == null || inventory.getTitle() == null) {
+            return;
+        }
+
         if (!inventory.getTitle().startsWith("CR:LP editing: ")) {
             return;
         }
@@ -194,10 +197,10 @@ public class LocksCreate implements CommandExecutor, Listener {
         String type = plugin.lockManager.assign.get(player.getUniqueId());
 
         if (type.equals("REMOVEPLZ")) {
-            BlockStoreApi.removeBlockMeta(block, plugin, "CRLock");
+            Main.instance.lockManager.removeLock(block.getX() + " " + block.getY() + " " + block.getZ() + " " + block.getWorld().getName());
             player.sendMessage(ChatColor.GOLD + "Removed lock from block!");
         } else {
-            BlockStoreApi.setBlockMeta(block, plugin, "CRLock", plugin.lockManager.assign.get(player.getUniqueId()));
+            Main.instance.lockManager.addLock(block.getX() + " " + block.getY() + " " + block.getZ() + " " + block.getWorld().getName(), plugin.lockManager.assign.get(player.getUniqueId()));
             player.sendMessage(ChatColor.GOLD + "Set lock to block!");
         }
 
