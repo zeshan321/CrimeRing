@@ -8,6 +8,9 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.zeshanaslam.crimering.FileHandler;
 import com.zeshanaslam.crimering.Main;
+import es.pollitoyeye.Bikes.BikeManager;
+import es.pollitoyeye.Bikes.CarManager;
+import es.pollitoyeye.Bikes.VehiclesMain;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.disguisetypes.DisguiseType;
 import me.libraryaddict.disguise.disguisetypes.MiscDisguise;
@@ -1549,5 +1552,21 @@ public class ActionDefaults {
 
     public void removeLootbag(Player player) {
         player.getInventory().setItemInOffHand(null);
+    }
+
+    public void spawnCar(String world, int x, int y, int z, String owner, String type) {
+        if (owner.equals("ADMIN")) {
+            owner = "eb44b54e-2f44-4825-a41e-a87fbe288865";
+        }
+
+        CarManager.spawnCar(new Location(Bukkit.getWorld(world), x, y ,z), owner, VehiclesMain.carTypefromString(type));
+    }
+
+    public void spawnBike(String world, int x, int y, int z, String owner, String type) {
+        if (owner.equals("ADMIN")) {
+            owner = "eb44b54e-2f44-4825-a41e-a87fbe288865";
+        }
+
+        BikeManager.spawnBike(new Location(Bukkit.getWorld(world), x, y ,z), owner, VehiclesMain.bikeTypefromString(type));
     }
 }
