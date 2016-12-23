@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="VehiclesAPI(8.0)">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../MC Test Server/plugins/VehiclesAPI(8.0).jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

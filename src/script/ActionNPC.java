@@ -44,7 +44,7 @@ public class ActionNPC implements Listener {
 
             if (interacted.getCustomName() == null) {
                 if (Main.instance.scriptsManager.contains(typeNPC + event.getRightClicked().getType().name())) {
-                    ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeNPC +  event.getRightClicked().getType().name());
+                    ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeNPC + event.getRightClicked().getType().name());
 
                     try {
                         ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
@@ -110,7 +110,7 @@ public class ActionNPC implements Listener {
 
         } else {
             if (Main.instance.scriptsManager.contains(typeNPC + event.getRightClicked().getType().name())) {
-                ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeNPC +  event.getRightClicked().getType().name());
+                ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeNPC + event.getRightClicked().getType().name());
 
                 try {
                     ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");

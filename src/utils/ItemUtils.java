@@ -156,6 +156,8 @@ public class ItemUtils {
                 }
             }
         }
+
+        player.getInventory().setItemInMainHand(null);
     }
 
     public void loadStackableItems() {

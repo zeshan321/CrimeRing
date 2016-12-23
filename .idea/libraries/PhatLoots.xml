@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="PhatLoots">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../MC Test Server/plugins/PhatLoots.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

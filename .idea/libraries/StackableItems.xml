@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="StackableItems">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../MC Test Server/plugins/StackableItems.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

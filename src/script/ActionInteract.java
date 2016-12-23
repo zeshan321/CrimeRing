@@ -1,5 +1,6 @@
 package script;
 
+import com.shampaggon.crackshot.CSUtility;
 import com.zeshanaslam.crimering.Main;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -73,28 +74,32 @@ public class ActionInteract implements Listener {
             }
         }
 
-        if (Main.instance.scriptsManager.contains(typeInteract + "*")) {
-            ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeInteract + "*");
 
-            try {
-                ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+        if (event.getItem() != null && new CSUtility().getWeaponTitle(event.getItem()) != null) {
+            // Objects
+            plugin.actionDefaults.getApplicableRegions(player).stream().filter(region -> Main.instance.scriptsManager.contains(typeInteract + "CRACKSHOT-" + region)).forEach(region -> {
+                ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeInteract + "CRACKSHOT-" + region);
 
-                // Objects
-                Bindings bindings = engine.createBindings();
-                bindings.put("player", player);
-                bindings.put("event", event);
-                bindings.put("CR", new ActionDefaults(typeInteract + material + ":" + data, engine));
-                bindings.put("id", material);
-                bindings.put("data", data);
-                bindings.put("clickType", clickType(event.getAction().toString()));
+                try {
+                    ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 
-                ScriptContext scriptContext = engine.getContext();
-                scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+                    // Objects
+                    Bindings bindings = engine.createBindings();
+                    bindings.put("player", player);
+                    bindings.put("event", event);
+                    bindings.put("CR", new ActionDefaults(typeInteract + "CRACKSHOT-" + region, engine));
+                    bindings.put("id", material);
+                    bindings.put("data", data);
+                    bindings.put("clickType", clickType(event.getAction().toString()));
 
-                engine.eval(scriptObject.scriptData, scriptContext);
-            } catch (ScriptException e) {
-                e.printStackTrace();
-            }
+                    ScriptContext scriptContext = engine.getContext();
+                    scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+
+                    engine.eval(scriptObject.scriptData, scriptContext);
+                } catch (ScriptException e) {
+                    e.printStackTrace();
+                }
+            });
         }
     }
 

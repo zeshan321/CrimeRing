@@ -7,26 +7,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="spigot-1.10.2" level="project" />
-    <orderEntry type="library" name="spigot-api-1.10.2-R0.1-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="WGRegionEvents" level="project" />
-    <orderEntry type="library" name="worldguard-6.1.2" level="project" />
-    <orderEntry type="library" name="worldedit-bukkit-6.1.3" level="project" />
-    <orderEntry type="library" name="MythicMobs-2.5.0" level="project" />
-    <orderEntry type="library" name="ProtocolLib (2)" level="project" />
-    <orderEntry type="library" name="CrackShot" level="project" />
-    <orderEntry type="library" name="CreeperHeal-6.8.1" level="project" />
-    <orderEntry type="library" name="LibsDisguises-9.0.9 (2)" level="project" />
-    <orderEntry type="library" name="BattleLevels (1)" level="project" />
-    <orderEntry type="library" name="StackableItems" level="project" />
-    <orderEntry type="library" name="PacketListenerAPI_v3.4.4" level="project" />
-    <orderEntry type="library" name="PhatLoots" level="project" />
-    <orderEntry type="library" name="Questionable" level="project" />
-    <orderEntry type="library" name="ParticleAPI_v2.1.1" level="project" />
-    <orderEntry type="library" name="VehiclesAPI(8.0)" level="project" />
-    <orderEntry type="library" name="Citizens" level="project" />
-    <orderEntry type="library" name="Vault" level="project" />
-    <orderEntry type="library" name="EnjinMinecraftPlugin" level="project" />
-    <orderEntry type="library" name="BossBarAPI_v2.4.1" level="project" />
+    <orderEntry type="library" name="libs" level="project" />
   </component>
 </module>

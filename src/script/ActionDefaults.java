@@ -1009,7 +1009,7 @@ public class ActionDefaults {
 
         Location location = new Location(Bukkit.getWorld(world), x, y, z);
 
-        for (Entity entity: location.getWorld().getNearbyEntities(location, 0.5, 0.5, 0.5)) {
+        for (Entity entity : location.getWorld().getNearbyEntities(location, 0.5, 0.5, 0.5)) {
             if (entity instanceof ItemFrame) {
                 ItemFrame itemFrame = (ItemFrame) entity;
                 itemFrame.setItem(itemStack);
@@ -1032,7 +1032,7 @@ public class ActionDefaults {
     public void setItemframeRotation(String world, int x, int y, int z, String rotation) {
         Location location = new Location(Bukkit.getWorld(world), x, y, z);
 
-        for (Entity entity: location.getWorld().getNearbyEntities(location, 0.5, 0.5, 0.5)) {
+        for (Entity entity : location.getWorld().getNearbyEntities(location, 0.5, 0.5, 0.5)) {
             if (entity instanceof ItemFrame) {
                 ItemFrame itemFrame = (ItemFrame) entity;
                 itemFrame.setRotation(Rotation.valueOf(rotation));
@@ -1059,7 +1059,7 @@ public class ActionDefaults {
             ItemStack frame = itemFrame.getItem();
 
             if (frame != null) {
-                return frame.getTypeId() == itemStack.getTypeId() && frame.getDurability() == frame.getDurability();
+                return frame.getTypeId() == itemStack.getTypeId() && frame.getDurability() == itemStack.getDurability();
             }
         }
 
@@ -1264,6 +1264,17 @@ public class ActionDefaults {
         }
 
         return isInRegion;
+    }
+
+    public List<String> getApplicableRegions(Player player) {
+        List<String> regions = new ArrayList<>();
+
+        ApplicableRegionSet applicableRegions = Main.instance.worldGuardPlugin.getRegionManager(player.getWorld()).getApplicableRegions(player.getLocation());
+        for (ProtectedRegion region : applicableRegions) {
+            regions.add(region.getId());
+        }
+
+        return regions;
     }
 
     public List<Entity> createMythicEntity(String name, int amount, String world, int x, int y, int z) {

@@ -5,7 +5,9 @@ import com.zeshanaslam.crimering.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.UUID;
 
 public class LockManager {
 
