@@ -415,22 +415,33 @@ public class ActionDefaults {
     }
 
     public void addSkillPoint(Player player) {
-        if (FileHandler.fileExists("plugins/CrimeRing/player/" + player.getUniqueId().toString())) {
+        if (!FileHandler.fileExists("plugins/CrimeRing/player/" + player.getUniqueId().toString())) {
             return;
         }
 
-        FileHandler fileHandler = new FileHandler(("plugins/CrimeRing/player/" + player.getUniqueId().toString()));
+        FileHandler fileHandler = new FileHandler("plugins/CrimeRing/player/" + player.getUniqueId().toString());
         fileHandler.increment("skill-points");
 
         fileHandler.save();
     }
 
-    public void setSkillPoint(Player player, int amount) {
-        if (FileHandler.fileExists("plugins/CrimeRing/player/" + player.getUniqueId().toString())) {
+    public void removeSkillPoint(Player player, int amount) {
+        if (!FileHandler.fileExists("plugins/CrimeRing/player/" + player.getUniqueId().toString())) {
             return;
         }
 
-        FileHandler fileHandler = new FileHandler(("plugins/CrimeRing/player/" + player.getUniqueId().toString()));
+        FileHandler fileHandler = new FileHandler("plugins/CrimeRing/player/" + player.getUniqueId().toString());
+        fileHandler.set("skill-points", fileHandler.getInteger("skill-points") - amount);
+
+        fileHandler.save();
+    }
+
+    public void setSkillPoint(Player player, int amount) {
+        if (!FileHandler.fileExists("plugins/CrimeRing/player/" + player.getUniqueId().toString())) {
+            return;
+        }
+
+        FileHandler fileHandler = new FileHandler("plugins/CrimeRing/player/" + player.getUniqueId().toString());
         fileHandler.set("skill-points", amount);
 
         fileHandler.save();
