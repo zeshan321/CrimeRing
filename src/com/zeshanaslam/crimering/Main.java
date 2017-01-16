@@ -2,6 +2,7 @@ package com.zeshanaslam.crimering;
 
 import ambientsounds.AmbientListener;
 import ambientsounds.AmbientManager;
+import bank.BankListener;
 import brewing.BrewListener;
 import brewing.BrewingManager;
 import com.comphenix.protocol.PacketType;
@@ -222,6 +223,7 @@ public class Main extends JavaPlugin {
         pm.registerEvents(new LocksCreate(this), this);
         pm.registerEvents(new LockListener(this), this);
         pm.registerEvents(new AmbientListener(this), this);
+        pm.registerEvents(new BankListener(this), this);
 
         // Register cop perks
         pm.registerEvents(new GlowPerk(this), this);
