@@ -18,8 +18,12 @@
  */
 package merchants;
 
+import com.zeshanaslam.crimering.Main;
+import customevents.PlayerEquipEvent;
+import customevents.PlayerTradeEvent;
 import merchants.api.MerchantTradeListener;
 import net.minecraft.server.v1_10_R1.*;
+import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 
 public class SSlotMerchantResult extends SlotMerchantResult {
@@ -51,6 +55,8 @@ public class SSlotMerchantResult extends SlotMerchantResult {
             for (MerchantTradeListener handler : this.merchant.handlers) {
                 handler.onTrade(this.merchant, this.merchant.onTrade, (Player) human.getBukkitEntity());
             }
+
+            Main.instance.getServer().getPluginManager().callEvent(new PlayerTradeEvent((Player) human.getBukkitEntity(), merchant.getTitle(), CraftItemStack.asBukkitCopy(itemStack)));
         }
     }
 }

@@ -900,6 +900,10 @@ public class ActionDefaults {
 
         ListenerObject listenerObject = new ListenerObject(scriptID, engine, method);
         switch (type) {
+            case "TRADE":
+                Main.instance.listeners.put(player.getUniqueId(), type + "-" + trigger, listenerObject);
+                break;
+
             case "INVENTORY":
                 Main.instance.listeners.put(player.getUniqueId(), type + "-" + trigger, listenerObject);
                 break;
