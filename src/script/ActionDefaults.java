@@ -1580,4 +1580,70 @@ public class ActionDefaults {
 
         BikeManager.spawnBike(new Location(Bukkit.getWorld(world), x, y ,z), owner, VehiclesMain.bikeTypefromString(type));
     }
+
+    public int getPlayerFileInt(Player player, String key) {
+        if (!FileHandler.fileExists("plugins/CrimeRing/player/" + player.getUniqueId().toString())) {
+            return 0;
+        }
+
+        FileHandler fileHandler = new FileHandler("plugins/CrimeRing/player/" + player.getUniqueId().toString());
+
+        if (fileHandler.contains(key)) {
+            return fileHandler.getInteger(key);
+        }
+
+        return 0;
+    }
+
+    public String getPlayerFileString(Player player, String key) {
+        if (!FileHandler.fileExists("plugins/CrimeRing/player/" + player.getUniqueId().toString())) {
+            return null;
+        }
+
+        FileHandler fileHandler = new FileHandler("plugins/CrimeRing/player/" + player.getUniqueId().toString());
+
+        if (fileHandler.contains(key)) {
+            return fileHandler.getString(key);
+        }
+
+        return null;
+    }
+
+    public void setPlayerFileString(Player player, String key, String value) {
+        if (!FileHandler.fileExists("plugins/CrimeRing/player/" + player.getUniqueId().toString())) {
+            return;
+        }
+
+        FileHandler fileHandler = new FileHandler("plugins/CrimeRing/player/" + player.getUniqueId().toString());
+
+        fileHandler.set(key, value);
+        fileHandler.save();
+    }
+
+    public void setPlayerFileInt(Player player, String key, int value) {
+        if (!FileHandler.fileExists("plugins/CrimeRing/player/" + player.getUniqueId().toString())) {
+            return;
+        }
+
+        FileHandler fileHandler = new FileHandler("plugins/CrimeRing/player/" + player.getUniqueId().toString());
+
+        fileHandler.set(key, value);
+        fileHandler.save();
+    }
+
+    public void addPlayerFileInt(Player player, String key) {
+        if (!FileHandler.fileExists("plugins/CrimeRing/player/" + player.getUniqueId().toString())) {
+            return;
+        }
+
+        FileHandler fileHandler = new FileHandler("plugins/CrimeRing/player/" + player.getUniqueId().toString());
+
+        if (fileHandler.contains(key)) {
+            fileHandler.increment(key);
+        } else {
+            fileHandler.set(key, 0);
+        }
+
+        fileHandler.save();
+    }
 }
