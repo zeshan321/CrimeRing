@@ -8,16 +8,13 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.zeshanaslam.crimering.FileHandler;
 import com.zeshanaslam.crimering.Main;
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class RenamerManager {
@@ -59,31 +56,30 @@ public class RenamerManager {
 
                 if (type == PacketType.Play.Server.WINDOW_ITEMS) {
                     try {
-                        ItemStack[] read = packet.getItemArrayModifier().read(0);
+                        List<ItemStack> read = packet.getItemListModifier().read(0);
 
-                        for (int i = 0; i < read.length; i++) {
-                            ItemStack itemStack = renameItem(read[i]);
+                        for (int i = 0; i < read.size(); i++) {
+                            ItemStack itemStack = renameItem(read.get(i));
 
                             if (itemStack != null) {
-                                read[i] = renameItem(read[i]);
+                                read.set(i, renameItem(read.get(i)));
 
                                 if (player.getOpenInventory() == null) {
-                                    player.getInventory().setItem(i, read[i]);
+                                    player.getInventory().setItem(i, read.get(i));
                                 } else {
                                     InventoryView inventory = player.getOpenInventory();
-                                    inventory.setItem(i, read[i]);
+                                    inventory.setItem(i, read.get(i));
                                 }
                             }
                         }
 
-                        packet.getItemArrayModifier().write(0, read);
+                        packet.getItemListModifier().write(0, read);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 } else {
                     try {
                         packet.getItemModifier().write(0, renameItem(packet.getItemModifier().read(0)));
-                        //System.out.println(packet.getShorts().getField(1));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

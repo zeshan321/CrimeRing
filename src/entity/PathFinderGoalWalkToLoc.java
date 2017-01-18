@@ -1,9 +1,9 @@
 package entity;
 
-import net.minecraft.server.v1_10_R1.EntityInsentient;
-import net.minecraft.server.v1_10_R1.GenericAttributes;
-import net.minecraft.server.v1_10_R1.PathEntity;
-import net.minecraft.server.v1_10_R1.PathfinderGoal;
+import net.minecraft.server.v1_11_R1.EntityInsentient;
+import net.minecraft.server.v1_11_R1.GenericAttributes;
+import net.minecraft.server.v1_11_R1.PathEntity;
+import net.minecraft.server.v1_11_R1.PathfinderGoal;
 import org.bukkit.Location;
 
 public class PathFinderGoalWalkToLoc extends PathfinderGoal {

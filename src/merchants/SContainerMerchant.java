@@ -18,8 +18,8 @@
  */
 package merchants;
 
-import net.minecraft.server.v1_10_R1.*;
-import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftInventoryView;
+import net.minecraft.server.v1_11_R1.*;
+import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftInventoryView;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;

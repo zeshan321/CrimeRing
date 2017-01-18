@@ -99,7 +99,7 @@ public class Main extends JavaPlugin {
         // Hook into vault
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp != null) {
-            economy = (Economy) rsp.getProvider();
+            economy = rsp.getProvider();
         }
 
         // General and limited methods for non scripting
@@ -264,13 +264,13 @@ public class Main extends JavaPlugin {
 
                 if (type == PacketType.Play.Server.WINDOW_ITEMS) {
                     try {
-                        ItemStack[] read = packet.getItemArrayModifier().read(0);
+                        List<ItemStack> read = packet.getItemListModifier().read(0);
 
-                        for (int i = 0; i < read.length; i++) {
-                            read[i] = protocolUtil.setItemHideFlags(read[i]);
+                        for (int i = 0; i < read.size(); i++) {
+                            read.set(i, protocolUtil.setItemHideFlags(read.get(i)));
                         }
 
-                        packet.getItemArrayModifier().write(0, read);
+                        packet.getItemListModifier().write(0, read);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -316,7 +316,7 @@ public class Main extends JavaPlugin {
         });
 
         // Hide potion particles
-        final int POTION_INDEX = ProtocolLibrary.getProtocolManager().getMinecraftVersion().compareTo(new MinecraftVersion("1.10.2")) <= 0 ? 8 : 7;
+        final int POTION_INDEX = ProtocolLibrary.getProtocolManager().getMinecraftVersion().compareTo(new MinecraftVersion("1.11.2")) <= 0 ? 8 : 7;
         ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(this,
                 PacketType.Play.Server.ENTITY_METADATA) {
             @Override

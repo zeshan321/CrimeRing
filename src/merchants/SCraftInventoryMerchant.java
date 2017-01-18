@@ -22,7 +22,7 @@ import merchants.api.Merchant;
 import merchants.api.MerchantInventory;
 import merchants.api.MerchantOffer;
 import merchants.api.MerchantSession;
-import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftInventoryMerchant;
+import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftInventoryMerchant;
 
 public class SCraftInventoryMerchant extends CraftInventoryMerchant implements MerchantInventory {
 

@@ -19,11 +19,10 @@
 package merchants;
 
 import com.zeshanaslam.crimering.Main;
-import customevents.PlayerEquipEvent;
 import customevents.PlayerTradeEvent;
 import merchants.api.MerchantTradeListener;
-import net.minecraft.server.v1_10_R1.*;
-import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
+import net.minecraft.server.v1_11_R1.*;
+import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 
 public class SSlotMerchantResult extends SlotMerchantResult {
@@ -35,7 +34,7 @@ public class SSlotMerchantResult extends SlotMerchantResult {
     }
 
     @Override
-    public void a(EntityHuman human, ItemStack itemStack) {
+    public ItemStack a(EntityHuman human, ItemStack itemStack) {
         // Reset the on trade
         this.merchant.onTrade = null;
 
@@ -58,5 +57,7 @@ public class SSlotMerchantResult extends SlotMerchantResult {
 
             Main.instance.getServer().getPluginManager().callEvent(new PlayerTradeEvent((Player) human.getBukkitEntity(), merchant.getTitle(), CraftItemStack.asBukkitCopy(itemStack)));
         }
+
+        return itemStack;
     }
 }

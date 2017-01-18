@@ -24,11 +24,11 @@ import io.netty.buffer.Unpooled;
 import merchants.api.Merchant;
 import merchants.api.MerchantOffer;
 import merchants.api.MerchantTradeListener;
-import net.minecraft.server.v1_10_R1.*;
-import net.minecraft.server.v1_10_R1.IChatBaseComponent.ChatSerializer;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_10_R1.event.CraftEventFactory;
-import org.bukkit.craftbukkit.v1_10_R1.util.CraftChatMessage;
+import net.minecraft.server.v1_11_R1.*;
+import net.minecraft.server.v1_11_R1.IChatBaseComponent.ChatSerializer;
+import org.bukkit.craftbukkit.v1_11_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_11_R1.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_11_R1.util.CraftChatMessage;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -334,6 +334,16 @@ public class SMerchant implements IMerchant, Merchant {
     @Override
     public IChatBaseComponent getScoreboardDisplayName() {
         return this.sendTitle;
+    }
+
+    @Override
+    public World t_() {
+        return null;
+    }
+
+    @Override
+    public BlockPosition u_() {
+        return null;
     }
 
     @Override

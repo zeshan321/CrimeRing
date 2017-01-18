@@ -18,9 +18,9 @@
  */
 package merchants;
 
-import net.minecraft.server.v1_10_R1.EntityHuman;
-import net.minecraft.server.v1_10_R1.EntityPlayer;
-import net.minecraft.server.v1_10_R1.InventoryMerchant;
+import net.minecraft.server.v1_11_R1.EntityHuman;
+import net.minecraft.server.v1_11_R1.EntityPlayer;
+import net.minecraft.server.v1_11_R1.InventoryMerchant;
 import org.bukkit.entity.Player;
 
 public class SInventoryMerchant extends InventoryMerchant {

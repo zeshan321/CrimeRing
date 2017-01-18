@@ -2,9 +2,9 @@ package utils;
 
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.WrappedWatchableObject;
-import net.minecraft.server.v1_10_R1.NBTTagCompound;
+import net.minecraft.server.v1_11_R1.NBTTagCompound;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftItemStack;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -43,7 +43,7 @@ public class ProtocolUtil {
             try {
                 Field field = CraftItemStack.class.getDeclaredField("handle");
                 field.setAccessible(true);
-                return ((net.minecraft.server.v1_10_R1.ItemStack) field.get(item)).getTag();
+                return ((net.minecraft.server.v1_11_R1.ItemStack) field.get(item)).getTag();
             } catch (Exception e) {
             }
         }
@@ -57,11 +57,11 @@ public class ProtocolUtil {
         } else {
             craftItem = CraftItemStack.asCraftCopy(item);
         }
-        net.minecraft.server.v1_10_R1.ItemStack nmsItem = null;
+        net.minecraft.server.v1_11_R1.ItemStack nmsItem = null;
         try {
             Field field = CraftItemStack.class.getDeclaredField("handle");
             field.setAccessible(true);
-            nmsItem = (net.minecraft.server.v1_10_R1.ItemStack) field.get(item);
+            nmsItem = (net.minecraft.server.v1_11_R1.ItemStack) field.get(item);
         } catch (Exception e) {
         }
         if (nmsItem == null) {

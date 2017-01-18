@@ -3,15 +3,15 @@ package utils;
 import com.zeshanaslam.crimering.Main;
 import haveric.stackableItems.config.Config;
 import haveric.stackableItems.util.SIItems;
-import net.minecraft.server.v1_10_R1.EntityLiving;
-import net.minecraft.server.v1_10_R1.NBTTagCompound;
-import net.minecraft.server.v1_10_R1.NBTTagList;
+import net.minecraft.server.v1_11_R1.EntityLiving;
+import net.minecraft.server.v1_11_R1.NBTTagCompound;
+import net.minecraft.server.v1_11_R1.NBTTagList;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_11_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -30,7 +30,7 @@ public class ItemUtils {
             try {
                 Field field = CraftItemStack.class.getDeclaredField("handle");
                 field.setAccessible(true);
-                return ((net.minecraft.server.v1_10_R1.ItemStack) field.get(item)).getTag();
+                return ((net.minecraft.server.v1_11_R1.ItemStack) field.get(item)).getTag();
             } catch (Exception e) {
             }
         }
@@ -40,7 +40,7 @@ public class ItemUtils {
     public LivingEntity addCustomNBT(LivingEntity entity, String key, Object value) {
         if (entity == null) return null;
         Entity bukkitEntity = entity;
-        net.minecraft.server.v1_10_R1.Entity nmsEntity = ((CraftEntity) bukkitEntity).getHandle();
+        net.minecraft.server.v1_11_R1.Entity nmsEntity = ((CraftEntity) bukkitEntity).getHandle();
         NBTTagCompound tag = new NBTTagCompound();
 
         // Writes the entity's NBT data to tag
@@ -67,11 +67,11 @@ public class ItemUtils {
         } else {
             craftItem = CraftItemStack.asCraftCopy(item);
         }
-        net.minecraft.server.v1_10_R1.ItemStack nmsItem = null;
+        net.minecraft.server.v1_11_R1.ItemStack nmsItem = null;
         try {
             Field field = CraftItemStack.class.getDeclaredField("handle");
             field.setAccessible(true);
-            nmsItem = (net.minecraft.server.v1_10_R1.ItemStack) field.get(item);
+            nmsItem = (net.minecraft.server.v1_11_R1.ItemStack) field.get(item);
         } catch (Exception e) {
         }
         if (nmsItem == null) {
@@ -128,7 +128,7 @@ public class ItemUtils {
     }
 
     public ItemStack removeAttributes(ItemStack item) {
-        net.minecraft.server.v1_10_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(item);
+        net.minecraft.server.v1_11_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(item);
         NBTTagCompound tag;
         if (!nmsStack.hasTag()) {
             tag = new NBTTagCompound();
@@ -156,8 +156,6 @@ public class ItemUtils {
                 }
             }
         }
-
-        player.getInventory().setItemInMainHand(null);
     }
 
     public void loadStackableItems() {

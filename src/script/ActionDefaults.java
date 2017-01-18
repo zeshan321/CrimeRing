@@ -8,6 +8,7 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.zeshanaslam.crimering.FileHandler;
 import com.zeshanaslam.crimering.Main;
+import de.Herbystar.TTA.TTA_Methods;
 import es.pollitoyeye.Bikes.BikeManager;
 import es.pollitoyeye.Bikes.CarManager;
 import es.pollitoyeye.Bikes.VehiclesMain;
@@ -22,12 +23,12 @@ import net.elseland.xikage.MythicMobs.API.Bukkit.BukkitMobsAPI;
 import net.elseland.xikage.MythicMobs.API.Exceptions.InvalidMobTypeException;
 import net.elseland.xikage.MythicMobs.API.ThreatTables;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.minecraft.server.v1_10_R1.PacketPlayOutCustomSoundEffect;
-import net.minecraft.server.v1_10_R1.SoundCategory;
+import net.minecraft.server.v1_11_R1.PacketPlayOutCustomSoundEffect;
+import net.minecraft.server.v1_11_R1.SoundCategory;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_11_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_11_R1.entity.CraftPlayer;
 import org.bukkit.entity.*;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
@@ -44,7 +45,6 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.inventivetalent.bossbar.BossBar;
 import org.inventivetalent.bossbar.BossBarAPI;
-import org.inventivetalent.glow.GlowAPI;
 import org.inventivetalent.particle.ParticleEffect;
 import raids.PartyAPI;
 import raids.PartyObject;
@@ -1332,8 +1332,9 @@ public class ActionDefaults {
         Main.instance.entityManager.entityHider.showEntity(player, entity);
     }
 
+    @Deprecated
     public void setGlowForEntity(Player player, Entity entity, String color) {
-        GlowAPI.setGlowing(entity, GlowAPI.Color.valueOf(color), player);
+        TTA_Methods.addEntityGlow(entity);
     }
 
     public String getMMInternalName(Entity entity) {

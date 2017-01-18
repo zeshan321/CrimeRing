@@ -1,6 +1,7 @@
 package perks.cop;
 
 import com.zeshanaslam.crimering.Main;
+import de.Herbystar.TTA.TTA_Methods;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
@@ -9,7 +10,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.inventivetalent.glow.GlowAPI;
 import perks.TimerObject;
 
 public class GlowPerk implements Listener {
@@ -33,7 +33,8 @@ public class GlowPerk implements Listener {
         Player killer = event.getEntity().getKiller();
 
         if (killed.hasPermission(glowPerkPerm) || Main.instance.mythicAPI.isMythicMob(killed) && Main.instance.mythicAPI.getMythicMobInstance(killed).getType().getInternalName().startsWith("Cop")) {
-            GlowAPI.setGlowing(killer, GlowAPI.Color.RED, plugin.perkManager.copUtil.getCops());
+            TTA_Methods.addEntityGlow(killer);
+
 
             // Add to timer
             plugin.perkManager.timer.put(killer.getUniqueId(), new TimerObject(System.currentTimeMillis(), glowPerkTimer, "GLOW"));
@@ -49,7 +50,7 @@ public class GlowPerk implements Listener {
 
         if (plugin.perkManager.timer.containsKey(player.getUniqueId())) {
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                GlowAPI.setGlowing(player, GlowAPI.Color.RED, plugin.perkManager.copUtil.getCops());
+                TTA_Methods.addEntityGlow(player);
             }, 1L);
         }
     }

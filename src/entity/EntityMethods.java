@@ -1,11 +1,11 @@
 package entity;
 
-import net.minecraft.server.v1_10_R1.EntityInsentient;
-import net.minecraft.server.v1_10_R1.EntityLiving;
-import net.minecraft.server.v1_10_R1.NBTTagCompound;
-import net.minecraft.server.v1_10_R1.PathfinderGoalFloat;
+import net.minecraft.server.v1_11_R1.EntityInsentient;
+import net.minecraft.server.v1_11_R1.EntityLiving;
+import net.minecraft.server.v1_11_R1.NBTTagCompound;
+import net.minecraft.server.v1_11_R1.PathfinderGoalFloat;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_11_R1.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -24,7 +24,7 @@ public class EntityMethods {
         if (entity == null) return null;
 
         Entity bukkitEntity = entity;
-        net.minecraft.server.v1_10_R1.Entity nmsEntity = ((CraftEntity) bukkitEntity).getHandle();
+        net.minecraft.server.v1_11_R1.Entity nmsEntity = ((CraftEntity) bukkitEntity).getHandle();
         NBTTagCompound tag = new NBTTagCompound();
 
         // Writes the entity's NBT data to tag
@@ -49,7 +49,7 @@ public class EntityMethods {
         try {
             Object nms_entity = ((CraftEntity) e).getHandle();
             if ((nms_entity instanceof EntityInsentient)) {
-                net.minecraft.server.v1_10_R1.Entity creature = (net.minecraft.server.v1_10_R1.Entity) nms_entity;
+                net.minecraft.server.v1_11_R1.Entity creature = (net.minecraft.server.v1_11_R1.Entity) nms_entity;
                 Set goalB = (Set) getPrivateField("b", getNmsClass("PathfinderGoalSelector"), ((EntityInsentient) creature).goalSelector);
                 goalB.clear();
                 Set goalC = (Set) getPrivateField("c", getNmsClass("PathfinderGoalSelector"), ((EntityInsentient) creature).goalSelector);

@@ -20,9 +20,9 @@ package merchants;
 
 import com.google.common.base.Optional;
 import merchants.api.MerchantOffer;
-import net.minecraft.server.v1_10_R1.ItemStack;
-import net.minecraft.server.v1_10_R1.MerchantRecipe;
-import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
+import net.minecraft.server.v1_11_R1.ItemStack;
+import net.minecraft.server.v1_11_R1.MerchantRecipe;
+import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftItemStack;
 
 import java.util.Collections;
 import java.util.Set;

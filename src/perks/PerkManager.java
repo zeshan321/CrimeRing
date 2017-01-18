@@ -1,10 +1,10 @@
 package perks;
 
 import com.zeshanaslam.crimering.Main;
+import de.Herbystar.TTA.TTA_Methods;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.inventivetalent.glow.GlowAPI;
 import perks.cop.CopUtil;
 
 import java.util.HashMap;
@@ -47,7 +47,7 @@ public class PerkManager {
 
                     switch (type) {
                         case "GLOW":
-                            GlowAPI.setGlowing(player, false, copUtil.getCops());
+                            TTA_Methods.removeEntityGlow(player);
                             player.sendMessage(ChatColor.GOLD + "You are no longer wanted by the police!");
                             break;
 

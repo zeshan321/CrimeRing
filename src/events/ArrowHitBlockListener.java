@@ -2,10 +2,10 @@ package events;
 
 import com.zeshanaslam.crimering.Main;
 import customevents.ArrowHitBlockEvent;
-import net.minecraft.server.v1_10_R1.EntityArrow;
+import net.minecraft.server.v1_11_R1.EntityArrow;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftArrow;
+import org.bukkit.craftbukkit.v1_11_R1.entity.CraftArrow;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
