@@ -10,11 +10,13 @@ import com.zeshanaslam.crimering.Main;
 import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class RenamerManager {
@@ -62,14 +64,14 @@ public class RenamerManager {
                             ItemStack itemStack = renameItem(read.get(i));
 
                             if (itemStack != null) {
-                                read.set(i, renameItem(read.get(i)));
+                                read.set(i, renameItem(itemStack));
 
-                                if (player.getOpenInventory() == null) {
+                                /*if (player.getOpenInventory() == null) {
                                     player.getInventory().setItem(i, read.get(i));
                                 } else {
                                     InventoryView inventory = player.getOpenInventory();
                                     inventory.setItem(i, read.get(i));
-                                }
+                                }*/
                             }
                         }
 

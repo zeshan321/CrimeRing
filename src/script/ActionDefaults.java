@@ -1575,7 +1575,7 @@ public class ActionDefaults {
             owner = "eb44b54e-2f44-4825-a41e-a87fbe288865";
         }
 
-        CarManager.spawnCar(new Location(Bukkit.getWorld(world), x, y ,z), owner, VehiclesMain.carTypefromString(type));
+        CarManager.spawnCar(new Location(Bukkit.getWorld(world), x, y, z), owner, VehiclesMain.carTypefromString(type));
     }
 
     public void spawnBike(String world, int x, int y, int z, String owner, String type) {
@@ -1583,7 +1583,7 @@ public class ActionDefaults {
             owner = "eb44b54e-2f44-4825-a41e-a87fbe288865";
         }
 
-        BikeManager.spawnBike(new Location(Bukkit.getWorld(world), x, y ,z), owner, VehiclesMain.bikeTypefromString(type));
+        BikeManager.spawnBike(new Location(Bukkit.getWorld(world), x, y, z), owner, VehiclesMain.bikeTypefromString(type));
     }
 
     public int getPlayerFileInt(Player player, String key) {
