@@ -11,7 +11,7 @@ public class SMerchantSession implements MerchantSession {
     private final Inventory inventory;
     private final Player customer;
 
-    public SMerchantSession(Merchant merchant, Inventory inventory, Player customer) {
+    SMerchantSession(Merchant merchant, Inventory inventory, Player customer) {
         this.inventory = inventory;
         this.merchant = merchant;
         this.customer = customer;

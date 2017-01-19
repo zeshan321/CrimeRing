@@ -24,9 +24,10 @@ import merchants.api.MerchantOffer;
 import merchants.api.MerchantSession;
 import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftInventoryMerchant;
 
+
 public class SCraftInventoryMerchant extends CraftInventoryMerchant implements MerchantInventory {
 
-    public SCraftInventoryMerchant(SInventoryMerchant merchant) {
+    SCraftInventoryMerchant(SInventoryMerchant merchant) {
         super(merchant);
     }
 

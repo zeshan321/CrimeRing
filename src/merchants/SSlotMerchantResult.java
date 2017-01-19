@@ -26,9 +26,10 @@ import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 
 public class SSlotMerchantResult extends SlotMerchantResult {
+
     private final SMerchant merchant;
 
-    public SSlotMerchantResult(EntityPlayer player, SMerchant merchant, InventoryMerchant inventory, int index, int x, int y) {
+    SSlotMerchantResult(EntityPlayer player, SMerchant merchant, InventoryMerchant inventory, int index, int x, int y) {
         super(player, merchant, inventory, index, x, y);
         this.merchant = merchant;
     }
@@ -39,7 +40,7 @@ public class SSlotMerchantResult extends SlotMerchantResult {
         this.merchant.onTrade = null;
 
         // Handle it like default
-        super.a(human, itemStack);
+        itemStack = super.a(human, itemStack);
 
         // Catch the on trade
         if (this.merchant.onTrade != null) {

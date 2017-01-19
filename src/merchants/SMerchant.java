@@ -36,22 +36,23 @@ import java.util.*;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class SMerchant implements IMerchant, Merchant {
+
     // The trade handlers
-    protected final Set<MerchantTradeListener> handlers = Sets.newHashSet();
+    final Set<MerchantTradeListener> handlers = Sets.newHashSet();
     // The recipes list
     private final MerchantRecipeList offers = new MerchantRecipeList();
     // The customers
     private final Set<Player> customers = Sets.newHashSet();
     // Internal use only
-    protected SMerchantOffer onTrade;
-    protected EntityPlayer onTradePlayer;
+    SMerchantOffer onTrade;
+    EntityPlayer onTradePlayer;
     // The title of the merchant
     private String title;
     private boolean jsonTitle;
     // The title that will be send
     private IChatBaseComponent sendTitle;
 
-    public SMerchant(String title, boolean jsonTitle) {
+    SMerchant(String title, boolean jsonTitle) {
         this.setTitle(title, jsonTitle);
     }
 
@@ -62,7 +63,7 @@ public class SMerchant implements IMerchant, Merchant {
 
     @Override
     public void setTitle(String title) {
-        this.setTitle(title, false);
+        setTitle(title, false);
     }
 
     @Override
@@ -75,8 +76,8 @@ public class SMerchant implements IMerchant, Merchant {
         checkNotNull(title, "title");
 
         // The old title
-        IChatBaseComponent oldTitle = this.sendTitle;
-        IChatBaseComponent newTitle;
+        final IChatBaseComponent oldTitle = this.sendTitle;
+        final IChatBaseComponent newTitle;
 
         if (jsonTitle) {
             try {
@@ -94,7 +95,7 @@ public class SMerchant implements IMerchant, Merchant {
 
         // Send a update
         if (!this.sendTitle.equals(oldTitle)) {
-            this.sendTitleUpdate();
+            sendTitleUpdate();
         }
     }
 
@@ -137,11 +138,11 @@ public class SMerchant implements IMerchant, Merchant {
             throw new IndexOutOfBoundsException("index (" + index + ") out of bounds min (0) and max (" + this.offers.size() + ")");
         }
 
-        SMerchantOffer old = (SMerchantOffer) this.offers.set(index, (MerchantRecipe) offer);
+        final SMerchantOffer old = (SMerchantOffer) this.offers.set(index, (MerchantRecipe) offer);
         old.remove(this);
 
         // Send the new offer list
-        this.sendUpdate();
+        sendUpdate();
     }
 
     @Override
@@ -159,12 +160,13 @@ public class SMerchant implements IMerchant, Merchant {
     public void removeOffer(MerchantOffer offer) {
         checkNotNull(offer, "offer");
 
+        //noinspection SuspiciousMethodCalls
         if (this.offers.remove(offer)) {
             // Unlink the offer
             ((SMerchantOffer) offer).remove(this);
 
             // Send the new offer list
-            this.sendUpdate();
+            sendUpdate();
         }
     }
 
@@ -177,6 +179,7 @@ public class SMerchant implements IMerchant, Merchant {
             return;
         }
 
+        //noinspection SuspiciousMethodCalls
         if (this.offers.removeAll(Lists.newArrayList(offers))) {
             // Unlink the offers
             for (MerchantOffer offer : offers) {
@@ -184,7 +187,7 @@ public class SMerchant implements IMerchant, Merchant {
             }
 
             // Send the new offer list
-            this.sendUpdate();
+            sendUpdate();
         }
     }
 
@@ -192,6 +195,7 @@ public class SMerchant implements IMerchant, Merchant {
     public void addOffer(MerchantOffer offer) {
         checkNotNull(offer, "offer");
 
+        //noinspection SuspiciousMethodCalls
         if (this.offers.contains(offer)) {
             return;
         }
@@ -203,7 +207,7 @@ public class SMerchant implements IMerchant, Merchant {
         ((SMerchantOffer) offer).add(this);
 
         // Send the new offer list
-        this.sendUpdate();
+        sendUpdate();
     }
 
     @Override
@@ -217,6 +221,7 @@ public class SMerchant implements IMerchant, Merchant {
 
         // Add and link the offers
         for (MerchantOffer offer : offers) {
+            //noinspection SuspiciousMethodCalls
             if (this.offers.contains(offer)) {
                 continue;
             }
@@ -225,7 +230,7 @@ public class SMerchant implements IMerchant, Merchant {
         }
 
         // Send the new offer list
-        this.sendUpdate();
+        sendUpdate();
     }
 
     @Override
@@ -248,12 +253,12 @@ public class SMerchant implements IMerchant, Merchant {
         });
 
         // Send the new offer list
-        this.sendUpdate();
+        sendUpdate();
     }
 
     @Override
     public List<MerchantOffer> getOffers() {
-        List<MerchantOffer> offers = Lists.newArrayList();
+        final List<MerchantOffer> offers = Lists.newArrayList();
         for (MerchantRecipe recipe : this.offers) {
             offers.add((MerchantOffer) recipe);
         }
@@ -265,7 +270,7 @@ public class SMerchant implements IMerchant, Merchant {
         checkNotNull(player, "player");
 
         if (this.customers.add(player)) {
-            EntityPlayer player0 = ((CraftPlayer) player).getHandle();
+            final EntityPlayer player0 = ((CraftPlayer) player).getHandle();
             Container container0 = null;
 
             try {
@@ -280,7 +285,7 @@ public class SMerchant implements IMerchant, Merchant {
                 return false;
             }
 
-            int window = player0.nextContainerCounter();
+            final int window = player0.nextContainerCounter();
 
             player0.activeContainer = container0;
             player0.activeContainer.windowId = window;
@@ -290,7 +295,7 @@ public class SMerchant implements IMerchant, Merchant {
             player0.playerConnection.sendPacket(new PacketPlayOutOpenWindow(window, "minecraft:villager", this.sendTitle, 0));
 
             // Write the recipe list
-            PacketDataSerializer content = new PacketDataSerializer(Unpooled.buffer());
+            final PacketDataSerializer content = new PacketDataSerializer(Unpooled.buffer());
             content.writeInt(window);
             this.offers.a(content);
 
@@ -338,12 +343,12 @@ public class SMerchant implements IMerchant, Merchant {
 
     @Override
     public World t_() {
-        return null;
+        return MinecraftServer.getServer().getWorld();
     }
 
     @Override
     public BlockPosition u_() {
-        return null;
+        return new BlockPosition(0, 0, 0);
     }
 
     @Override
@@ -352,18 +357,18 @@ public class SMerchant implements IMerchant, Merchant {
         this.onTrade = (SMerchantOffer) recipe;
     }
 
-    protected void sendTitleUpdate() {
+    private void sendTitleUpdate() {
         // Re-send the open window message to update the window name
-        Iterator<Player> it = this.customers.iterator();
-        while (it.hasNext()) {
-            EntityPlayer player0 = ((CraftPlayer) it.next()).getHandle();
-            player0.playerConnection.sendPacket(new PacketPlayOutOpenWindow(player0.activeContainer.windowId, "minecraft:villager", this.sendTitle, 0));
+        for (Player customer : this.customers) {
+            final EntityPlayer player0 = ((CraftPlayer) customer).getHandle();
+            player0.playerConnection.sendPacket(
+                    new PacketPlayOutOpenWindow(player0.activeContainer.windowId, "minecraft:villager", this.sendTitle, 0));
             player0.updateInventory(player0.activeContainer);
         }
     }
 
     // Called when the merchant requires a update
-    protected void sendUpdate() {
+    void sendUpdate() {
         if (this.customers.isEmpty()) {
             return;
         }
@@ -377,9 +382,8 @@ public class SMerchant implements IMerchant, Merchant {
         this.offers.a(content0);
 
         // Send a packet to all the players
-        Iterator<Player> it = this.customers.iterator();
-        while (it.hasNext()) {
-            EntityPlayer player0 = ((CraftPlayer) it.next()).getHandle();
+        for (Player customer : this.customers) {
+            final EntityPlayer player0 = ((CraftPlayer) customer).getHandle();
 
             // Only send to player that need it
             if (player0 == this.onTradePlayer) {
@@ -387,7 +391,7 @@ public class SMerchant implements IMerchant, Merchant {
             }
 
             // Every player has a different window id
-            PacketDataSerializer content1 = new PacketDataSerializer(Unpooled.buffer());
+            final PacketDataSerializer content1 = new PacketDataSerializer(Unpooled.buffer());
             content1.writeInt(player0.activeContainer.windowId);
             content1.writeBytes(content0);
 
@@ -396,9 +400,8 @@ public class SMerchant implements IMerchant, Merchant {
     }
 
     @Override
-    public void a(ItemStack arg0) {
+    public void a(ItemStack itemStack) {
         // Not used
-
     }
 
     @Override
@@ -408,8 +411,7 @@ public class SMerchant implements IMerchant, Merchant {
     }
 
     @Override
-    public void setTradingPlayer(EntityHuman arg0) {
+    public void setTradingPlayer(EntityHuman human) {
         // Not used
-
     }
 }

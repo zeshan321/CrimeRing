@@ -25,13 +25,13 @@ import org.bukkit.entity.Player;
 
 public class SInventoryMerchant extends InventoryMerchant {
 
-    public final SMerchant merchant;
+    final SMerchant merchant;
     private final EntityPlayer customer;
     // The current index of the inventory.
-    public int currentIndex;
+    int currentIndex;
     private SMerchantSession session;
 
-    public SInventoryMerchant(EntityPlayer customer, SMerchant merchant) {
+    SInventoryMerchant(EntityPlayer customer, SMerchant merchant) {
         super(customer, merchant);
         this.customer = customer;
         this.merchant = merchant;
@@ -50,7 +50,7 @@ public class SInventoryMerchant extends InventoryMerchant {
         this.currentIndex = i;
     }
 
-    public void setCraftInventory(SCraftInventoryMerchant craftInventory) {
+    void setCraftInventory(SCraftInventoryMerchant craftInventory) {
         this.session = new SMerchantSession(this.merchant, craftInventory, this.customer.getBukkitEntity());
     }
 

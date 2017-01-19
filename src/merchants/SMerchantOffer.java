@@ -24,22 +24,26 @@ import net.minecraft.server.v1_11_R1.ItemStack;
 import net.minecraft.server.v1_11_R1.MerchantRecipe;
 import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftItemStack;
 
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import static com.google.common.base.Preconditions.checkState;
+
 public class SMerchantOffer extends MerchantRecipe implements MerchantOffer {
+
     // The merchants this offer is added to
     private final Set<SMerchant> merchants = Collections.newSetFromMap(new WeakHashMap<SMerchant, Boolean>());
-
-    private final org.bukkit.inventory.ItemStack item1;
-    private final org.bukkit.inventory.ItemStack item2;
     private final org.bukkit.inventory.ItemStack result;
-
+    @Nullable
+    private org.bukkit.inventory.ItemStack item1;
+    @Nullable
+    private org.bukkit.inventory.ItemStack item2;
     private int maxUses = -1;
     private int uses;
 
-    public SMerchantOffer(org.bukkit.inventory.ItemStack result, org.bukkit.inventory.ItemStack item1, org.bukkit.inventory.ItemStack item2) {
+    SMerchantOffer(org.bukkit.inventory.ItemStack result, org.bukkit.inventory.ItemStack item1, org.bukkit.inventory.ItemStack item2) {
         super(null, null, null);
 
         this.result = result;
@@ -50,23 +54,24 @@ public class SMerchantOffer extends MerchantRecipe implements MerchantOffer {
     @SuppressWarnings("deprecation")
     private static ItemStack convertSafely(org.bukkit.inventory.ItemStack itemStack) {
         if (itemStack == null || itemStack.getTypeId() == 0 || itemStack.getAmount() == 0) {
-            return null;
+            return ItemStack.a;
         }
         return CraftItemStack.asNMSCopy(itemStack);
     }
 
     // Links the offer to the merchant.
-    protected void add(SMerchant merchant) {
+    void add(SMerchant merchant) {
         this.merchants.add(merchant);
     }
 
     // Unlinks the offer from the merchant.
-    protected void remove(SMerchant merchant) {
+    void remove(SMerchant merchant) {
         this.merchants.remove(merchant);
     }
 
     @Override
     public org.bukkit.inventory.ItemStack getFirstItem() {
+        checkState(this.item1 != null, "The first item is not set");
         return this.item1.clone();
     }
 
@@ -75,7 +80,6 @@ public class SMerchantOffer extends MerchantRecipe implements MerchantOffer {
         if (this.item2 == null) {
             return Optional.absent();
         }
-
         return Optional.of(this.item2.clone());
     }
 
@@ -205,13 +209,14 @@ public class SMerchantOffer extends MerchantRecipe implements MerchantOffer {
         return false;
     }
 
+    @SuppressWarnings("CloneDoesntCallSuperClone")
     @Override
     public SMerchantOffer clone() {
-        org.bukkit.inventory.ItemStack result = this.result.clone();
-        org.bukkit.inventory.ItemStack item1 = this.item1.clone();
-        org.bukkit.inventory.ItemStack item2 = this.item2 != null ? this.item2.clone() : null;
+        final org.bukkit.inventory.ItemStack result = getResultItem();
+        final org.bukkit.inventory.ItemStack item1 = getFirstItem();
+        final org.bukkit.inventory.ItemStack item2 = this.item2 != null ? this.item2.clone() : null;
 
-        SMerchantOffer clone = new SMerchantOffer(result, item1, item2);
+        final SMerchantOffer clone = new SMerchantOffer(result, item1, item2);
         clone.maxUses = this.maxUses;
         clone.uses = this.uses;
 
