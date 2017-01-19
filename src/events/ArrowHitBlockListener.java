@@ -30,8 +30,8 @@ public class ArrowHitBlockListener implements Listener {
                     EntityArrow entityArrow = ((CraftArrow) event.getEntity()).getHandle();
 
                     Field fieldX = EntityArrow.class.getDeclaredField("h");
-                    Field fieldY = EntityArrow.class.getDeclaredField("au");
-                    Field fieldZ = EntityArrow.class.getDeclaredField("av");
+                    Field fieldY = EntityArrow.class.getDeclaredField("at");
+                    Field fieldZ = EntityArrow.class.getDeclaredField("au");
 
                     fieldX.setAccessible(true);
                     fieldY.setAccessible(true);
