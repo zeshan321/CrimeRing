@@ -481,6 +481,79 @@ public class ActionDefaults {
         return BattleLevelsAPI.getKillstreak(player.getUniqueId());
     }
 
+    public int getPlayerTopKillstreak(Player player) {
+        return BattleLevelsAPI.getTopKillstreak(player.getUniqueId());
+    }
+
+    public double getPlayerKDR(Player player) {
+        return BattleLevelsAPI.getKdr(player.getUniqueId());
+    }
+
+    public String getTopKills() {
+        String leader = "";
+        int i = 0;
+        List<Map.Entry<String, Integer>> top = BattleLevelsAPI.getTopKills();
+
+        for (Map.Entry<String, Integer> data : top) {
+            i++;
+            leader = leader + i + ". " + data.getKey() + ": " + data.getValue() + "\n";
+        }
+
+        return leader;
+    }
+
+    public String getTopDeaths() {
+        String leader = "";
+        int i = 0;
+        List<Map.Entry<String, Integer>> top = BattleLevelsAPI.getTopDeaths();
+
+        for (Map.Entry<String, Integer> data : top) {
+            i++;
+            leader = leader + i + ". " + data.getKey() + ": " + data.getValue() + "\n";
+        }
+
+        return leader;
+    }
+
+    public String getTopLevels() {
+        String leader = "";
+        int i = 0;
+        List<Map.Entry<String, Integer>> top = BattleLevelsAPI.getTopLevels();
+
+        for (Map.Entry<String, Integer> data : top) {
+            i++;
+            leader = leader + i + ". " + data.getKey() + ": " + data.getValue() + "\n";
+        }
+
+        return leader;
+    }
+
+    public String getTopHighestKillstreaks() {
+        String leader = "";
+        int i = 0;
+        List<Map.Entry<String, Integer>> top = BattleLevelsAPI.getTopHighestKillstreaks();
+
+        for (Map.Entry<String, Integer> data : top) {
+            i++;
+            leader = leader + i + ". " + data.getKey() + ": " + data.getValue() + "\n";
+        }
+
+        return leader;
+    }
+
+    public String getTopScores() {
+        String leader = "";
+        int i = 0;
+        List<Map.Entry<String, Double>> top = BattleLevelsAPI.getTopScores();
+
+        for (Map.Entry<String, Double> data : top) {
+            i++;
+            leader = leader + i + ". " + data.getKey() + ": " + data.getValue() + "\n";
+        }
+
+        return leader;
+    }
+
     public void createScoreboard(Player player, String name) {
         PartyAPI partyAPI = new PartyAPI();
         PartyObject partyObject = partyAPI.getParty(player);
