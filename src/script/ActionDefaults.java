@@ -496,7 +496,7 @@ public class ActionDefaults {
 
         for (Map.Entry<String, Integer> data : top) {
             i++;
-            leader = leader + i + ". " + data.getKey() + ": " + data.getValue() + "\n";
+            leader = leader + ChatColor.GREEN + i + ". " + data.getKey() + ": " + data.getValue() + "\n";
         }
 
         return leader;
@@ -509,7 +509,7 @@ public class ActionDefaults {
 
         for (Map.Entry<String, Integer> data : top) {
             i++;
-            leader = leader + i + ". " + data.getKey() + ": " + data.getValue() + "\n";
+            leader = leader + ChatColor.GREEN + i + ". " + data.getKey() + ": " + data.getValue() + "\n";
         }
 
         return leader;
@@ -522,7 +522,7 @@ public class ActionDefaults {
 
         for (Map.Entry<String, Integer> data : top) {
             i++;
-            leader = leader + i + ". " + data.getKey() + ": " + data.getValue() + "\n";
+            leader = leader + ChatColor.GREEN + i + ". " + data.getKey() + ": " + data.getValue() + "\n";
         }
 
         return leader;
@@ -535,7 +535,7 @@ public class ActionDefaults {
 
         for (Map.Entry<String, Integer> data : top) {
             i++;
-            leader = leader + i + ". " + data.getKey() + ": " + data.getValue() + "\n";
+            leader = leader + ChatColor.GREEN + i + ". " + data.getKey() + ": " + data.getValue() + "\n";
         }
 
         return leader;
@@ -544,11 +544,12 @@ public class ActionDefaults {
     public String getTopScores() {
         String leader = "";
         int i = 0;
+
         List<Map.Entry<String, Double>> top = BattleLevelsAPI.getTopScores();
 
         for (Map.Entry<String, Double> data : top) {
             i++;
-            leader = leader + i + ". " + data.getKey() + ": " + data.getValue() + "\n";
+            leader = leader + ChatColor.GREEN + i + ". " + data.getKey() + ": " + data.getValue() + "\n";
         }
 
         return leader;
