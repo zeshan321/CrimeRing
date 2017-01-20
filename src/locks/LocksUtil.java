@@ -266,6 +266,7 @@ public class LocksUtil {
         return HiddenStringUtils.extractHiddenString(start.getItemMeta().getLore().get(1));
     }
 
+
     public boolean isPick(ItemStack item) {
         if (item != null) {
             if (item.getTypeId() == 293 && item.getDurability() == 499) {

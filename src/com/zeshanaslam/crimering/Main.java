@@ -228,6 +228,7 @@ public class Main extends JavaPlugin {
         pm.registerEvents(new AmbientListener(this), this);
         pm.registerEvents(new BankListener(this), this);
         pm.registerEvents(new ActionTrade(this), this);
+        pm.registerEvents(new ActionLockpick(this), this);
 
         // Register cop perks
         pm.registerEvents(new GlowPerk(this), this);

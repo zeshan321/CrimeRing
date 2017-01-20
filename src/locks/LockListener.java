@@ -3,6 +3,8 @@ package locks;
 import com.codisimus.plugins.phatloots.PhatLootsAPI;
 import com.codisimus.plugins.phatloots.events.PrePlayerLootEvent;
 import com.zeshanaslam.crimering.Main;
+import customevents.LockpickEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -156,6 +158,9 @@ public class LockListener implements Listener {
                 plugin.lockManager.lastOrder.remove(player.getUniqueId());
 
                 player.sendMessage(ChatColor.GOLD + "You lock picked the lock!");
+
+                String[] data = id.split(" ");
+                Main.instance.getServer().getPluginManager().callEvent(new LockpickEvent(player, data[0], Bukkit.getWorld(data[4]).getBlockAt(Integer.valueOf(data[1]), Integer.valueOf(data[2]), Integer.valueOf(data[3]))));
             }
         } else {
             lockPickFail(player, id.split(" ")[0], id);
