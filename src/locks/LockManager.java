@@ -11,17 +11,19 @@ import java.util.UUID;
 
 public class LockManager {
 
-    private final int duration = 30;
+    private final int duration = 120;
     public HashMap<UUID, String> assign = new HashMap<>();
     public HashMap<String, Long> unlocked = new HashMap<>();
     public HashMap<UUID, String> lastOrder = new HashMap<>();
     public HashMap<String, String> locks = new HashMap<>();
+    public HashMap<String, String> chests = new HashMap<>();
 
     public LockManager() {
         assign.clear();
         unlocked.clear();
         lastOrder.clear();
         locks.clear();
+        chests.clear();
 
         // Load
         FileHandler imports = new FileHandler("plugins/CrimeRing/locks.yml");
@@ -31,15 +33,19 @@ public class LockManager {
 
             locks.put(data, type);
         }
+
+        imports = new FileHandler("plugins/CrimeRing/chests.yml");
+
+        for (String data : imports.getKeys()) {
+            String type = imports.getString(data + ".type").toLowerCase();
+            String trigger = imports.getString(data + ".trigger");
+
+            chests.put(data + "-" + type, trigger);
+        }
     }
 
     public void start() {
-        Main.instance.getServer().getScheduler().scheduleSyncRepeatingTask(Main.instance, new Runnable() {
-            @Override
-            public void run() {
-                removeUnlocked();
-            }
-        }, 0, 1);
+        Main.instance.getServer().getScheduler().scheduleSyncRepeatingTask(Main.instance, () -> removeUnlocked(), 0, 1);
     }
 
     public void removeUnlocked() {
@@ -53,7 +59,7 @@ public class LockManager {
                 iterator.remove();
 
                 String[] data = key.split(" ");
-                Block block = Bukkit.getWorld(data[4]).getBlockAt(Integer.valueOf(data[1]), Integer.valueOf(data[2]), Integer.valueOf(data[3]));
+                Block block = Bukkit.getWorld(data[3]).getBlockAt(Integer.valueOf(data[0]), Integer.valueOf(data[1]), Integer.valueOf(data[2]));
 
                 if (block.getType().toString().contains("DOOR")) {
                     block.setData((byte) 0);

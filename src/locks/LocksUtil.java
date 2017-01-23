@@ -2,6 +2,7 @@ package locks;
 
 import com.zeshanaslam.crimering.FileHandler;
 import com.zeshanaslam.crimering.Main;
+import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -275,5 +276,50 @@ public class LocksUtil {
         }
 
         return false;
+    }
+
+    public boolean isChestAllowed(Player player, Inventory inventory) {
+        ItemStack firstSlot = inventory.getItem(0);
+
+        if (firstSlot == null || !firstSlot.hasItemMeta() || !firstSlot.getItemMeta().hasLore() || ChatColor.stripColor(firstSlot.getItemMeta().getLore().get(0)).contains("Unactivated")) {
+            return true;
+        }
+
+        if (Main.instance.lockManager.chests.containsKey(firstSlot.getTypeId() + ":" + firstSlot.getDurability() + "-lock")) {
+            String gangLock = null;
+            List<String> users = new ArrayList<>();
+
+            for (String s : firstSlot.getItemMeta().getLore()) {
+                s = ChatColor.stripColor(s);
+
+                if (s.startsWith("Gang: ")) {
+                    gangLock = s.replace("Gang: ", "");
+                } else if (s.startsWith("Owner: ")) {
+                    users.add(s.replace("Owner: ", ""));
+                } else {
+                    users.add(s);
+                }
+            }
+
+            if (users.contains(player.getName())) {
+                return true;
+            }
+
+            Clan clan = Main.instance.clanManager.getClanByPlayerUniqueId(player.getUniqueId());
+
+            if (clan != null) {
+                if (clan.getName().equals(gangLock)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public ItemStack getChestLock(Inventory inventory) {
+        ItemStack firstSlot = inventory.getItem(0);
+
+        return firstSlot;
     }
 }

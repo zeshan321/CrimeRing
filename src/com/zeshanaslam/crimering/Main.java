@@ -26,6 +26,7 @@ import entity.EntityObject;
 import events.*;
 import fakeblocks.FakeblockCommand;
 import fakeblocks.FakeblockListener;
+import locks.LockCommand;
 import locks.LockListener;
 import locks.LockManager;
 import locks.LocksCreate;
@@ -34,6 +35,8 @@ import merchants.api.MerchantAPI;
 import merchants.api.Merchants;
 import net.elseland.xikage.MythicMobs.API.Bukkit.BukkitMobsAPI;
 import net.milkbowl.vault.economy.Economy;
+import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -63,6 +66,7 @@ public class Main extends JavaPlugin {
 
     // Hooks
     public Economy economy;
+    public ClanManager clanManager;
 
     // Managers
     public ScriptsManager scriptsManager;
@@ -101,6 +105,9 @@ public class Main extends JavaPlugin {
         if (rsp != null) {
             economy = rsp.getProvider();
         }
+
+        // Hook into SimpleClans
+        clanManager = SimpleClans.getInstance().getClanManager();
 
         // General and limited methods for non scripting
         actionDefaults = new ActionDefaults(null, null);
@@ -249,6 +256,7 @@ public class Main extends JavaPlugin {
         getCommand("CRFakeBlocks").setExecutor(new FakeblockCommand(this));
         getCommand("CRRunscript").setExecutor(new RunScript(this));
         getCommand("CRLock").setExecutor(new LocksCreate(this));
+        getCommand("lock").setExecutor(new LockCommand(this));
 
         ProtocolUtil protocolUtil = new ProtocolUtil();
 

@@ -4,7 +4,7 @@ version: 1.1
 author: Zeshan Aslam
 description: >
              CrimeRing Plugin.
-depend: [ProtocolLib, StackableItems, PhatLoots, Vault, MVdWPlaceholderAPI]
+depend: [ProtocolLib, StackableItems, PhatLoots, Vault, MVdWPlaceholderAPI, SimpleClans]
 commands:
   CRReload:
     description: Relaods config.
@@ -36,3 +36,5 @@ commands:
     description: Runs script.
   CRLock:
     description: Creates lock.
+  Lock:
+    description: Manage locks.

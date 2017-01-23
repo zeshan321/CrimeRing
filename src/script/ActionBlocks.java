@@ -48,7 +48,7 @@ public class ActionBlocks implements Listener {
             if (Main.instance.lockManager.locks.containsKey(x + " " + y + " " + z + " " + world)) {
                 String lockType = Main.instance.lockManager.locks.get(x + " " + y + " " + z + " " + world);
 
-                if (!plugin.lockManager.unlocked.containsKey(lockType + " " + x + " " + y + " " + z + " " + world)) {
+                if (!plugin.lockManager.unlocked.containsKey(x + " " + y + " " + z + " " + world)) {
                     return;
                 }
             }

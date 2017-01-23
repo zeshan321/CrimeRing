@@ -22,7 +22,6 @@ public class PartyCommands implements Listener, CommandExecutor {
         this.plugin = plugin;
     }
 
-
     @Override
     public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
         if (commandLabel.equalsIgnoreCase("party")) {
