@@ -45,6 +45,10 @@ public class RunScript implements CommandExecutor {
                             // Objects
                             Bindings bindings = engine.createBindings();
                             bindings.put("player", player);
+                            bindings.put("x", player.getLocation().getBlockX());
+                            bindings.put("y", player.getLocation().getBlockY());
+                            bindings.put("z", player.getLocation().getBlockZ());
+                            bindings.put("world", player.getLocation().getWorld().getName());
                             bindings.put("CR", new ActionDefaults(script, engine));
 
                             ScriptContext scriptContext = engine.getContext();
