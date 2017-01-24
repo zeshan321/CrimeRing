@@ -2,7 +2,6 @@ package script;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import com.zeshanaslam.crimering.FileHandler;
 import com.zeshanaslam.crimering.Main;
 import org.bukkit.ChatColor;
 
@@ -29,7 +28,7 @@ public class ScriptsManager {
         try {
             try (BufferedReader br = new BufferedReader(new FileReader("plugins/CrimeRing/scripts.yml"))) {
                 for (String line; (line = br.readLine()) != null; ) {
-                    if (line.startsWith("#")) continue;
+                    if (line.startsWith("#") || !line.contains(" = ")) continue;
 
                     String[] separate = line.split(" = ", 2);
                     String data = separate[0];

@@ -16,6 +16,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -25,7 +26,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.Door;
+import script.ActionDefaults;
+import script.ScriptObject;
 
+import javax.script.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -240,7 +244,12 @@ public class LockListener implements Listener {
                     inventory.setItem(slot + 9, item);
                 }
             } else {
-                lockPickFail(player, id.split(" ")[0], id);
+                String[] data = id.split(" ");
+
+                // Trigger trap
+                triggerTrapChest(player, data);
+
+                lockPickFail(player, data[0], id);
             }
 
             if (locksUtil.getClickOrder(inventory) == -1) {
@@ -255,7 +264,12 @@ public class LockListener implements Listener {
                 Main.instance.getServer().getPluginManager().callEvent(new LockpickEvent(player, data[0], Bukkit.getWorld(data[4]).getBlockAt(Integer.valueOf(data[1]), Integer.valueOf(data[2]), Integer.valueOf(data[3]))));
             }
         } else {
-            lockPickFail(player, id.split(" ")[0], id);
+            String[] data = id.split(" ");
+
+            // Trigger trap
+            triggerTrapChest(player, data);
+
+            lockPickFail(player, data[0], id);
         }
     }
 
@@ -269,6 +283,45 @@ public class LockListener implements Listener {
         }
     }
 
+    private void triggerTrapChest(Player player, String[] data) {
+        Block block = Bukkit.getWorld(data[4]).getBlockAt(Integer.valueOf(data[1]), Integer.valueOf(data[2]), Integer.valueOf(data[3]));
+        BlockState blockState = block.getState();
+
+        if (blockState instanceof Chest) {
+            Chest chest = (Chest) blockState;
+
+            String name = locksUtil.useTrap(chest.getInventory());
+            if (name != null) {
+                if (Main.instance.scriptsManager.contains(name)) {
+                    player.sendMessage(ChatColor.RED + "A trap was triggered from the chest!");
+
+                    for (ScriptObject scriptObject : Main.instance.scriptsManager.getObjects(name))
+
+                        try {
+                            ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+
+                            // Objects
+                            Bindings bindings = engine.createBindings();
+                            bindings.put("player", player);
+                            bindings.put("x", Integer.valueOf(data[1]));
+                            bindings.put("y", Integer.valueOf(data[2]));
+                            bindings.put("z", Integer.valueOf(data[3]));
+                            bindings.put("world", data[4]);
+                            bindings.put("lockType", data[0]);
+                            bindings.put("CR", new ActionDefaults(name, engine));
+
+                            ScriptContext scriptContext = engine.getContext();
+                            scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+
+                            engine.eval(scriptObject.scriptData, scriptContext);
+                        } catch (ScriptException e) {
+                            e.printStackTrace();
+                        }
+                }
+            }
+        }
+    }
+
     // Protection
     @EventHandler
     public void onEntityExplode(EntityExplodeEvent event) {
@@ -276,6 +329,7 @@ public class LockListener implements Listener {
         Iterator<Block> it = destroyed.iterator();
         while (it.hasNext()) {
             Block block = it.next();
+            BlockState blockState = block.getState();
 
             if (block.getType().toString().contains("DOOR")) {
                 Door door = new Door(0, block.getData());
@@ -285,8 +339,47 @@ public class LockListener implements Listener {
                 }
             }
 
-            if (Main.instance.lockManager.locks.containsKey(block.getX() + " " + block.getY() + " " + block.getZ() + " " + block.getWorld().getName()))
+            if (Main.instance.lockManager.locks.containsKey(block.getX() + " " + block.getY() + " " + block.getZ() + " " + block.getWorld().getName())) {
                 it.remove();
+            }
+
+            if (blockState instanceof Chest) {
+                Chest chest = (Chest) blockState;
+                ItemStack itemStack = chest.getInventory().getItem(0);
+
+                if (itemStack != null) {
+                    if (Main.instance.lockManager.chests.containsKey(itemStack.getTypeId() + ":" + itemStack.getDurability() + "-lock"))
+                        it.remove();
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onBreak(BlockBreakEvent event) {
+        Block block = event.getBlock();
+        BlockState blockState = block.getState();
+
+        if (block.getType().toString().contains("DOOR")) {
+            Door door = new Door(0, block.getData());
+
+            if (door.isTopHalf()) {
+                block = block.getRelative(BlockFace.DOWN);
+            }
+        }
+
+        if (Main.instance.lockManager.locks.containsKey(block.getX() + " " + block.getY() + " " + block.getZ() + " " + block.getWorld().getName())) {
+            event.setCancelled(true);
+        }
+
+        if (blockState instanceof Chest) {
+            Chest chest = (Chest) blockState;
+            ItemStack itemStack = chest.getInventory().getItem(0);
+
+            if (itemStack != null) {
+                if (Main.instance.lockManager.chests.containsKey(itemStack.getTypeId() + ":" + itemStack.getDurability() + "-lock"))
+                    event.setCancelled(true);
+            }
         }
     }
 }

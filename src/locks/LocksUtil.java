@@ -346,4 +346,28 @@ public class LocksUtil {
 
         return 2;
     }
+
+    public String useTrap(Inventory inventory) {
+        String scriptDir = null;
+        int slot = -1;
+
+        for (ItemStack itemStack : inventory.getContents()) {
+            slot++;
+            if (itemStack == null) continue;
+
+            if (Main.instance.lockManager.chests.containsKey(itemStack.getTypeId() + ":" + itemStack.getDurability() + "-trap")) {
+                scriptDir = Main.instance.lockManager.chests.get(itemStack.getTypeId() + ":" + itemStack.getDurability() + "-trap");
+
+                if (itemStack.getAmount() > 1) {
+                    itemStack.setAmount(itemStack.getAmount() - 1);
+                } else {
+                    inventory.setItem(slot, new ItemStack(Material.AIR));
+                }
+
+                break;
+            }
+        }
+
+        return scriptDir;
+    }
 }

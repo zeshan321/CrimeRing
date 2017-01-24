@@ -1731,4 +1731,8 @@ public class ActionDefaults {
 
         fileHandler.save();
     }
+
+    public World getWorld(String world) {
+        return Bukkit.getWorld(world);
+    }
 }
