@@ -33,9 +33,15 @@ public class ScriptsManager {
 
                     String[] separate = line.split(" = ", 2);
                     String data = separate[0];
-                    String dir = separate[1];
+                    String dir = separate[1].replace(" ", "");
+                    File file = new File("plugins/CrimeRing/scripts/" + File.separator + dir);
 
-                    FileReader reader = new FileReader("plugins/CrimeRing/scripts/" + File.separator + dir);
+                    if (!file.exists()) {
+                        System.out.println("[CR] Error! File not found: " + data + " = " + dir);
+                        continue;
+                    }
+
+                    FileReader reader = new FileReader(file);
                     BufferedReader textReader = new BufferedReader(reader);
 
                     String line1;
