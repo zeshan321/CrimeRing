@@ -727,22 +727,23 @@ public class ActionDefaults {
 
     public void runScriptLater(Player player, String name, int seconds) {
         Main.instance.getServer().getScheduler().runTaskLater(Main.instance, () -> {
-            ScriptObject scriptObject = Main.instance.scriptsManager.getObject(name);
+            for (ScriptObject scriptObject : Main.instance.scriptsManager.getObjects(name)) {
 
-            try {
-                ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+                try {
+                    ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 
-                // Objects
-                Bindings bindings = engine.createBindings();
-                bindings.put("player", player);
-                bindings.put("CR", new ActionDefaults(scriptID, engine));
+                    // Objects
+                    Bindings bindings = engine.createBindings();
+                    bindings.put("player", player);
+                    bindings.put("CR", new ActionDefaults(scriptID, engine));
 
-                ScriptContext scriptContext = engine.getContext();
-                scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+                    ScriptContext scriptContext = engine.getContext();
+                    scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
 
-                engine.eval(scriptObject.scriptData, scriptContext);
-            } catch (ScriptException e) {
-                e.printStackTrace();
+                    engine.eval(scriptObject.scriptData, scriptContext);
+                } catch (ScriptException e) {
+                    e.printStackTrace();
+                }
             }
         }, seconds * 20);
     }
@@ -818,22 +819,23 @@ public class ActionDefaults {
     }
 
     public void runScript(Player player, String name) {
-        ScriptObject scriptObject = Main.instance.scriptsManager.getObject(name);
+        for (ScriptObject scriptObject : Main.instance.scriptsManager.getObjects(name)) {
 
-        try {
-            ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+            try {
+                ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 
-            // Objects
-            Bindings bindings = engine.createBindings();
-            bindings.put("player", player);
-            bindings.put("CR", new ActionDefaults(scriptID, engine));
+                // Objects
+                Bindings bindings = engine.createBindings();
+                bindings.put("player", player);
+                bindings.put("CR", new ActionDefaults(scriptID, engine));
 
-            ScriptContext scriptContext = engine.getContext();
-            scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+                ScriptContext scriptContext = engine.getContext();
+                scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
 
-            engine.eval(scriptObject.scriptData, scriptContext);
-        } catch (ScriptException e) {
-            e.printStackTrace();
+                engine.eval(scriptObject.scriptData, scriptContext);
+            } catch (ScriptException e) {
+                e.printStackTrace();
+            }
         }
     }
 

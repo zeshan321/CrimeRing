@@ -46,8 +46,6 @@ public class ActionBlocks implements Listener {
 
             // Check if block is locked
             if (Main.instance.lockManager.locks.containsKey(x + " " + y + " " + z + " " + world)) {
-                String lockType = Main.instance.lockManager.locks.get(x + " " + y + " " + z + " " + world);
-
                 if (!plugin.lockManager.unlocked.containsKey(x + " " + y + " " + z + " " + world)) {
                     return;
                 }
@@ -67,29 +65,30 @@ public class ActionBlocks implements Listener {
             }
 
             if (Main.instance.scriptsManager.contains(typeBlock + x + " " + y + " " + z + " " + world)) {
-                ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeBlock + x + " " + y + " " + z + " " + world);
+                for (ScriptObject scriptObject : Main.instance.scriptsManager.getObjects(typeBlock + x + " " + y + " " + z + " " + world)) {
 
-                try {
-                    ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+                    try {
+                        ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 
-                    // Objects
-                    Bindings bindings = engine.createBindings();
+                        // Objects
+                        Bindings bindings = engine.createBindings();
 
-                    bindings.put("player", player);
-                    bindings.put("event", event);
-                    bindings.put("CR", new ActionDefaults(typeBlock + x + " " + y + " " + z + " " + world, engine));
-                    bindings.put("x", x);
-                    bindings.put("y", y);
-                    bindings.put("z", z);
-                    bindings.put("world", world);
-                    bindings.put("blockLocation", event.getClickedBlock().getLocation());
+                        bindings.put("player", player);
+                        bindings.put("event", event);
+                        bindings.put("CR", new ActionDefaults(typeBlock + x + " " + y + " " + z + " " + world, engine));
+                        bindings.put("x", x);
+                        bindings.put("y", y);
+                        bindings.put("z", z);
+                        bindings.put("world", world);
+                        bindings.put("blockLocation", event.getClickedBlock().getLocation());
 
-                    ScriptContext scriptContext = engine.getContext();
-                    scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+                        ScriptContext scriptContext = engine.getContext();
+                        scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
 
-                    engine.eval(scriptObject.scriptData, scriptContext);
-                } catch (ScriptException e) {
-                    e.printStackTrace();
+                        engine.eval(scriptObject.scriptData, scriptContext);
+                    } catch (ScriptException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 return;
@@ -109,28 +108,29 @@ public class ActionBlocks implements Listener {
             }
 
             if (Main.instance.scriptsManager.contains(typeBlock + blockData)) {
-                ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeBlock + blockData);
+                for (ScriptObject scriptObject : Main.instance.scriptsManager.getObjects(typeBlock + blockData)) {
 
-                try {
-                    ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+                    try {
+                        ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 
-                    // Objects
-                    Bindings bindings = engine.createBindings();
-                    bindings.put("player", player);
-                    bindings.put("event", event);
-                    bindings.put("CR", new ActionDefaults(typeBlock + blockData, engine));
-                    bindings.put("x", x);
-                    bindings.put("y", y);
-                    bindings.put("z", z);
-                    bindings.put("world", world);
-                    bindings.put("blockLocation", event.getClickedBlock().getLocation());
+                        // Objects
+                        Bindings bindings = engine.createBindings();
+                        bindings.put("player", player);
+                        bindings.put("event", event);
+                        bindings.put("CR", new ActionDefaults(typeBlock + blockData, engine));
+                        bindings.put("x", x);
+                        bindings.put("y", y);
+                        bindings.put("z", z);
+                        bindings.put("world", world);
+                        bindings.put("blockLocation", event.getClickedBlock().getLocation());
 
-                    ScriptContext scriptContext = engine.getContext();
-                    scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+                        ScriptContext scriptContext = engine.getContext();
+                        scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
 
-                    engine.eval(scriptObject.scriptData, scriptContext);
-                } catch (ScriptException e) {
-                    e.printStackTrace();
+                        engine.eval(scriptObject.scriptData, scriptContext);
+                    } catch (ScriptException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -158,28 +158,29 @@ public class ActionBlocks implements Listener {
         }
 
         if (Main.instance.scriptsManager.contains(typeBreak + x + " " + y + " " + z + " " + world)) {
-            ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeBreak + x + " " + y + " " + z + " " + world);
+            for (ScriptObject scriptObject : Main.instance.scriptsManager.getObjects(typeBreak + x + " " + y + " " + z + " " + world)) {
 
-            try {
-                ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+                try {
+                    ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 
-                // Objects
-                Bindings bindings = engine.createBindings();
-                bindings.put("player", player);
-                bindings.put("event", event);
-                bindings.put("CR", new ActionDefaults(typeBreak + x + " " + y + " " + z + " " + world, engine));
-                bindings.put("x", x);
-                bindings.put("y", y);
-                bindings.put("z", z);
-                bindings.put("world", world);
-                bindings.put("blockLocation", event.getBlock().getLocation());
+                    // Objects
+                    Bindings bindings = engine.createBindings();
+                    bindings.put("player", player);
+                    bindings.put("event", event);
+                    bindings.put("CR", new ActionDefaults(typeBreak + x + " " + y + " " + z + " " + world, engine));
+                    bindings.put("x", x);
+                    bindings.put("y", y);
+                    bindings.put("z", z);
+                    bindings.put("world", world);
+                    bindings.put("blockLocation", event.getBlock().getLocation());
 
-                ScriptContext scriptContext = engine.getContext();
-                scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+                    ScriptContext scriptContext = engine.getContext();
+                    scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
 
-                engine.eval(scriptObject.scriptData, scriptContext);
-            } catch (ScriptException e) {
-                e.printStackTrace();
+                    engine.eval(scriptObject.scriptData, scriptContext);
+                } catch (ScriptException e) {
+                    e.printStackTrace();
+                }
             }
 
             return;
@@ -199,28 +200,28 @@ public class ActionBlocks implements Listener {
         }
 
         if (Main.instance.scriptsManager.contains(typeBreak + blockData)) {
-            ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeBreak + blockData);
+            for (ScriptObject scriptObject : Main.instance.scriptsManager.getObjects(typeBreak + blockData)) {
+                try {
+                    ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 
-            try {
-                ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+                    // Objects
+                    Bindings bindings = engine.createBindings();
+                    bindings.put("player", player);
+                    bindings.put("event", event);
+                    bindings.put("CR", new ActionDefaults(typeBreak + blockData, engine));
+                    bindings.put("x", x);
+                    bindings.put("y", y);
+                    bindings.put("z", z);
+                    bindings.put("world", world);
+                    bindings.put("blockLocation", event.getBlock().getLocation());
 
-                // Objects
-                Bindings bindings = engine.createBindings();
-                bindings.put("player", player);
-                bindings.put("event", event);
-                bindings.put("CR", new ActionDefaults(typeBreak + blockData, engine));
-                bindings.put("x", x);
-                bindings.put("y", y);
-                bindings.put("z", z);
-                bindings.put("world", world);
-                bindings.put("blockLocation", event.getBlock().getLocation());
+                    ScriptContext scriptContext = engine.getContext();
+                    scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
 
-                ScriptContext scriptContext = engine.getContext();
-                scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
-
-                engine.eval(scriptObject.scriptData, scriptContext);
-            } catch (ScriptException e) {
-                e.printStackTrace();
+                    engine.eval(scriptObject.scriptData, scriptContext);
+                } catch (ScriptException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

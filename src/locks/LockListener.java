@@ -18,6 +18,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
@@ -37,6 +38,24 @@ public class LockListener implements Listener {
 
     public LockListener(Main plugin) {
         this.plugin = plugin;
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onItemClick(InventoryClickEvent event) {
+        if (event.getInventory().getType() != InventoryType.CHEST) {
+            return;
+        }
+
+        ItemStack item = event.getCurrentItem();
+        if (item == null) {
+            return;
+        }
+
+        Player player = (Player) event.getWhoClicked();
+
+        if (locksUtil.isOwner(player, item) == 2) {
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

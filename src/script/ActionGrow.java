@@ -29,34 +29,35 @@ public class ActionGrow implements Listener {
 
         String data = typeGrow + oldState.getTypeId() + ":" + oldState.getRawData() + " " + newState.getTypeId() + ":" + newState.getRawData();
         if (plugin.scriptsManager.contains(data)) {
-            ScriptObject scriptObject = plugin.scriptsManager.getObject(data);
+            for (ScriptObject scriptObject : Main.instance.scriptsManager.getObjects(data)) {
 
-            try {
-                ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+                try {
+                    ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 
-                // Objects
-                Bindings bindings = engine.createBindings();
-                bindings.put("player", player);
-                bindings.put("event", event);
-                bindings.put("CR", new ActionDefaults(data, engine));
-                bindings.put("oldLocation", oldState.getLocation());
-                bindings.put("newLocation", newState.getLocation());
-                bindings.put("oldType", oldState.getType().toString());
-                bindings.put("newType", newState.getType().toString());
-                bindings.put("oldX", oldState.getLocation().getX());
-                bindings.put("oldY", oldState.getLocation().getY());
-                bindings.put("oldZ", oldState.getLocation().getZ());
-                bindings.put("newX", newState.getLocation().getX());
-                bindings.put("newY", newState.getLocation().getY());
-                bindings.put("newZ", newState.getLocation().getZ());
-                bindings.put("world", newState.getLocation().getWorld().getName());
+                    // Objects
+                    Bindings bindings = engine.createBindings();
+                    bindings.put("player", player);
+                    bindings.put("event", event);
+                    bindings.put("CR", new ActionDefaults(data, engine));
+                    bindings.put("oldLocation", oldState.getLocation());
+                    bindings.put("newLocation", newState.getLocation());
+                    bindings.put("oldType", oldState.getType().toString());
+                    bindings.put("newType", newState.getType().toString());
+                    bindings.put("oldX", oldState.getLocation().getX());
+                    bindings.put("oldY", oldState.getLocation().getY());
+                    bindings.put("oldZ", oldState.getLocation().getZ());
+                    bindings.put("newX", newState.getLocation().getX());
+                    bindings.put("newY", newState.getLocation().getY());
+                    bindings.put("newZ", newState.getLocation().getZ());
+                    bindings.put("world", newState.getLocation().getWorld().getName());
 
-                ScriptContext scriptContext = engine.getContext();
-                scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+                    ScriptContext scriptContext = engine.getContext();
+                    scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
 
-                engine.eval(scriptObject.scriptData, scriptContext);
-            } catch (ScriptException e) {
-                e.printStackTrace();
+                    engine.eval(scriptObject.scriptData, scriptContext);
+                } catch (ScriptException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

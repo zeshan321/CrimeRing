@@ -42,7 +42,7 @@ public class LockCommand implements CommandExecutor {
                 return false;
             }
 
-            int response = isOwner(player, itemStack);
+            int response = new LocksUtil().isOwner(player, itemStack);
 
             if (response == 0) {
                 player.sendMessage(ChatColor.RED + "This lock needs to be activated! Right click the lock to active it.");
@@ -82,26 +82,6 @@ public class LockCommand implements CommandExecutor {
         sender.sendMessage(ChatColor.GOLD + "/lock remove <player | gang> <name>");
     }
 
-    private int isOwner(Player player, ItemStack itemStack) {
-        if (!itemStack.hasItemMeta() || !itemStack.getItemMeta().hasLore() || ChatColor.stripColor(itemStack.getItemMeta().getLore().get(0)).contains("unactivated")) {
-            return 0;
-        }
-
-        for (String lore : itemStack.getItemMeta().getLore()) {
-            lore = ChatColor.stripColor(lore);
-
-            if (lore.startsWith("Owner: ")) {
-                String owner = lore.replace("Owner: ", "");
-
-                if (owner.equals(player.getName())) {
-                    return 1;
-                }
-            }
-        }
-
-        return 2;
-    }
-
     private ItemStack add(String type, String user, ItemStack itemStack) {
         ItemMeta itemMeta = itemStack.getItemMeta();
 
@@ -132,7 +112,7 @@ public class LockCommand implements CommandExecutor {
         }
 
         Iterator<String> iterator = lore.iterator();
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             String remove = ChatColor.stripColor(iterator.next());
 
             if (type.equals("gang")) {

@@ -37,22 +37,23 @@ public class RunScript implements CommandExecutor {
                 }
 
                 if (Main.instance.scriptsManager.contains(script)) {
-                    ScriptObject scriptObject = Main.instance.scriptsManager.getObject(script);
+                    for (ScriptObject scriptObject : Main.instance.scriptsManager.getObjects(script)) {
 
-                    try {
-                        ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+                        try {
+                            ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 
-                        // Objects
-                        Bindings bindings = engine.createBindings();
-                        bindings.put("player", player);
-                        bindings.put("CR", new ActionDefaults(script, engine));
+                            // Objects
+                            Bindings bindings = engine.createBindings();
+                            bindings.put("player", player);
+                            bindings.put("CR", new ActionDefaults(script, engine));
 
-                        ScriptContext scriptContext = engine.getContext();
-                        scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+                            ScriptContext scriptContext = engine.getContext();
+                            scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
 
-                        engine.eval(scriptObject.scriptData, scriptContext);
-                    } catch (ScriptException e) {
-                        e.printStackTrace();
+                            engine.eval(scriptObject.scriptData, scriptContext);
+                        } catch (ScriptException e) {
+                            e.printStackTrace();
+                        }
                     }
 
                     return true;

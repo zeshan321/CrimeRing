@@ -37,24 +37,25 @@ public class ActionRegions implements Listener {
         }
 
         if (Main.instance.scriptsManager.contains(typeEnter + event.getRegion().getId())) {
-            ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeEnter + event.getRegion().getId());
+            for (ScriptObject scriptObject : Main.instance.scriptsManager.getObjects(typeEnter + event.getRegion().getId())) {
 
-            try {
-                ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+                try {
+                    ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 
-                // Objects
-                Bindings bindings = engine.createBindings();
-                bindings.put("player", player);
-                bindings.put("event", event);
-                bindings.put("regionType", "enter");
-                bindings.put("CR", new ActionDefaults(typeEnter + event.getRegion().getId(), engine));
+                    // Objects
+                    Bindings bindings = engine.createBindings();
+                    bindings.put("player", player);
+                    bindings.put("event", event);
+                    bindings.put("regionType", "enter");
+                    bindings.put("CR", new ActionDefaults(typeEnter + event.getRegion().getId(), engine));
 
-                ScriptContext scriptContext = engine.getContext();
-                scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+                    ScriptContext scriptContext = engine.getContext();
+                    scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
 
-                engine.eval(scriptObject.scriptData, scriptContext);
-            } catch (ScriptException e) {
-                e.printStackTrace();
+                    engine.eval(scriptObject.scriptData, scriptContext);
+                } catch (ScriptException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -76,24 +77,25 @@ public class ActionRegions implements Listener {
         }
 
         if (Main.instance.scriptsManager.contains(typeLeave + event.getRegion().getId())) {
-            ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeLeave + event.getRegion().getId());
+            for (ScriptObject scriptObject : Main.instance.scriptsManager.getObjects(typeLeave + event.getRegion().getId())) {
 
-            try {
-                ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+                try {
+                    ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 
-                // Objects
-                Bindings bindings = engine.createBindings();
-                bindings.put("player", player);
-                bindings.put("event", event);
-                bindings.put("regionType", "leave");
-                bindings.put("CR", new ActionDefaults(typeLeave + event.getRegion().getId(), engine));
+                    // Objects
+                    Bindings bindings = engine.createBindings();
+                    bindings.put("player", player);
+                    bindings.put("event", event);
+                    bindings.put("regionType", "leave");
+                    bindings.put("CR", new ActionDefaults(typeLeave + event.getRegion().getId(), engine));
 
-                ScriptContext scriptContext = engine.getContext();
-                scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+                    ScriptContext scriptContext = engine.getContext();
+                    scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
 
-                engine.eval(scriptObject.scriptData, scriptContext);
-            } catch (ScriptException e) {
-                e.printStackTrace();
+                    engine.eval(scriptObject.scriptData, scriptContext);
+                } catch (ScriptException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

@@ -1,7 +1,6 @@
 package script;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.zeshanaslam.crimering.FileHandler;
 import com.zeshanaslam.crimering.Main;
@@ -13,48 +12,51 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Collection;
 
 public class ScriptsManager {
 
     public ScriptEngine engine;
-    private Multimap<String, ScriptObject> scriptData = HashMultimap.create();
+    private Multimap<String, ScriptObject> scriptData = ArrayListMultimap.create();
 
     public void load() {
         this.engine = new ScriptEngineManager().getEngineByName("nashorn");
 
         scriptData.clear();
 
-        FileHandler imports = new FileHandler("plugins/CrimeRing/scripts.yml");
-
         int loaded = 0;
 
-        for (String data : imports.getKeys()) {
-            String dir = imports.getString(data + ".dir");
+        try {
+            try (BufferedReader br = new BufferedReader(new FileReader("plugins/CrimeRing/scripts.yml"))) {
+                for (String line; (line = br.readLine()) != null; ) {
+                    if (line.startsWith("#")) continue;
 
-            try {
-                FileReader reader = new FileReader("plugins/CrimeRing/scripts/" + File.separator + dir);
-                BufferedReader textReader = new BufferedReader(reader);
+                    String[] separate = line.split(" = ", 2);
+                    String data = separate[0];
+                    String dir = separate[1];
 
-                String line;
-                String script = "";
-                while ((line = textReader.readLine()) != null) {
+                    FileReader reader = new FileReader("plugins/CrimeRing/scripts/" + File.separator + dir);
+                    BufferedReader textReader = new BufferedReader(reader);
 
-                    if (line.contains("//")) {
-                        continue;
+                    String line1;
+                    String script = "";
+                    while ((line1 = textReader.readLine()) != null) {
+
+                        if (line1.contains("//")) {
+                            continue;
+                        }
+
+                        script += line1;
                     }
 
-                    script += line;
+                    script = ChatColor.translateAlternateColorCodes('&', String.join("\n", script).replace("\n", "").replace("\t", ""));
+
+                    scriptData.put(data, new ScriptObject(data, dir, script));
+                    loaded = loaded + 1;
                 }
-
-                script = ChatColor.translateAlternateColorCodes('&', String.join("\n", script).replace("\n", "").replace("\t", ""));
-
-                scriptData.put(data, new ScriptObject(data, dir, script));
-            } catch (IOException e) {
-                System.out.println("[CR] Error for file: " + dir);
-                e.printStackTrace();
             }
-
-            loaded = loaded + 1;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         System.out.println("[CR] Loaded " + loaded + " scripts.");
@@ -71,7 +73,7 @@ public class ScriptsManager {
         return scriptData.containsKey(key);
     }
 
-    public ScriptObject getObject(String key) {
-        return Iterables.get(scriptData.get(key), 0);
+    public Collection<ScriptObject> getObjects(String key) {
+        return scriptData.get(key);
     }
 }

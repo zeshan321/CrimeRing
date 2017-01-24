@@ -248,23 +248,23 @@ public class RaidManager {
 
     public void runScript(Player player, String name) {
         if (Main.instance.scriptsManager.contains("raid-" + name)) {
-            ScriptObject scriptObject = Main.instance.scriptsManager.getObject("raid-" + name);
+            for (ScriptObject scriptObject : Main.instance.scriptsManager.getObjects("raid-" + name))
 
-            try {
-                ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+                try {
+                    ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 
-                // Objects
-                Bindings bindings = engine.createBindings();
-                bindings.put("player", player);
-                bindings.put("CR", new ActionDefaults("raid-" + name, engine));
+                    // Objects
+                    Bindings bindings = engine.createBindings();
+                    bindings.put("player", player);
+                    bindings.put("CR", new ActionDefaults("raid-" + name, engine));
 
-                ScriptContext scriptContext = engine.getContext();
-                scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+                    ScriptContext scriptContext = engine.getContext();
+                    scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
 
-                engine.eval(scriptObject.scriptData, scriptContext);
-            } catch (ScriptException e) {
-                e.printStackTrace();
-            }
+                    engine.eval(scriptObject.scriptData, scriptContext);
+                } catch (ScriptException e) {
+                    e.printStackTrace();
+                }
         }
     }
 

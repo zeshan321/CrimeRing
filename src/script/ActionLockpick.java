@@ -35,23 +35,24 @@ public class ActionLockpick implements Listener {
         }
 
         if (Main.instance.scriptsManager.contains(type + event.getLockType())) {
-            ScriptObject scriptObject = Main.instance.scriptsManager.getObject(type + event.getLockType());
+            for (ScriptObject scriptObject : Main.instance.scriptsManager.getObjects(type + event.getLockType())) {
 
-            try {
-                ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+                try {
+                    ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 
-                // Objects
-                Bindings bindings = engine.createBindings();
-                bindings.put("player", player);
-                bindings.put("event", event);
-                bindings.put("CR", new ActionDefaults(type + event.getLockType(), engine));
+                    // Objects
+                    Bindings bindings = engine.createBindings();
+                    bindings.put("player", player);
+                    bindings.put("event", event);
+                    bindings.put("CR", new ActionDefaults(type + event.getLockType(), engine));
 
-                ScriptContext scriptContext = engine.getContext();
-                scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+                    ScriptContext scriptContext = engine.getContext();
+                    scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
 
-                engine.eval(scriptObject.scriptData, scriptContext);
-            } catch (ScriptException e) {
-                e.printStackTrace();
+                    engine.eval(scriptObject.scriptData, scriptContext);
+                } catch (ScriptException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

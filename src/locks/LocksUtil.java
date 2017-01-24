@@ -322,4 +322,28 @@ public class LocksUtil {
 
         return firstSlot;
     }
+
+    public int isOwner(Player player, ItemStack itemStack) {
+        if (!Main.instance.lockManager.chests.containsKey(itemStack.getTypeId() + ":" + itemStack.getDurability() + "-lock")) {
+            return 0;
+        }
+
+        if (!itemStack.hasItemMeta() || !itemStack.getItemMeta().hasLore() || ChatColor.stripColor(itemStack.getItemMeta().getLore().get(0)).contains("unactivated")) {
+            return 0;
+        }
+
+        for (String lore : itemStack.getItemMeta().getLore()) {
+            lore = ChatColor.stripColor(lore);
+
+            if (lore.startsWith("Owner: ")) {
+                String owner = lore.replace("Owner: ", "");
+
+                if (owner.equals(player.getName())) {
+                    return 1;
+                }
+            }
+        }
+
+        return 2;
+    }
 }

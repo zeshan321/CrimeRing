@@ -42,28 +42,29 @@ public class ActionDeath implements Listener {
             }
 
             if (Main.instance.scriptsManager.contains(typeEntity + event.getEntity().getType().toString())) {
-                ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeEntity + event.getEntity().getType().toString());
+                for (ScriptObject scriptObject : Main.instance.scriptsManager.getObjects(typeEntity + event.getEntity().getType().toString())) {
 
-                try {
-                    ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+                    try {
+                        ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 
-                    // Objects
-                    Bindings bindings = engine.createBindings();
-                    bindings.put("player", player);
-                    bindings.put("event", event);
-                    bindings.put("CR", new ActionDefaults(typeEntity + event.getEntity().getType().toString(), engine));
-                    bindings.put("mobName", event.getEntity().getCustomName());
-                    bindings.put("X", event.getEntity().getLocation().getX());
-                    bindings.put("Y", event.getEntity().getLocation().getY());
-                    bindings.put("Z", event.getEntity().getLocation().getZ());
-                    bindings.put("world", event.getEntity().getLocation().getWorld().getName());
+                        // Objects
+                        Bindings bindings = engine.createBindings();
+                        bindings.put("player", player);
+                        bindings.put("event", event);
+                        bindings.put("CR", new ActionDefaults(typeEntity + event.getEntity().getType().toString(), engine));
+                        bindings.put("mobName", event.getEntity().getCustomName());
+                        bindings.put("X", event.getEntity().getLocation().getX());
+                        bindings.put("Y", event.getEntity().getLocation().getY());
+                        bindings.put("Z", event.getEntity().getLocation().getZ());
+                        bindings.put("world", event.getEntity().getLocation().getWorld().getName());
 
-                    ScriptContext scriptContext = engine.getContext();
-                    scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+                        ScriptContext scriptContext = engine.getContext();
+                        scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
 
-                    engine.eval(scriptObject.scriptData, scriptContext);
-                } catch (ScriptException e) {
-                    e.printStackTrace();
+                        engine.eval(scriptObject.scriptData, scriptContext);
+                    } catch (ScriptException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         } else {
@@ -80,28 +81,28 @@ public class ActionDeath implements Listener {
             }
 
             if (Main.instance.scriptsManager.contains(typeEntity + event.getEntity().getCustomName())) {
-                ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typeEntity + event.getEntity().getCustomName());
+                for (ScriptObject scriptObject : Main.instance.scriptsManager.getObjects(typeEntity + event.getEntity().getCustomName())) {
+                    try {
+                        ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 
-                try {
-                    ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+                        // Objects
+                        Bindings bindings = engine.createBindings();
+                        bindings.put("player", player);
+                        bindings.put("event", event);
+                        bindings.put("CR", new ActionDefaults(typeEntity + event.getEntity().getCustomName(), engine));
+                        bindings.put("mobName", event.getEntity().getCustomName());
+                        bindings.put("X", event.getEntity().getLocation().getX());
+                        bindings.put("Y", event.getEntity().getLocation().getY());
+                        bindings.put("Z", event.getEntity().getLocation().getZ());
+                        bindings.put("world", event.getEntity().getLocation().getWorld().getName());
 
-                    // Objects
-                    Bindings bindings = engine.createBindings();
-                    bindings.put("player", player);
-                    bindings.put("event", event);
-                    bindings.put("CR", new ActionDefaults(typeEntity + event.getEntity().getCustomName(), engine));
-                    bindings.put("mobName", event.getEntity().getCustomName());
-                    bindings.put("X", event.getEntity().getLocation().getX());
-                    bindings.put("Y", event.getEntity().getLocation().getY());
-                    bindings.put("Z", event.getEntity().getLocation().getZ());
-                    bindings.put("world", event.getEntity().getLocation().getWorld().getName());
+                        ScriptContext scriptContext = engine.getContext();
+                        scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
 
-                    ScriptContext scriptContext = engine.getContext();
-                    scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
-
-                    engine.eval(scriptObject.scriptData, scriptContext);
-                } catch (ScriptException e) {
-                    e.printStackTrace();
+                        engine.eval(scriptObject.scriptData, scriptContext);
+                    } catch (ScriptException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -125,28 +126,29 @@ public class ActionDeath implements Listener {
             }
 
             if (Main.instance.scriptsManager.contains(typePlayer + player.getName())) {
-                ScriptObject scriptObject = Main.instance.scriptsManager.getObject(typePlayer + player.getName());
+                for (ScriptObject scriptObject : Main.instance.scriptsManager.getObjects(typePlayer + player.getName())) {
 
-                try {
-                    ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+                    try {
+                        ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 
-                    // Objects
-                    Bindings bindings = engine.createBindings();
-                    bindings.put("player", player);
-                    bindings.put("event", event);
-                    bindings.put("CR", new ActionDefaults(typePlayer + player.getName(), engine));
-                    bindings.put("killer", player.getKiller());
-                    bindings.put("X", player.getLocation().getX());
-                    bindings.put("Y", player.getLocation().getY());
-                    bindings.put("Z", player.getLocation().getZ());
-                    bindings.put("world", player.getLocation().getWorld().getName());
+                        // Objects
+                        Bindings bindings = engine.createBindings();
+                        bindings.put("player", player);
+                        bindings.put("event", event);
+                        bindings.put("CR", new ActionDefaults(typePlayer + player.getName(), engine));
+                        bindings.put("killer", player.getKiller());
+                        bindings.put("X", player.getLocation().getX());
+                        bindings.put("Y", player.getLocation().getY());
+                        bindings.put("Z", player.getLocation().getZ());
+                        bindings.put("world", player.getLocation().getWorld().getName());
 
-                    ScriptContext scriptContext = engine.getContext();
-                    scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+                        ScriptContext scriptContext = engine.getContext();
+                        scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
 
-                    engine.eval(scriptObject.scriptData, scriptContext);
-                } catch (ScriptException e) {
-                    e.printStackTrace();
+                        engine.eval(scriptObject.scriptData, scriptContext);
+                    } catch (ScriptException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
