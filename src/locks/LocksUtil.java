@@ -328,7 +328,7 @@ public class LocksUtil {
             return 0;
         }
 
-        if (!itemStack.hasItemMeta() || !itemStack.getItemMeta().hasLore() || ChatColor.stripColor(itemStack.getItemMeta().getLore().get(0)).contains("unactivated")) {
+        if (!itemStack.hasItemMeta() || !itemStack.getItemMeta().hasLore() || ChatColor.stripColor(itemStack.getItemMeta().getLore().get(0)).contains("Owner: None")) {
             return 0;
         }
 

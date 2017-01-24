@@ -79,7 +79,7 @@ public class LockListener implements Listener {
                 return;
             }
 
-            if (!itemStack.hasItemMeta() || !itemStack.getItemMeta().hasLore() || ChatColor.stripColor(itemStack.getItemMeta().getLore().get(0)).contains("unactivated")) {
+            if (!itemStack.hasItemMeta() || !itemStack.getItemMeta().hasLore() || ChatColor.stripColor(itemStack.getItemMeta().getLore().get(0)).contains("Owner: None")) {
                 ItemMeta itemMeta = itemStack.getItemMeta();
 
                 List<String> lore = new ArrayList<>();
