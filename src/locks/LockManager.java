@@ -4,6 +4,9 @@ import com.zeshanaslam.crimering.FileHandler;
 import com.zeshanaslam.crimering.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.material.MaterialData;
+import org.bukkit.material.Openable;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -17,6 +20,7 @@ public class LockManager {
     public HashMap<UUID, String> lastOrder = new HashMap<>();
     public HashMap<String, String> locks = new HashMap<>();
     public HashMap<String, String> chests = new HashMap<>();
+    public HashMap<UUID, String> arrows = new HashMap<>();
 
     public LockManager() {
         assign.clear();
@@ -62,7 +66,13 @@ public class LockManager {
                 Block block = Bukkit.getWorld(data[3]).getBlockAt(Integer.valueOf(data[0]), Integer.valueOf(data[1]), Integer.valueOf(data[2]));
 
                 if (block.getType().toString().contains("DOOR")) {
-                    block.setData((byte) 0);
+                    BlockState state = block.getState();
+
+                    Openable openable = (Openable) state.getData();
+                    openable.setOpen(false);
+
+                    state.setData((MaterialData) openable);
+                    state.update();
                 }
             }
         }

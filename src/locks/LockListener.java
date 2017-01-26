@@ -7,10 +7,7 @@ import customevents.LockpickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.Chest;
+import org.bukkit.block.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -46,7 +43,7 @@ public class LockListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onItemClick(InventoryClickEvent event) {
-        if (event.getInventory().getType() != InventoryType.CHEST) {
+        if (event.getInventory().getType() != InventoryType.CHEST && event.getInventory().getType() != InventoryType.DISPENSER) {
             return;
         }
 
@@ -88,6 +85,12 @@ public class LockListener implements Listener {
 
                 List<String> lore = new ArrayList<>();
 
+                lore.add(ChatColor.translateAlternateColorCodes('&', "&7Use &a/lock &7to add or remove"));
+                lore.add(ChatColor.translateAlternateColorCodes('&', "&7players and gangs to lock."));
+                lore.add("");
+                lore.add(ChatColor.translateAlternateColorCodes('&', "&7Place in &aFirst Slot &7to lock."));
+                lore.add(ChatColor.translateAlternateColorCodes('&', "&7chest/door."));
+                lore.add("");
                 lore.add(ChatColor.GREEN + "Owner: " + player.getName());
 
                 itemMeta.setLore(lore);
@@ -117,6 +120,7 @@ public class LockListener implements Listener {
         }
 
         Block block = event.getClickedBlock();
+        BlockState blockState = block.getState();
 
         if (block.getType().toString().contains("DOOR")) {
             Door door = new Door(0, block.getData());
@@ -149,9 +153,6 @@ public class LockListener implements Listener {
                 player.openInventory(locksUtil.loadInventory(player, block, lockType));
             }
         } else {
-            // Check if chest contains a lock
-            BlockState blockState = block.getState();
-
             if (blockState instanceof Chest) {
                 if (!plugin.lockManager.unlocked.containsKey(block.getX() + " " + block.getY() + " " + block.getZ() + " " + block.getWorld().getName())) {
                     Chest chest = (Chest) blockState;
@@ -173,6 +174,56 @@ public class LockListener implements Listener {
                         String lockType = Main.instance.lockManager.chests.get(lock.getTypeId() + ":" + lock.getDurability() + "-lock");
 
                         player.openInventory(locksUtil.loadInventory(player, block, lockType));
+                    }
+                }
+            }
+
+            if (block.getType().toString().contains("DOOR")) {
+                if (!plugin.lockManager.unlocked.containsKey(block.getX() + " " + block.getY() + " " + block.getZ() + " " + block.getWorld().getName())) {
+                    Block dispenser = block.getWorld().getBlockAt(block.getLocation().getBlockX(), block.getLocation().getBlockY() + 2, block.getLocation().getBlockZ());
+
+                    if (!(dispenser.getState() instanceof Dispenser)) return;
+
+                    Inventory dispenserInv = ((Dispenser) dispenser.getState()).getInventory();
+
+                    if (dispenser.getType() == Material.DISPENSER) {
+                        if (!locksUtil.isChestAllowed(player, dispenserInv)) {
+                            event.setCancelled(true);
+
+                            if (!player.hasPermission(lockPickPerm)) {
+                                player.sendMessage(ChatColor.RED + "Looks like I need someone with lock picking skills!");
+                                return;
+                            }
+
+                            if (!locksUtil.isPick(player.getInventory().getItemInMainHand())) {
+                                player.sendMessage(ChatColor.RED + "This needs to be lock picked!");
+                                return;
+                            }
+
+                            ItemStack lock = locksUtil.getChestLock(dispenserInv);
+                            String lockType = Main.instance.lockManager.chests.get(lock.getTypeId() + ":" + lock.getDurability() + "-lock");
+
+                            player.openInventory(locksUtil.loadInventory(player, block, lockType));
+                        }
+                    }
+                }
+            }
+
+            // Dispenser protection
+            if (blockState instanceof Dispenser) {
+                Dispenser dispenser = (Dispenser) blockState;
+                ItemStack itemStack = dispenser.getInventory().getItem(0);
+
+                if (itemStack == null) return;
+
+                if (locksUtil.isOwner(player, itemStack) == 2) {
+                    Block doorBlock = block.getWorld().getBlockAt(block.getLocation().getBlockX(), block.getLocation().getBlockY() - 2, block.getLocation().getBlockZ());
+
+                    if (doorBlock.getType().toString().contains("DOOR")) {
+                        if (!plugin.lockManager.unlocked.containsKey(doorBlock.getX() + " " + doorBlock.getY() + " " + doorBlock.getZ() + " " + doorBlock.getWorld().getName())) {
+                            player.sendMessage(ChatColor.RED + "The door needs to be lock picked first!");
+                            event.setCancelled(true);
+                        }
                     }
                 }
             }
@@ -285,12 +336,52 @@ public class LockListener implements Listener {
 
     private void triggerTrapChest(Player player, String[] data) {
         Block block = Bukkit.getWorld(data[4]).getBlockAt(Integer.valueOf(data[1]), Integer.valueOf(data[2]), Integer.valueOf(data[3]));
+
         BlockState blockState = block.getState();
 
         if (blockState instanceof Chest) {
             Chest chest = (Chest) blockState;
 
             String name = locksUtil.useTrap(chest.getInventory());
+            if (name != null) {
+                if (Main.instance.scriptsManager.contains(name)) {
+                    player.sendMessage(ChatColor.RED + "A trap was triggered from the chest!");
+
+                    for (ScriptObject scriptObject : Main.instance.scriptsManager.getObjects(name))
+
+                        try {
+                            ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+
+                            // Objects
+                            Bindings bindings = engine.createBindings();
+                            bindings.put("player", player);
+                            bindings.put("x", Integer.valueOf(data[1]));
+                            bindings.put("y", Integer.valueOf(data[2]));
+                            bindings.put("z", Integer.valueOf(data[3]));
+                            bindings.put("world", data[4]);
+                            bindings.put("lockType", data[0]);
+                            bindings.put("CR", new ActionDefaults(name, engine));
+
+                            ScriptContext scriptContext = engine.getContext();
+                            scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+
+                            engine.eval(scriptObject.scriptData, scriptContext);
+                        } catch (ScriptException e) {
+                            e.printStackTrace();
+                        }
+                }
+            }
+
+            return;
+        }
+
+        Block dispenserBlock = block.getWorld().getBlockAt(block.getLocation().getBlockX(), block.getLocation().getBlockY() + 2, block.getLocation().getBlockZ());
+        blockState = dispenserBlock.getState();
+
+        if (blockState instanceof Dispenser) {
+            Dispenser dispenser = (Dispenser) blockState;
+
+            String name = locksUtil.useTrap(dispenser.getInventory());
             if (name != null) {
                 if (Main.instance.scriptsManager.contains(name)) {
                     player.sendMessage(ChatColor.RED + "A trap was triggered from the chest!");
@@ -352,6 +443,27 @@ public class LockListener implements Listener {
                         it.remove();
                 }
             }
+
+            if (block.getType().toString().contains("DOOR")) {
+                Block dispenserBlock = block.getWorld().getBlockAt(block.getLocation().getBlockX(), block.getLocation().getBlockY() + 2, block.getLocation().getBlockZ());
+                Dispenser dispenser = (Dispenser) dispenserBlock.getState();
+                ItemStack itemStack = dispenser.getInventory().getItem(0);
+
+                if (itemStack != null) {
+                    if (Main.instance.lockManager.chests.containsKey(itemStack.getTypeId() + ":" + itemStack.getDurability() + "-lock"))
+                        it.remove();
+                }
+            }
+
+            if (blockState instanceof Dispenser) {
+                Dispenser dispenser = (Dispenser) blockState;
+                ItemStack itemStack = dispenser.getInventory().getItem(0);
+
+                if (itemStack != null) {
+                    if (Main.instance.lockManager.chests.containsKey(itemStack.getTypeId() + ":" + itemStack.getDurability() + "-lock"))
+                        it.remove();
+                }
+            }
         }
     }
 
@@ -381,5 +493,56 @@ public class LockListener implements Listener {
                     event.setCancelled(true);
             }
         }
+
+        if (block.getType().toString().contains("DOOR")) {
+            Block dispenserBlock = block.getWorld().getBlockAt(block.getLocation().getBlockX(), block.getLocation().getBlockY() + 2, block.getLocation().getBlockZ());
+            Dispenser dispenser = (Dispenser) dispenserBlock.getState();
+            ItemStack itemStack = dispenser.getInventory().getItem(0);
+
+            if (itemStack != null) {
+                if (Main.instance.lockManager.chests.containsKey(itemStack.getTypeId() + ":" + itemStack.getDurability() + "-lock"))
+                    event.setCancelled(true);
+            }
+        }
+
+        if (blockState instanceof Dispenser) {
+            Dispenser dispenser = (Dispenser) blockState;
+            ItemStack itemStack = dispenser.getInventory().getItem(0);
+
+            if (itemStack != null) {
+                if (Main.instance.lockManager.chests.containsKey(itemStack.getTypeId() + ":" + itemStack.getDurability() + "-lock"))
+                    event.setCancelled(true);
+            }
+        }
     }
+
+
+    // Dispenser support
+    /*@EventHandler
+    public void onDispense(BlockDispenseEvent event) {
+        ItemStack itemStack = event.getItem();
+        MaterialData data = event.getBlock().getState().getData();
+        Dispenser dispenser = (Dispenser) data;
+
+        if (itemStack != null) {
+            if (Main.instance.lockManager.chests.containsKey(itemStack.getTypeId() + ":" + itemStack.getDurability() + "-trap")) {
+                String trap = Main.instance.lockManager.chests.get(itemStack.getTypeId() + ":" + itemStack.getDurability() + "-trap");
+                Location loc = event.getBlock().getLocation();
+                loc.add(dispenser.getFacing().getModX() + 1, dispenser.getFacing().getModY() + 1, dispenser.getFacing().getModZ() + 1);
+
+                Arrow arrow = event.getBlock().getWorld().spawnArrow(loc, new Vector(dispenser.getFacing().getModX(), dispenser.getFacing().getModY(), dispenser.getFacing().getModZ()), 4.0f, 4.0f);
+                Main.instance.lockManager.arrows.put(arrow.getUniqueId(), trap);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onHit(EntityDamageByEntityEvent event) {
+        if (event.getDamager() instanceof Arrow && event.getEntity() instanceof Player) {
+            Arrow arrow = (Arrow) event.getDamager();
+            Player player = (Player) event.getEntity();
+
+            System.out.println(arrow.getCustomName());
+        }
+    }*/
 }

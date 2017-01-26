@@ -116,7 +116,7 @@ public class Main extends JavaPlugin {
         entityDetection = new EntityDetection();
 
         // Setup ambient manager
-        ambientManager = new AmbientManager();
+        //ambientManager = new AmbientManager();
 
         // Setup lock manager
         lockManager = new LockManager();
@@ -232,7 +232,7 @@ public class Main extends JavaPlugin {
         pm.registerEvents(new ArrowHitBlockListener(this), this);
         pm.registerEvents(new LocksCreate(this), this);
         pm.registerEvents(new LockListener(this), this);
-        pm.registerEvents(new AmbientListener(this), this);
+        //pm.registerEvents(new AmbientListener(this), this);
         pm.registerEvents(new BankListener(this), this);
         pm.registerEvents(new ActionTrade(this), this);
         pm.registerEvents(new ActionLockpick(this), this);

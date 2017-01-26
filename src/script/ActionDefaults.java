@@ -12,6 +12,7 @@ import de.Herbystar.TTA.TTA_Methods;
 import es.pollitoyeye.Bikes.BikeManager;
 import es.pollitoyeye.Bikes.CarManager;
 import es.pollitoyeye.Bikes.VehiclesMain;
+import me.Stijn.AudioClient.AudioClient;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.disguisetypes.DisguiseType;
 import me.libraryaddict.disguise.disguisetypes.MiscDisguise;
@@ -1734,5 +1735,29 @@ public class ActionDefaults {
 
     public World getWorld(String world) {
         return Bukkit.getWorld(world);
+    }
+
+    public void audioPlayToPlayer(Player player, String sound) {
+        AudioClient.playToPlayer(player, sound);
+    }
+
+    public void audioPlayToAll(String sound) {
+        AudioClient.playToAll(sound);
+    }
+
+    public void audioPlayEffectToPlayer(Player player, String sound) {
+        AudioClient.playEffectToPlayer(player, sound);
+    }
+
+    public void audioPlayEffectToAll(String sound) {
+        AudioClient.playEffectToAll(sound);
+    }
+
+    public void audioPlayInArea(String world, int x1, int y1, int z1, int x2, int y2, int z2, String sound) {
+        AudioClient.playInArea(world, x1, y1, z1, x2, y2, z1, sound);
+    }
+
+    public void playEffectInArea(String world, int x1, int y1, int z1, int x2, int y2, int z2, String sound) {
+        AudioClient.playEffectInArea(world, x1, y1, z1, x2, y2, z1, sound);
     }
 }
