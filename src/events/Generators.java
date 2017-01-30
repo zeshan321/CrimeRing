@@ -27,7 +27,11 @@ public class Generators implements Listener {
             for (int x = -(radius); x <= radius; x++) {
                 for (int y = -(radius); y <= radius; y++) {
                     for (int z = -(radius); z <= radius; z++) {
-                        if (block.getRelative(x, y, z).getType() == Material.PRISMARINE) {
+                        if (block.getRelative(x, y, z).getType().name().toLowerCase().contains("prismarine")) {
+                            if (block.getLocation().distance(block.getRelative(x, y, z).getLocation()) == 0.0) {
+                                continue;
+                            }
+
                             event.setCancelled(true);
                             return;
                         }
@@ -46,7 +50,11 @@ public class Generators implements Listener {
         for (int x = -(radius); x <= radius; x++) {
             for (int y = -(radius); y <= radius; y++) {
                 for (int z = -(radius); z <= radius; z++) {
-                    if (block.getRelative(x, y, z).getType() == Material.PRISMARINE) {
+                    if (block.getRelative(x, y, z).getType().name().toLowerCase().contains("prismarine")) {
+                        if (block.getLocation().distance(block.getRelative(x, y, z).getLocation()) == 0.0) {
+                            continue;
+                        }
+
                         newBlock = block.getRelative(x, y, z);
                     }
                 }
@@ -54,11 +62,8 @@ public class Generators implements Listener {
         }
 
         if (newBlock != null) {
-            if (block.getLocation().distance(newBlock.getLocation()) == 0.0) {
-                return;
-            }
-
             if (block.getY() < newBlock.getY()) {
+                if (!block.getType().name().toLowerCase().contains("prismarine"))
                 return;
             }
 

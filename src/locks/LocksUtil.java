@@ -312,6 +312,8 @@ public class LocksUtil {
                     return true;
                 }
             }
+        } else {
+            return true;
         }
 
         return false;
