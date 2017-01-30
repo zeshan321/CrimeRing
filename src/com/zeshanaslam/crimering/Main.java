@@ -49,6 +49,7 @@ import org.bukkit.potion.PotionEffectType;
 import packets.WrapperPlayClientWindowClick;
 import perks.PerkManager;
 import perks.cop.GlowPerk;
+import radio.RadioManager;
 import raids.*;
 import renamer.RenamerManager;
 import resourcepack.ResourceCommand;
@@ -82,6 +83,7 @@ public class Main extends JavaPlugin {
     public AmbientManager ambientManager;
     public ActionDefaults actionDefaults;
     public EntityDetection entityDetection;
+    public RadioManager radioManager;
 
     // Lists and maps
     public ArrayList<String> flag = new ArrayList<>();
@@ -105,6 +107,10 @@ public class Main extends JavaPlugin {
         if (rsp != null) {
             economy = rsp.getProvider();
         }
+
+        // Radio manager
+        //radioManager = new RadioManager();
+        //radioManager.load();
 
         // Hook into SimpleClans
         clanManager = SimpleClans.getInstance().getClanManager();
@@ -236,6 +242,7 @@ public class Main extends JavaPlugin {
         pm.registerEvents(new BankListener(this), this);
         pm.registerEvents(new ActionTrade(this), this);
         pm.registerEvents(new ActionLockpick(this), this);
+        pm.registerEvents(new Generators(this), this);
 
         // Register cop perks
         pm.registerEvents(new GlowPerk(this), this);

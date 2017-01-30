@@ -54,6 +54,15 @@ public class LockListener implements Listener {
 
         Player player = (Player) event.getWhoClicked();
 
+        // Op bypass
+        if (player.isOp()) {
+            if (player.getInventory().getItemInMainHand() != null) {
+                if (player.getInventory().getItemInMainHand().getType() == Material.PAINTING) {
+                    return;
+                }
+            }
+        }
+
         if (locksUtil.isOwner(player, item) == 2) {
             event.setCancelled(true);
         }
@@ -117,6 +126,15 @@ public class LockListener implements Listener {
 
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
+        }
+
+        // Op bypass
+        if (player.isOp()) {
+            if (player.getInventory().getItemInMainHand() != null) {
+                if (player.getInventory().getItemInMainHand().getType() == Material.PAINTING) {
+                    return;
+                }
+            }
         }
 
         Block block = event.getClickedBlock();
@@ -234,6 +252,15 @@ public class LockListener implements Listener {
     public void onPreLoot(PrePlayerLootEvent event) {
         Player player = event.getLooter();
         Block block = event.getChest().getBlock();
+
+        // Op bypass
+        if (player.isOp()) {
+            if (player.getInventory().getItemInMainHand() != null) {
+                if (player.getInventory().getItemInMainHand().getType() == Material.PAINTING) {
+                    return;
+                }
+            }
+        }
 
         if (Main.instance.lockManager.locks.containsKey(block.getX() + " " + block.getY() + " " + block.getZ() + " " + block.getWorld().getName())) {
             String lockType = Main.instance.lockManager.locks.get(block.getX() + " " + block.getY() + " " + block.getZ() + " " + block.getWorld().getName());

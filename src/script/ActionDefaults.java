@@ -1760,4 +1760,16 @@ public class ActionDefaults {
     public void playEffectInArea(String world, int x1, int y1, int z1, int x2, int y2, int z2, String sound) {
         AudioClient.playEffectInArea(world, x1, y1, z1, x2, y2, z1, sound);
     }
+
+    public void startRadio(Player player) {
+        Main.instance.radioManager.addPlayer(player);
+    }
+
+    public void stopRadio(Player player) {
+        Main.instance.radioManager.removePlayer(player);
+    }
+
+    public boolean isRadioOn(Player player) {
+        return Main.instance.radioManager.listen.contains(player.getUniqueId());
+    }
 }

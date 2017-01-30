@@ -24,6 +24,7 @@ public class Reload implements CommandExecutor {
             plugin.scriptsManager.load();
             plugin.renamerManager.load();
             plugin.brewingManager.load();
+            //plugin.radioManager.load();
 
             // Reload stackable items
             new ItemUtils().loadStackableItems();
