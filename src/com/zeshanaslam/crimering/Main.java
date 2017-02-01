@@ -93,7 +93,6 @@ public class Main extends JavaPlugin {
     public HashMap<String, String> fakeBlocksLocation = new HashMap<>();
     public HashMap<Integer, UUID> playerTasks = new HashMap<>();
     public Table<UUID, String, ListenerObject> listeners = HashBasedTable.create();
-    public List<String> drugs = new ArrayList<>();
 
     public void onEnable() {
         saveDefaultConfig();
@@ -107,9 +106,6 @@ public class Main extends JavaPlugin {
         if (rsp != null) {
             economy = rsp.getProvider();
         }
-
-        // Load drugs
-        drugs = getConfig().getStringList("drugs");
 
         // Hook into SimpleClans
         clanManager = SimpleClans.getInstance().getClanManager();
