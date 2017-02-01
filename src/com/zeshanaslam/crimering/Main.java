@@ -1,6 +1,5 @@
 package com.zeshanaslam.crimering;
 
-import ambientsounds.AmbientListener;
 import ambientsounds.AmbientManager;
 import bank.BankListener;
 import brewing.BrewListener;
@@ -47,8 +46,8 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
 import packets.WrapperPlayClientWindowClick;
-import perks.PerkManager;
-import perks.cop.GlowPerk;
+import perks.arrest.GlowPerk;
+import perks.arrest.PerkManager;
 import radio.RadioManager;
 import raids.*;
 import renamer.RenamerManager;
@@ -94,6 +93,7 @@ public class Main extends JavaPlugin {
     public HashMap<String, String> fakeBlocksLocation = new HashMap<>();
     public HashMap<Integer, UUID> playerTasks = new HashMap<>();
     public Table<UUID, String, ListenerObject> listeners = HashBasedTable.create();
+    public List<String> drugs = new ArrayList<>();
 
     public void onEnable() {
         saveDefaultConfig();
@@ -108,9 +108,8 @@ public class Main extends JavaPlugin {
             economy = rsp.getProvider();
         }
 
-        // Radio manager
-        //radioManager = new RadioManager();
-        //radioManager.load();
+        // Load drugs
+        drugs = getConfig().getStringList("drugs");
 
         // Hook into SimpleClans
         clanManager = SimpleClans.getInstance().getClanManager();
@@ -243,6 +242,7 @@ public class Main extends JavaPlugin {
         pm.registerEvents(new ActionTrade(this), this);
         pm.registerEvents(new ActionLockpick(this), this);
         pm.registerEvents(new Generators(this), this);
+        pm.registerEvents(new ActionArrested(this), this);
 
         // Register cop perks
         pm.registerEvents(new GlowPerk(this), this);

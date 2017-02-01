@@ -8,7 +8,6 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.zeshanaslam.crimering.FileHandler;
 import com.zeshanaslam.crimering.Main;
-import de.Herbystar.TTA.TTA_Methods;
 import es.pollitoyeye.Bikes.BikeManager;
 import es.pollitoyeye.Bikes.CarManager;
 import es.pollitoyeye.Bikes.VehiclesMain;
@@ -55,7 +54,9 @@ import utils.MoneyUtil;
 import utils.TargetHelper;
 
 import javax.script.*;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class ActionDefaults {
 
@@ -1413,11 +1414,6 @@ public class ActionDefaults {
         Main.instance.entityManager.entityHider.showEntity(player, entity);
     }
 
-    @Deprecated
-    public void setGlowForEntity(Player player, Entity entity, String color) {
-        TTA_Methods.addEntityGlow(entity);
-    }
-
     public String getMMInternalName(Entity entity) {
         return Main.instance.mythicAPI.getMythicMobInstance(entity).getType().getInternalName();
     }
@@ -1761,15 +1757,59 @@ public class ActionDefaults {
         AudioClient.playEffectInArea(world, x1, y1, z1, x2, y2, z1, sound);
     }
 
-    public void startRadio(Player player) {
-        Main.instance.radioManager.addPlayer(player);
+    public long getTimeDifference(long timestamp) {
+        return TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - timestamp);
     }
 
-    public void stopRadio(Player player) {
-        Main.instance.radioManager.removePlayer(player);
+    public String getDate() {
+        return new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date());
     }
 
-    public boolean isRadioOn(Player player) {
-        return Main.instance.radioManager.listen.contains(player.getUniqueId());
+    public int getDrugPoints(Player player, String soft, String hard) {
+        int points = 0;
+
+        List<String> listSoft = Arrays.asList(soft.split(", "));
+        List<String> listHard = Arrays.asList(hard.split(", "));
+
+        for (ItemStack itemStack : player.getInventory().getContents()) {
+            if (itemStack == null) {
+                continue;
+            }
+
+            if (listSoft.contains(itemStack.getTypeId() + ":" + itemStack.getDurability())) {
+                points = points + itemStack.getAmount();
+                continue;
+            }
+
+            if (listHard.contains(itemStack.getTypeId() + ":" + itemStack.getDurability())) {
+                points = points + (3 * itemStack.getAmount());
+            }
+        }
+
+        return points;
+    }
+
+    public int getWeaponPoints(Player player, String soft, String hard) {
+        int points = 0;
+
+        List<String> listSoft = Arrays.asList(soft.split(", "));
+        List<String> listHard = Arrays.asList(hard.split(", "));
+
+        for (ItemStack itemStack : player.getInventory().getContents()) {
+            if (itemStack == null) {
+                continue;
+            }
+
+            if (listSoft.contains(itemStack.getTypeId() + ":" + itemStack.getDurability())) {
+                points = points + (15 * itemStack.getAmount());
+                continue;
+            }
+
+            if (listHard.contains(itemStack.getTypeId() + ":" + itemStack.getDurability())) {
+                points = points + (25 * itemStack.getAmount());
+            }
+        }
+
+        return points;
     }
 }

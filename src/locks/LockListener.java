@@ -23,6 +23,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.Door;
+import perks.arrest.PerkManager;
 import script.ActionDefaults;
 import script.ScriptObject;
 
@@ -335,6 +336,9 @@ public class LockListener implements Listener {
 
                 plugin.lockManager.lastOrder.remove(player.getUniqueId());
 
+                // Hook into crime
+                Main.instance.perkManager.copUtil.logCrime(player, PerkManager.Crime.LOCKPICK);
+
                 player.sendMessage(ChatColor.GOLD + "You lock picked the lock!");
 
                 String[] data = id.split(" ");
@@ -352,6 +356,9 @@ public class LockListener implements Listener {
     }
 
     private void lockPickFail(Player player, String name, String id) {
+        // Hook into crime
+        Main.instance.perkManager.copUtil.logCrime(player, PerkManager.Crime.LOCKPICK);
+
         if (!locksUtil.lockFail(player)) {
             player.closeInventory();
 

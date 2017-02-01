@@ -1,11 +1,9 @@
-package perks;
+package perks.arrest;
 
 import com.zeshanaslam.crimering.Main;
-import de.Herbystar.TTA.TTA_Methods;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import perks.cop.CopUtil;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,7 +12,6 @@ import java.util.UUID;
 public class PerkManager {
 
     public HashMap<UUID, TimerObject> timer = new HashMap<>();
-
     // Utils
     public CopUtil copUtil;
 
@@ -28,37 +25,46 @@ public class PerkManager {
 
             while (iterator.hasNext()) {
                 UUID uuid = iterator.next();
+                Player player = Bukkit.getPlayer(uuid);
                 TimerObject timerObject = timer.get(uuid);
 
                 long timestamp = timerObject.timestamp;
                 int seconds = timerObject.seconds;
-                String type = timerObject.type;
-
                 long secondsLeft = ((timestamp / 1000) + seconds) - (System.currentTimeMillis() / 1000);
 
+                // Check if cop nearby
+                if (player.isOnline()) {
+                    if (copUtil.isCopNear(player)) {
+                        iterator.remove();
+
+                        timerObject.seconds = timerObject.seconds + 1;
+                        timer.put(player.getUniqueId(), timerObject);
+
+                        Main.instance.actionDefaults.sendActionBar(player, ChatColor.GOLD + "Status: " + ChatColor.RED + "Wanted");
+                        continue;
+                    }
+                }
+
                 if (secondsLeft <= 0) {
-                    // Check if player is offline
-                    Player player = Bukkit.getPlayer(uuid);
 
                     if (!player.isOnline()) {
                         iterator.remove();
                         continue;
                     }
 
-                    switch (type) {
-                        case "GLOW":
-                            TTA_Methods.removeEntityGlow(player);
-                            player.sendMessage(ChatColor.GOLD + "You are no longer wanted by the police!");
-                            break;
 
-                        default:
-                            System.out.println("Unknown perk timer!");
-                            break;
-                    }
-
+                    Main.instance.actionDefaults.sendActionBar(player, ChatColor.GOLD + "Status: " + ChatColor.GREEN + "Evaded");
                     iterator.remove();
+                } else {
+                    if (player.isOnline()) {
+                        Main.instance.actionDefaults.sendActionBar(player, ChatColor.GOLD + "Status: " + ChatColor.RED + "Wanted");
+                    }
                 }
             }
         }, 0, 20L);
+    }
+
+    public enum Crime {
+        COPKILL, PLAYERKILL, LOCKPICK, ASSAULT
     }
 }

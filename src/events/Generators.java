@@ -1,8 +1,6 @@
 package events;
 
 import com.zeshanaslam.crimering.Main;
-import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
@@ -64,7 +62,7 @@ public class Generators implements Listener {
         if (newBlock != null) {
             if (block.getY() < newBlock.getY()) {
                 if (!block.getType().name().toLowerCase().contains("prismarine"))
-                return;
+                    return;
             }
 
             event.setCancelled(true);
