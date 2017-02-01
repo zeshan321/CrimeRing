@@ -35,7 +35,9 @@ public class GlowPerk implements Listener {
                 if (cop.getInventory().getItemInMainHand() != null) {
 
                     ItemStack item = cop.getInventory().getItemInMainHand();
-                    if (item.getTypeId() == 293 && item.getDurability() == 498) {
+                    if (item.getTypeId() == 293 && item.getDurability() == 494) {
+                        event.setCancelled(true);
+
                         if (copUtil.isWanted(player)) {
                             double maxHP = player.getHealthScale() * .40;
 

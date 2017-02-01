@@ -1812,4 +1812,22 @@ public class ActionDefaults {
 
         return points;
     }
+
+    public void showConfiscatedItems(Player player, Player cop, String items) {
+        List<String> listItems = Arrays.asList(items.split(", "));
+        Inventory inventory = createInventory(player, player.getName() + "'s confiscated items", 54);
+
+        for (ItemStack itemStack : player.getInventory().getContents()) {
+            if (itemStack == null) {
+                continue;
+            }
+
+            if (listItems.contains(itemStack.getTypeId() + ":" + itemStack.getDurability())) {
+                inventory.addItem(itemStack);
+                player.getInventory().remove(itemStack);
+            }
+        }
+
+        cop.openInventory(inventory);
+    }
 }

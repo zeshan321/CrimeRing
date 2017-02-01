@@ -22,6 +22,7 @@ public class EntityManager {
 
     public List<EntityObject> entityObjectList = new ArrayList<>();
     public List<UUID> entityUUID = new ArrayList<>();
+    public List<Integer> hidden = new ArrayList<>();
     public EntityHider entityHider;
 
     public EntityManager() {
