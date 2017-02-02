@@ -2,7 +2,7 @@ package events;
 
 import com.shampaggon.crackshot.events.WeaponShootEvent;
 import com.zeshanaslam.crimering.Main;
-import io.lumine.xikage.mythicmobs.mobs.MythicMob;
+import net.elseland.xikage.MythicMobs.Mobs.MythicMob;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;

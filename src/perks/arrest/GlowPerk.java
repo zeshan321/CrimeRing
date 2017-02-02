@@ -60,7 +60,7 @@ public class GlowPerk implements Listener {
         }
     }
 
-    /* Reapply glows on join
+    // Reapply glows on join
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
@@ -70,7 +70,7 @@ public class GlowPerk implements Listener {
                 //GlowAPI.setGlowing(player, GlowAPI.Color.RED, new CopUtil().getCops());
             }, 1L);
         }
-    }*/
+    }
 
     @EventHandler
     public void onCopKill(EntityDeathEvent event) {
