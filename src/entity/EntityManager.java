@@ -25,7 +25,7 @@ public class EntityManager {
     public EntityHider entityHider;
 
     public EntityManager() {
-        entityHider = new EntityHider(Main.instance, EntityHider.Policy.BLACKLIST);
+        entityHider = new EntityHider(Main.instance);
     }
 
     public void clear() {
@@ -53,7 +53,7 @@ public class EntityManager {
         DisguiseAPI.disguiseToAll(entity, disguise);
 
         if (hidden) {
-            Bukkit.getOnlinePlayers().stream().filter(players -> players != player).forEach(players -> entityHider.hideEntity(players, entity));
+            entityHider.hideEntity(entity, player);
         }
 
         // Remove AI

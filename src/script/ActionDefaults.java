@@ -1407,7 +1407,7 @@ public class ActionDefaults {
 
 
     public void hideEntityForOthers(Player player, Entity entity) {
-        Bukkit.getOnlinePlayers().stream().filter(players -> players != player).forEach(players -> Main.instance.entityManager.entityHider.hideEntity(players, entity));
+        Main.instance.entityManager.entityHider.hideEntity(entity, player);
     }
 
     public void showEntity(Player player, Entity entity) {
@@ -1829,5 +1829,9 @@ public class ActionDefaults {
         }
 
         cop.openInventory(inventory);
+    }
+
+    public Player getPlayerByName(String name) {
+        return Bukkit.getPlayer(name);
     }
 }
