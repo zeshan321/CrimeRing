@@ -24,7 +24,8 @@ public class MoneyUtil {
         while (true) {
             if (amount - 2500 >= 0) {
                 amount = amount - 2500;
-                player.getInventory().addItem(new ItemStack(bill2500ID, 1));
+                player.getInventory().addItem(Main.instance.actionDefaults.createItemStackWithRenamer(bill2500ID, 1, 0));
+
             } else {
                 break;
             }
@@ -33,7 +34,8 @@ public class MoneyUtil {
         while (true) {
             if (amount - 50 >= 0) {
                 amount = amount - 50;
-                player.getInventory().addItem(new ItemStack(bill50ID, 1));
+                player.getInventory().addItem(Main.instance.actionDefaults.createItemStackWithRenamer(bill50ID, 1, 0));
+
             } else {
                 break;
             }
@@ -42,7 +44,7 @@ public class MoneyUtil {
         while (true) {
             if (amount - 1 >= 0) {
                 amount = amount - 1;
-                player.getInventory().addItem(new ItemStack(bill1ID, 1));
+                player.getInventory().addItem(Main.instance.actionDefaults.createItemStackWithRenamer(bill1ID, 1, 0));
             } else {
                 break;
             }
