@@ -441,6 +441,23 @@ public class Main extends JavaPlugin {
             }
         });
 
+        // Item renamer
+        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(this, ListenerPriority.NORMAL, PacketType.Play.Server.WINDOW_ITEMS) {
+            @Override
+            public void onPacketSending(PacketEvent event) {
+                Player player = event.getPlayer();
+
+                int i = -1;
+                for (ItemStack itemStack: player.getInventory().getContents()) {
+                    i++;
+
+                    if (itemStack == null || itemStack.hasItemMeta()) continue;
+
+                    player.getInventory().setItem(i, renamerManager.renameItem(itemStack));
+                }
+            }
+        });
+
         getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
             Iterator it = BodiesEvents.bodies.entrySet().iterator();
             while (it.hasNext()) {

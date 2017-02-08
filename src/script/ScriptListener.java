@@ -138,56 +138,50 @@ public class ScriptListener implements Listener {
     }
 
     @EventHandler
-    public void onTrade(PlayerTradeEvent event) {
-        Player player = event.getPlayer();
-        ItemStack item = event.getItem();
+    public void onTradeClick(InventoryClickEvent event) {
+        if (event.getClickedInventory() != null && event.getClickedInventory().getType() == InventoryType.MERCHANT) {
+            Player player = (Player) event.getWhoClicked();
+            ItemStack item = event.getCurrentItem();
 
-        if ((item == null) || (item.getItemMeta() == null) || (item.getItemMeta().getDisplayName() == null)) {
-            return;
-        }
-
-        int amount = 0;
-
-        if (item.getTypeId() == 293 && item.getDurability() == 497) {
-            for (String lore : item.getItemMeta().getLore()) {
-                lore = ChatColor.stripColor(lore);
-
-                if (lore.startsWith("Click to receive $")) {
-                    amount = Integer.parseInt(lore.replace("Click to receive $", ""));
-                    break;
-                }
-            }
-        }
-
-        if (amount > 0) {
-
-            if (player.getItemOnCursor().isSimilar(item)) {
-                player.setItemOnCursor(null);
-                plugin.actionDefaults.addInvBills(player, amount);
+            if (item == null || item.getItemMeta() == null || item.getItemMeta().getDisplayName() == null) {
+                return;
             }
 
-            int finalAmount = amount;
-            new BukkitRunnable() {
-                public void run() {
-                    for (ItemStack itemStack: player.getInventory().getContents()) {
-                        if (itemStack == null) continue;
+            int amount = 0;
 
-                        if (itemStack.getTypeId() == 293 && itemStack.getDurability() == 497) {
-                            System.out.println("Test");
-                            plugin.actionDefaults.addInvBills(player, finalAmount);
-                            player.getInventory().remove(itemStack);
-                        }
+            if (item.getTypeId() == 293 && item.getDurability() == 497) {
+                for (String lore : item.getItemMeta().getLore()) {
+                    lore = ChatColor.stripColor(lore);
+
+                    if (lore.startsWith("Click to receive $")) {
+                        amount = Integer.parseInt(lore.replace("Click to receive $", ""));
+                        break;
                     }
                 }
-            }.runTaskLater(plugin, 40L);
-        }
-    }
+            }
 
+            if (amount > 0) {
 
-    @EventHandler
-    public void onTradeClick(InventoryClickEvent event) {
-        if (event.getClickedInventory().getType() == InventoryType.MERCHANT) {
+                int finalAmount = amount;
+                new BukkitRunnable() {
+                    public void run() {
+                        ItemStack cursor = player.getItemOnCursor();
+                        if (cursor != null && cursor.getTypeId() == 293 && cursor.getDurability() == 497) {
+                            player.setItemOnCursor(null);
+                            plugin.actionDefaults.addInvBills(player, finalAmount);
+                        }
 
+                        for (ItemStack itemStack: player.getInventory().getContents()) {
+                            if (itemStack == null) continue;
+
+                            if (itemStack.getTypeId() == 293 && itemStack.getDurability() == 497) {
+                                plugin.actionDefaults.addInvBills(player, finalAmount);
+                                player.getInventory().remove(itemStack);
+                            }
+                        }
+                    }
+                }.runTaskLater(plugin, 5L);
+            }
         }
     }
 
