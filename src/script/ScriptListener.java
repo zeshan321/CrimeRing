@@ -1,7 +1,6 @@
 package script;
 
 import com.zeshanaslam.crimering.Main;
-import customevents.PlayerTradeEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -171,7 +170,7 @@ public class ScriptListener implements Listener {
                             plugin.actionDefaults.addInvBills(player, finalAmount);
                         }
 
-                        for (ItemStack itemStack: player.getInventory().getContents()) {
+                        for (ItemStack itemStack : player.getInventory().getContents()) {
                             if (itemStack == null) continue;
 
                             if (itemStack.getTypeId() == 293 && itemStack.getDurability() == 497) {

@@ -448,7 +448,7 @@ public class Main extends JavaPlugin {
                 Player player = event.getPlayer();
 
                 int i = -1;
-                for (ItemStack itemStack: player.getInventory().getContents()) {
+                for (ItemStack itemStack : player.getInventory().getContents()) {
                     i++;
 
                     if (itemStack == null || itemStack.hasItemMeta()) continue;

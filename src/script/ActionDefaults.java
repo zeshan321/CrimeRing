@@ -48,8 +48,10 @@ import org.inventivetalent.bossbar.BossBarAPI;
 import org.inventivetalent.particle.ParticleEffect;
 import raids.PartyAPI;
 import raids.PartyObject;
-import renamer.RenamerObject;
-import utils.*;
+import utils.ItemUtils;
+import utils.MessageUtil;
+import utils.MoneyUtil;
+import utils.TargetHelper;
 
 import javax.script.*;
 import java.text.SimpleDateFormat;
@@ -1840,7 +1842,7 @@ public class ActionDefaults {
     public Location getShortestLocationFromPlayer(Player player, Location... args) {
         TreeMap<Double, Location> map = new TreeMap<>();
 
-        for (Location location: args) {
+        for (Location location : args) {
             map.put(player.getLocation().distance(location), location);
         }
 
@@ -1851,7 +1853,7 @@ public class ActionDefaults {
         List<ItemStack> list = new ArrayList<>();
 
         if (trade) {
-            for (ItemStack itemStack: player.getInventory().getContents()) {
+            for (ItemStack itemStack : player.getInventory().getContents()) {
                 if (itemStack == null || new MoneyUtil().isMoney(itemStack)) continue;
 
                 itemStack = itemStack.clone();

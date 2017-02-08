@@ -1,10 +1,5 @@
 package renamer;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.events.PacketEvent;
 import com.zeshanaslam.crimering.FileHandler;
 import com.zeshanaslam.crimering.Main;
 import org.bukkit.ChatColor;
@@ -17,18 +12,15 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import utils.ProtocolUtil;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class RenamerManager {
 
-    private Listener bukkitListener;
     public HashMap<String, RenamerObject> items = new HashMap<>();
+    private Listener bukkitListener;
 
     public RenamerManager() {
         // Register events and packet listener
@@ -105,7 +97,7 @@ public class RenamerManager {
                 Player player = event.getPlayer();
 
                 int i = -1;
-                for (ItemStack itemStack: player.getInventory()) {
+                for (ItemStack itemStack : player.getInventory()) {
                     i++;
 
                     if (itemStack == null || itemStack.hasItemMeta()) continue;
@@ -118,7 +110,7 @@ public class RenamerManager {
             public void onOpen(InventoryOpenEvent event) {
                 int i = -1;
 
-                for (ItemStack itemStack: event.getInventory().getContents()) {
+                for (ItemStack itemStack : event.getInventory().getContents()) {
                     i++;
 
                     if (itemStack == null || itemStack.hasItemMeta()) continue;
