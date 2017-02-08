@@ -171,7 +171,9 @@ public class EntityHider implements Listener {
             @EventHandler
             public void onChunkUnload(ChunkUnloadEvent e) {
                 for (Entity entity : e.getChunk().getEntities()) {
-                    removeEntity(entity);
+                    if (entity.isDead()) {
+                        removeEntity(entity);
+                    }
                 }
             }
 

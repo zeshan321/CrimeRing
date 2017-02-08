@@ -1,15 +1,24 @@
 package utils;
 
+import com.zeshanaslam.crimering.Main;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import renamer.RenamerObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MoneyUtil {
 
     private int bill1ID = 410;
     private int bill50ID = 409;
     private int bill2500ID = 370;
+
+    public boolean isMoney(ItemStack itemStack) {
+        return itemStack.getTypeId() == 410 || itemStack.getTypeId() == 409 || itemStack.getTypeId() == 370;
+    }
 
     public void giveBills(Player player, int amount) {
         while (true) {
@@ -42,17 +51,35 @@ public class MoneyUtil {
 
     public int getItemWorth(ItemStack item) {
         int worth = 0;
-        String split = ChatColor.translateAlternateColorCodes('&', "Worth: &a");
 
-        if (item != null && item.hasItemMeta()) {
-            ItemMeta itemMeta = item.getItemMeta();
+        if (Main.instance.renamerManager.items.containsKey(item.getTypeId() + ":" + item.getDurability())) {
+            RenamerObject renamerObject = Main.instance.renamerManager.items.get(item.getTypeId() + ":" + item.getDurability());
 
-            if (itemMeta.hasLore()) {
-                for (String lines : itemMeta.getLore()) {
-                    if (lines.contains("Worth")) {
-                        worth = Integer.valueOf(lines.split(split)[1].replace("$", ""));
-                        break;
-                    }
+            for (String lines : renamerObject.lore) {
+                lines = ChatColor.stripColor(lines).toLowerCase();
+
+                if (lines.startsWith("worth")) {
+                    worth = Integer.valueOf(lines.replace("worth: $", ""));
+                    break;
+                }
+            }
+        }
+
+        return worth;
+    }
+
+    public int getItemStreetWorth(ItemStack item) {
+        int worth = 0;
+
+        if (Main.instance.renamerManager.items.containsKey(item.getTypeId() + ":" + item.getDurability())) {
+            RenamerObject renamerObject = Main.instance.renamerManager.items.get(item.getTypeId() + ":" + item.getDurability());
+
+            for (String lines : renamerObject.lore) {
+                lines = ChatColor.stripColor(lines).toLowerCase();
+
+                if (lines.startsWith("street worth")) {
+                    worth = Integer.valueOf(lines.replace("street worth: $", ""));
+                    break;
                 }
             }
         }

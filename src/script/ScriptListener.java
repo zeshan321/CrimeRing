@@ -1,7 +1,9 @@
 package script;
 
 import com.zeshanaslam.crimering.Main;
+import customevents.PlayerTradeEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -11,8 +13,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -128,6 +134,88 @@ public class ScriptListener implements Listener {
 
         if (event.getClickedInventory().getTitle().contains("Recipe:")) {
             event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onTrade(PlayerTradeEvent event) {
+        Player player = event.getPlayer();
+        ItemStack item = event.getItem();
+
+        if ((item == null) || (item.getItemMeta() == null) || (item.getItemMeta().getDisplayName() == null)) {
+            return;
+        }
+
+        int amount = 0;
+
+        if (item.getTypeId() == 293 && item.getDurability() == 497) {
+            for (String lore : item.getItemMeta().getLore()) {
+                lore = ChatColor.stripColor(lore);
+
+                if (lore.startsWith("Click to receive $")) {
+                    amount = Integer.parseInt(lore.replace("Click to receive $", ""));
+                    break;
+                }
+            }
+        }
+
+        if (amount > 0) {
+
+            if (player.getItemOnCursor().isSimilar(item)) {
+                player.setItemOnCursor(null);
+                plugin.actionDefaults.addInvBills(player, amount);
+            }
+
+            int finalAmount = amount;
+            new BukkitRunnable() {
+                public void run() {
+                    for (ItemStack itemStack: player.getInventory().getContents()) {
+                        if (itemStack == null) continue;
+
+                        if (itemStack.getTypeId() == 293 && itemStack.getDurability() == 497) {
+                            System.out.println("Test");
+                            plugin.actionDefaults.addInvBills(player, finalAmount);
+                            player.getInventory().remove(itemStack);
+                        }
+                    }
+                }
+            }.runTaskLater(plugin, 40L);
+        }
+    }
+
+
+    @EventHandler
+    public void onTradeClick(InventoryClickEvent event) {
+        if (event.getClickedInventory().getType() == InventoryType.MERCHANT) {
+
+        }
+    }
+
+    @EventHandler
+    public void onDrop(PlayerDropItemEvent event) {
+        Player player = event.getPlayer();
+        ItemStack item = event.getItemDrop().getItemStack();
+
+        if ((item == null) || (item.getItemMeta() == null) || (item.getItemMeta().getDisplayName() == null)) {
+            return;
+        }
+
+        int amount = 0;
+
+        if (item.getTypeId() == 293 && item.getDurability() == 497) {
+            for (String lore : item.getItemMeta().getLore()) {
+                lore = ChatColor.stripColor(lore);
+
+                if (lore.startsWith("Click to receive $")) {
+                    amount = Integer.parseInt(lore.replace("Click to receive $", ""));
+                    break;
+                }
+            }
+        }
+
+        if (amount > 0) {
+            plugin.actionDefaults.addInvBills(player, amount);
+            event.getItemDrop().remove();
         }
     }
 }

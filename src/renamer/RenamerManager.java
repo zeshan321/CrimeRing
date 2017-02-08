@@ -10,8 +10,14 @@ import com.zeshanaslam.crimering.Main;
 import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import utils.ProtocolUtil;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,7 +27,14 @@ import java.util.stream.Collectors;
 
 public class RenamerManager {
 
-    private HashMap<String, RenamerObject> items = new HashMap<>();
+    private Listener bukkitListener;
+    public HashMap<String, RenamerObject> items = new HashMap<>();
+
+    public RenamerManager() {
+        // Register events and packet listener
+        Main.instance.getServer().getPluginManager().registerEvents(
+                bukkitListener = constructBukkit(), Main.instance);
+    }
 
     public void load() {
         items.clear();
@@ -43,7 +56,7 @@ public class RenamerManager {
         items.clear();
     }
 
-    public void loadListeners() {
+    /*public void loadListeners() {
         Set<PacketType> packets = new HashSet<>();
         packets.add(PacketType.Play.Server.SET_SLOT);
         packets.add(PacketType.Play.Server.WINDOW_ITEMS);
@@ -64,14 +77,9 @@ public class RenamerManager {
                             ItemStack itemStack = renameItem(read.get(i));
 
                             if (itemStack != null) {
-                                read.set(i, renameItem(itemStack));
+                                //read.set(i, renameItem(itemStack));
 
-                                /*if (player.getOpenInventory() == null) {
-                                    player.getInventory().setItem(i, read.get(i));
-                                } else {
-                                    InventoryView inventory = player.getOpenInventory();
-                                    inventory.setItem(i, read.get(i));
-                                }*/
+                                player.getInventory().setItem(i, itemStack);
                             }
                         }
 
@@ -88,6 +96,48 @@ public class RenamerManager {
                 }
             }
         });
+    }*/
+
+    private Listener constructBukkit() {
+        return new Listener() {
+            @EventHandler
+            public void onJoin(PlayerJoinEvent event) {
+                Player player = event.getPlayer();
+
+                int i = -1;
+                for (ItemStack itemStack: player.getInventory()) {
+                    i++;
+
+                    if (itemStack == null || itemStack.hasItemMeta()) continue;
+
+                    player.getInventory().setItem(i, renameItem(itemStack));
+                }
+            }
+
+            @EventHandler
+            public void onOpen(InventoryOpenEvent event) {
+                int i = -1;
+
+                for (ItemStack itemStack: event.getInventory().getContents()) {
+                    i++;
+
+                    if (itemStack == null || itemStack.hasItemMeta()) continue;
+
+                    event.getInventory().setItem(i, renameItem(itemStack));
+                }
+            }
+
+            @EventHandler
+            public void onSwitch(PlayerItemHeldEvent event) {
+                Player player = event.getPlayer();
+
+                ItemStack itemStack = player.getInventory().getItem(event.getNewSlot());
+
+                if (itemStack == null || itemStack.hasItemMeta()) return;
+
+                player.getInventory().setItem(event.getNewSlot(), renameItem(itemStack));
+            }
+        };
     }
 
     public ItemStack renameItem(ItemStack itemStack) {

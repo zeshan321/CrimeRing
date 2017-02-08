@@ -145,7 +145,7 @@ public class Main extends JavaPlugin {
         // Load renamer manager
         renamerManager = new RenamerManager();
         renamerManager.load();
-        renamerManager.loadListeners();
+        //renamerManager.loadListeners();
 
         // Load raid manager
         raidManager = new RaidManager();

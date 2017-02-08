@@ -48,10 +48,8 @@ import org.inventivetalent.bossbar.BossBarAPI;
 import org.inventivetalent.particle.ParticleEffect;
 import raids.PartyAPI;
 import raids.PartyObject;
-import utils.ItemUtils;
-import utils.MessageUtil;
-import utils.MoneyUtil;
-import utils.TargetHelper;
+import renamer.RenamerObject;
+import utils.*;
 
 import javax.script.*;
 import java.text.SimpleDateFormat;
@@ -1833,5 +1831,54 @@ public class ActionDefaults {
 
     public Player getPlayerByName(String name) {
         return Bukkit.getPlayer(name);
+    }
+
+    public Location createLocation(String world, int x, int y, int z) {
+        return new Location(Bukkit.getWorld(world), x, y, z);
+    }
+
+    public Location getShortestLocationFromPlayer(Player player, Location... args) {
+        TreeMap<Double, Location> map = new TreeMap<>();
+
+        for (Location location: args) {
+            map.put(player.getLocation().distance(location), location);
+        }
+
+        return map.firstEntry().getValue();
+    }
+
+    public List<ItemStack> getPlayerInv(Player player, boolean trade) {
+        List<ItemStack> list = new ArrayList<>();
+
+        if (trade) {
+            for (ItemStack itemStack: player.getInventory().getContents()) {
+                if (itemStack == null || new MoneyUtil().isMoney(itemStack)) continue;
+
+                itemStack = itemStack.clone();
+                if (!list.contains(itemStack)) {
+                    itemStack.setAmount(1);
+                    list.add(itemStack);
+                }
+            }
+        } else {
+            list = Arrays.asList(player.getInventory().getContents());
+        }
+
+        return list;
+    }
+
+
+    public ItemStack createMoneyBag(int amount) {
+        return createItemStackWithMeta(293, 1, 497, ChatColor.GOLD + "Bag of cash", ChatColor.GRAY + "Click to receive $" + amount);
+    }
+
+    public ItemStack createItemStackWithRenamer(int id, int amount, int data) {
+        ItemStack itemStack = createItemStack(id, amount, data);
+
+        return Main.instance.renamerManager.renameItem(itemStack);
+    }
+
+    public ItemStack createItemStackWithCrackShot(String name) {
+        return new CSUtility().generateWeapon(name);
     }
 }

@@ -34,14 +34,14 @@ public class PlayerTradeEvent extends Event {
     }
 
     /**
-     * @return plyer that equipped the item
+     * @return player that did the trade
      */
     public Player getPlayer() {
         return player;
     }
 
     /**
-     * @return item that was equipped
+     * @return item that was received
      */
     public ItemStack getItem() {
         return item;
