@@ -9,6 +9,20 @@ public class Placeholders {
 
 
     public Placeholders() {
+        PlaceholderAPI.registerPlaceholder(Main.instance, "cr_player_objective", new PlaceholderReplacer() {
+            @Override
+            public String onPlaceholderReplace(PlaceholderReplaceEvent event) {
+                Player player = event.getPlayer();
+                String objective = "None";
+
+                if (Main.instance.objective.containsKey(player.getUniqueId())) {
+                    objective = Main.instance.objective.get(player.getUniqueId());
+                }
+
+                return objective;
+            }
+        });
+
         PlaceholderAPI.registerPlaceholder(Main.instance, "cr_player_bal", new PlaceholderReplacer() {
             @Override
             public String onPlaceholderReplace(PlaceholderReplaceEvent event) {

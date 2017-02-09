@@ -93,6 +93,7 @@ public class Main extends JavaPlugin {
     public HashMap<String, String> fakeBlocksLocation = new HashMap<>();
     public HashMap<Integer, UUID> playerTasks = new HashMap<>();
     public Table<UUID, String, ListenerObject> listeners = HashBasedTable.create();
+    public HashMap<UUID, String> objective = new HashMap<>();
 
     public void onEnable() {
         saveDefaultConfig();

@@ -34,6 +34,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -1882,5 +1883,95 @@ public class ActionDefaults {
 
     public ItemStack createItemStackWithCrackShot(String name) {
         return new CSUtility().generateWeapon(name);
+    }
+
+    public ItemStack setLeatherColor(ItemStack itemStack, String color) {
+        color = color.toUpperCase();
+
+        Color leatherColor = null;
+        switch (color) {
+            case "WHITE":
+                leatherColor = Color.WHITE;
+                break;
+
+            case "SILVER":
+                leatherColor = Color.SILVER;
+                break;
+
+            case "GRAY":
+                leatherColor = Color.GRAY;
+                break;
+
+            case "BLACK":
+                leatherColor = Color.BLACK;
+                break;
+
+            case "RED":
+                leatherColor = Color.RED;
+                break;
+
+            case "MAROON":
+                leatherColor = Color.MAROON;
+                break;
+
+            case "YELLOW":
+                leatherColor = Color.YELLOW;
+                break;
+
+            case "OLIVE":
+                leatherColor = Color.OLIVE;
+                break;
+
+            case "LIME":
+                leatherColor = Color.LIME;
+                break;
+
+            case "GREEN":
+                leatherColor = Color.GREEN;
+                break;
+
+            case "AQUA":
+                leatherColor = Color.AQUA;
+                break;
+
+            case "TEAL":
+                leatherColor = Color.TEAL;
+                break;
+
+            case "BLUE":
+                leatherColor = Color.BLUE;
+                break;
+
+            case "NAVY":
+                leatherColor = Color.NAVY;
+                break;
+
+            case "FUCHSIA":
+                leatherColor = Color.FUCHSIA;
+                break;
+
+            case "PURPLE":
+                leatherColor = Color.PURPLE;
+                break;
+
+            case "ORANGE":
+                leatherColor = Color.ORANGE;
+                break;
+        }
+
+        LeatherArmorMeta meta = (LeatherArmorMeta) itemStack.getItemMeta();
+        meta.setColor(leatherColor);
+
+        itemStack.setItemMeta(meta);
+
+        return itemStack;
+    }
+
+    public void setObjective(Player player, String objective) {
+        Main.instance.objective.put(player.getUniqueId(), objective);
+    }
+
+    public void removeObjective(Player player) {
+        Main.instance.objective.remove(player.getUniqueId());
     }
 }
