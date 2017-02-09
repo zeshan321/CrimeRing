@@ -2,8 +2,11 @@ package utils;
 
 import com.zeshanaslam.crimering.Main;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import renamer.RenamerObject;
 
 public class MoneyUtil {
@@ -144,5 +147,87 @@ public class MoneyUtil {
         int total = getInvMoneyRemove(player) - amount;
 
         giveBills(player, total);
+    }
+
+    public ItemStack setLeatherColor(ItemStack itemStack, String color) {
+        color = color.toUpperCase();
+
+        Color leatherColor = null;
+        switch(color) {
+            case "WHITE":
+                leatherColor = Color.WHITE;
+                break;
+
+            case "SILVER":
+                leatherColor = Color.SILVER;
+                break;
+
+            case "GRAY":
+                leatherColor = Color.GRAY;
+                break;
+
+            case "BLACK":
+                leatherColor = Color.BLACK;
+                break;
+
+            case "RED":
+                leatherColor = Color.RED;
+                break;
+
+            case "MAROON":
+                leatherColor = Color.MAROON;
+                break;
+
+            case "YELLOW":
+                leatherColor = Color.YELLOW;
+                break;
+
+            case "OLIVE":
+                leatherColor = Color.OLIVE;
+                break;
+
+            case "LIME":
+                leatherColor = Color.LIME;
+                break;
+
+            case "GREEN":
+                leatherColor = Color.GREEN;
+                break;
+
+            case "AQUA":
+                leatherColor = Color.AQUA;
+                break;
+
+            case "TEAL":
+                leatherColor = Color.TEAL;
+                break;
+
+            case "BLUE":
+                leatherColor = Color.BLUE;
+                break;
+
+            case "NAVY":
+                leatherColor = Color.NAVY;
+                break;
+
+            case "FUCHSIA":
+                leatherColor = Color.FUCHSIA;
+                break;
+
+            case "PURPLE":
+                leatherColor = Color.PURPLE;
+                break;
+
+            case "ORANGE":
+                leatherColor = Color.ORANGE;
+                break;
+        }
+
+        LeatherArmorMeta meta = (LeatherArmorMeta) itemStack.getItemMeta();
+        meta.setColor(leatherColor);
+
+        itemStack.setItemMeta(meta);
+
+        return itemStack;
     }
 }
