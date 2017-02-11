@@ -1668,7 +1668,8 @@ public class ActionDefaults {
     }
 
     public void giveLootbag(Player player) {
-        player.getInventory().setItemInOffHand(this.getItem(player, "LootBag", 1, true));
+        player.getInventory().setItemInOffHand(this.createItemStackWithRenamer(293, 1, 497));
+        addPotionEffect(player, "SLOW", 999999, 1);
     }
 
     public boolean hasLootbag(Player player) {
@@ -1683,6 +1684,7 @@ public class ActionDefaults {
 
     public void removeLootbag(Player player) {
         player.getInventory().setItemInOffHand(null);
+        removePotionEffect(player, "SLOW");
     }
 
     public void spawnCar(String world, int x, int y, int z, String owner, String type) {

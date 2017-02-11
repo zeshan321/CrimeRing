@@ -13,6 +13,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import utils.ItemUtils;
@@ -121,7 +122,6 @@ public class RaidListener implements Listener {
         }
     }
 
-    // Remove scoreboard on leave
     @EventHandler
     public void onWorldChange(PlayerChangedWorldEvent event) {
         Player player = event.getPlayer();
@@ -129,8 +129,24 @@ public class RaidListener implements Listener {
         if (event.getFrom().getName().equals("RaidWorld")) {
             new ItemUtils().clearRaidItems(player);
 
-            if (player.getScoreboard() != null) {
-                player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+            if (plugin.actionDefaults.hasLootbag(player)) {
+                plugin.actionDefaults.removeLootbag(player);
+            }
+        }
+    }
+
+    // Loot bag pickup
+    @EventHandler
+    public void onPickup(PlayerPickupItemEvent event) {
+        ItemStack itemStack = event.getItem().getItemStack();
+        Player player = event.getPlayer();
+
+        if (itemStack.getTypeId() == 293 && itemStack.getDurability() == 497) {
+            if (plugin.actionDefaults.hasLootbag(player)) {
+                event.setCancelled(true);
+            } else {
+                event.getItem().remove();
+                plugin.actionDefaults.giveLootbag(player);
             }
         }
     }
