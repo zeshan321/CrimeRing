@@ -18,6 +18,8 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import commands.*;
 import customevents.PlayerEquipEvent;
 import customevents.PlayerUnequipEvent;
+import damage.DamageListener;
+import damage.DamageManager;
 import detection.EntityDetection;
 import entity.EntityListener;
 import entity.EntityManager;
@@ -83,6 +85,7 @@ public class Main extends JavaPlugin {
     public ActionDefaults actionDefaults;
     public EntityDetection entityDetection;
     public RadioManager radioManager;
+    public DamageManager damageManager;
 
     // Lists and maps
     public ArrayList<String> flag = new ArrayList<>();
@@ -107,6 +110,10 @@ public class Main extends JavaPlugin {
         if (rsp != null) {
             economy = rsp.getProvider();
         }
+
+        // Damage manager
+        damageManager = new DamageManager();
+        damageManager.load();
 
         // Hook into SimpleClans
         clanManager = SimpleClans.getInstance().getClanManager();
@@ -240,6 +247,7 @@ public class Main extends JavaPlugin {
         pm.registerEvents(new ActionLockpick(this), this);
         pm.registerEvents(new Generators(this), this);
         pm.registerEvents(new ActionArrested(this), this);
+        pm.registerEvents(new DamageListener(this), this);
 
         // Register cop perks
         pm.registerEvents(new GlowPerk(this), this);
