@@ -247,8 +247,8 @@ public class RaidManager {
     }
 
     public void runScript(Player player, String name) {
-        if (Main.instance.scriptsManager.contains("raid-" + name)) {
-            for (ScriptObject scriptObject : Main.instance.scriptsManager.getObjects("raid-" + name))
+        if (Main.instance.scriptsManager.contains("RAID-" + name)) {
+            for (ScriptObject scriptObject : Main.instance.scriptsManager.getObjects("RAID-" + name))
 
                 try {
                     ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
@@ -256,7 +256,7 @@ public class RaidManager {
                     // Objects
                     Bindings bindings = engine.createBindings();
                     bindings.put("player", player);
-                    bindings.put("CR", new ActionDefaults("raid-" + name, engine));
+                    bindings.put("CR", new ActionDefaults("RAID-" + name, engine));
 
                     ScriptContext scriptContext = engine.getContext();
                     scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);

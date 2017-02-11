@@ -202,6 +202,30 @@ public class ActionDefaults {
         return amount;
     }
 
+    public boolean arePlayersInRegion(String world, String regionName) {
+        ProtectedRegion rg = Main.instance.worldGuardPlugin.getRegionManager(Bukkit.getWorld(world)).getRegion(regionName);
+
+        boolean inRegion = false;
+
+        if (rg != null) {
+            Region region = new CuboidRegion(rg.getMaximumPoint(), rg.getMinimumPoint());
+            Location centerLoc = new Location(Bukkit.getWorld(world), region.getCenter().getX(), region.getCenter().getY(), region.getCenter().getZ());
+            Collection<Entity> entities = Bukkit.getWorld(world).getNearbyEntities(centerLoc, region.getWidth() / 2, region.getHeight() / 2, region.getLength() / 2);
+
+            for (Entity entity : entities) {
+                if (entity instanceof Player) {
+                    Player player = (Player) entity;
+
+                    if (!player.isDead()) {
+                        inRegion = true;
+                    }
+                }
+            }
+        }
+
+        return inRegion;
+    }
+
     public List<Entity> getAllEntitiesInRegion(String world, String regionName, boolean monsterOnly) {
         List<Entity> entityList = new ArrayList<>();
 
@@ -1358,6 +1382,19 @@ public class ActionDefaults {
         boolean isInRegion = false;
 
         ApplicableRegionSet applicableRegions = Main.instance.worldGuardPlugin.getRegionManager(entity.getWorld()).getApplicableRegions(entity.getLocation());
+        for (ProtectedRegion region : applicableRegions) {
+            if (region.getId().equals(regionName)) {
+                isInRegion = true;
+            }
+        }
+
+        return isInRegion;
+    }
+
+    public boolean isInRegion(Location location, String regionName) {
+        boolean isInRegion = false;
+
+        ApplicableRegionSet applicableRegions = Main.instance.worldGuardPlugin.getRegionManager(location.getWorld()).getApplicableRegions(location);
         for (ProtectedRegion region : applicableRegions) {
             if (region.getId().equals(regionName)) {
                 isInRegion = true;
