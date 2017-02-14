@@ -50,8 +50,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
 import org.tyrannyofheaven.bukkit.zPermissions.ZPermissionsService;
 import packets.WrapperPlayClientWindowClick;
+import perks.CooldownManager;
 import perks.arrest.GlowPerk;
 import perks.arrest.PerkManager;
+import perks.thief.Scramble;
 import radio.RadioManager;
 import raids.*;
 import renamer.RenamerManager;
@@ -89,6 +91,7 @@ public class Main extends JavaPlugin {
     public EntityDetection entityDetection;
     public RadioManager radioManager;
     public DamageManager damageManager;
+    public CooldownManager cooldownManager;
 
     // Lists and maps
     public ArrayList<String> flag = new ArrayList<>();
@@ -129,6 +132,9 @@ public class Main extends JavaPlugin {
 
         // Setup entity detection manager
         entityDetection = new EntityDetection();
+
+        // Setup cooldown manager
+        cooldownManager = new CooldownManager();
 
         // Setup ambient manager
         //ambientManager = new AmbientManager();
@@ -255,8 +261,9 @@ public class Main extends JavaPlugin {
         pm.registerEvents(new ActionArrested(this), this);
         pm.registerEvents(new DamageListener(this), this);
 
-        // Register cop perks
+        // Register perks
         pm.registerEvents(new GlowPerk(this), this);
+        pm.registerEvents(new Scramble(this), this);
 
         // Commands
         getCommand("CRReload").setExecutor(new Reload(this));

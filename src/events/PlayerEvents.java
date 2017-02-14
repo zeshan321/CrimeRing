@@ -8,6 +8,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.inventivetalent.bossbar.BossBar;
 import org.inventivetalent.bossbar.BossBarAPI;
@@ -63,5 +64,12 @@ public class PlayerEvents implements Listener {
     @EventHandler
     public void onJoinAtt(PlayerJoinEvent event) {
         plugin.actionDefaults.updatetAttribute(event.getPlayer());
+    }
+
+    @EventHandler
+    public void onEat(PlayerItemConsumeEvent event) {
+        if (event.getItem().getTypeId() == 392 || event.getItem().getTypeId() == 391) {
+            event.setCancelled(true);
+        }
     }
 }
