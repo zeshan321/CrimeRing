@@ -26,7 +26,9 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.minecraft.server.v1_11_R1.PacketPlayOutCustomSoundEffect;
 import net.minecraft.server.v1_11_R1.SoundCategory;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.craftbukkit.v1_11_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_11_R1.entity.CraftPlayer;
 import org.bukkit.entity.*;
@@ -36,6 +38,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.material.MaterialData;
+import org.bukkit.material.Openable;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -2006,11 +2010,59 @@ public class ActionDefaults {
         return itemStack;
     }
 
-    public void setObjective(Player player, String objective) {
-        Main.instance.objective.put(player.getUniqueId(), objective);
+    public void setObjective(Player player, String objective, boolean party) {
+        PartyAPI partyAPI = new PartyAPI();
+        PartyObject partyObject = partyAPI.getParty(player);
+
+        if (partyObject == null) {
+            Main.instance.objective.put(player.getUniqueId(), objective);
+        } else {
+            for (Player players: partyObject.getMembers()) {
+                Main.instance.objective.put(players.getUniqueId(), objective);
+            }
+        }
     }
 
     public void removeObjective(Player player) {
         Main.instance.objective.remove(player.getUniqueId());
+    }
+
+    public void updatetAttribute(Player player) {
+        // Set all attributes to default first
+        for (Attribute attribute: Attribute.values()) {
+            if (player.getAttribute(attribute) == null) continue;
+
+            player.getAttribute(attribute).setBaseValue(player.getAttribute(attribute).getDefaultValue());
+        }
+
+        // Update attributes based on perm
+        Map<String, Boolean> permissions = Main.instance.permissions.getPlayerPermissions("world", null, player.getUniqueId());
+        for (String key: permissions.keySet()) {
+            boolean status = permissions.get(key);
+
+            if (status) {
+                if (key.startsWith("cr.attribute.")) {
+                    String[] data = key.replace("cr.attribute.", "").split("\\.", 2);
+                    Attribute attribute = Attribute.valueOf(data[0].toUpperCase());
+                    double amount = Double.parseDouble(data[1]);
+
+                    player.getAttribute(attribute).setBaseValue(player.getAttribute(attribute).getValue() + amount);
+                }
+            }
+        }
+    }
+
+    public void setDoorStatus(Location location, boolean open) {
+        Block block = location.getWorld().getBlockAt(location);
+
+        if (block.getType().toString().contains("DOOR")) {
+            BlockState state = block.getState();
+
+            Openable openable = (Openable) state.getData();
+            openable.setOpen(open);
+
+            state.setData((MaterialData) openable);
+            state.update();
+        }
     }
 }

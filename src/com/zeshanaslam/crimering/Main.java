@@ -38,6 +38,7 @@ import net.elseland.xikage.MythicMobs.API.Bukkit.BukkitMobsAPI;
 import net.milkbowl.vault.economy.Economy;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -47,6 +48,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
+import org.tyrannyofheaven.bukkit.zPermissions.ZPermissionsService;
 import packets.WrapperPlayClientWindowClick;
 import perks.arrest.GlowPerk;
 import perks.arrest.PerkManager;
@@ -69,6 +71,7 @@ public class Main extends JavaPlugin {
     // Hooks
     public Economy economy;
     public ClanManager clanManager;
+    public ZPermissionsService permissions;
 
     // Managers
     public ScriptsManager scriptsManager;
@@ -110,6 +113,9 @@ public class Main extends JavaPlugin {
         if (rsp != null) {
             economy = rsp.getProvider();
         }
+
+        // Hook into ZPermissions
+        permissions = Bukkit.getServicesManager().load(ZPermissionsService.class);
 
         // Damage manager
         damageManager = new DamageManager();

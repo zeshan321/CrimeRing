@@ -58,4 +58,10 @@ public class PlayerEvents implements Listener {
 
         }
     }
+
+    // Set attributes on join
+    @EventHandler
+    public void onJoinAtt(PlayerJoinEvent event) {
+        plugin.actionDefaults.updatetAttribute(event.getPlayer());
+    }
 }

@@ -13,6 +13,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
@@ -132,6 +133,8 @@ public class RaidListener implements Listener {
             if (plugin.actionDefaults.hasLootbag(player)) {
                 plugin.actionDefaults.removeLootbag(player);
             }
+
+            plugin.actionDefaults.removeObjective(player);
         }
     }
 
@@ -145,9 +148,20 @@ public class RaidListener implements Listener {
             if (plugin.actionDefaults.hasLootbag(player)) {
                 event.setCancelled(true);
             } else {
+                event.setCancelled(true);
                 event.getItem().remove();
                 plugin.actionDefaults.giveLootbag(player);
             }
+        }
+    }
+
+    @EventHandler
+    public void onDrop(PlayerDropItemEvent event) {
+        Player player = event.getPlayer();
+        ItemStack itemStack = event.getItemDrop().getItemStack();
+
+        if (!plugin.actionDefaults.hasLootbag(player)) {
+            plugin.actionDefaults.removePotionEffect(player, "SLOW");
         }
     }
 }
