@@ -226,4 +226,12 @@ public class ItemUtils {
         }
         return same;
     }
+
+    public boolean isArmor(ItemStack item) {
+        if (item.getType().name().endsWith("HELMET") || item.getType().name().endsWith("CHESTPLATE") || item.getType().name().endsWith("LEGGINGS") || item.getType().name().endsWith("BOOTS")) {
+            return true;
+        }
+
+        return false;
+    }
 }

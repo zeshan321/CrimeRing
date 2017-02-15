@@ -58,6 +58,10 @@ public class BasicEvents implements Listener {
 
     @EventHandler
     public void onDamageItem(PlayerItemDamageEvent event) {
+        if (new ItemUtils().isArmor(event.getItem())) {
+            return;
+        }
+
         event.setCancelled(true);
     }
 

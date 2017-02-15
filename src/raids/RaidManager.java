@@ -180,7 +180,7 @@ public class RaidManager {
                         starts[0]--;
 
                         for (Player players : raidObject.members) {
-                            new MessageUtil().sendActionBar(players, ChatColor.GOLD + "The raid will be starting in " + ChatColor.RED + starts[0] + " seconds" + ChatColor.GOLD + "!");
+                            new MessageUtil().sendActionBar(players, ChatColor.DARK_GRAY + "The raid will be starting in " + ChatColor.RED + starts[0] + ChatColor.DARK_GRAY + " seconds!");
                         }
                     }
                 }

@@ -149,6 +149,14 @@ public class RaidListener implements Listener {
                 event.setCancelled(true);
             } else {
                 event.setCancelled(true);
+
+                ItemStack cursor = player.getItemOnCursor();
+                if (cursor != null) {
+                    if (cursor.getTypeId() == 293 && cursor.getDurability() == 497) {
+                        return;
+                    }
+                }
+
                 event.getItem().remove();
                 plugin.actionDefaults.giveLootbag(player);
             }
@@ -158,10 +166,50 @@ public class RaidListener implements Listener {
     @EventHandler
     public void onDrop(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
-        ItemStack itemStack = event.getItemDrop().getItemStack();
 
         if (!plugin.actionDefaults.hasLootbag(player)) {
             plugin.actionDefaults.removePotionEffect(player, "SLOW");
+        }
+    }
+
+    @EventHandler
+    public void onCLickLoot(InventoryClickEvent event) {
+        if (event.getClickedInventory() != null && event.getClickedInventory().getName() != null && event.getClickedInventory().getName().endsWith("'s body")) {
+            Player player = (Player) event.getWhoClicked();
+            ItemStack item = event.getCurrentItem();
+
+            if (item == null) {
+                return;
+            }
+
+            if (item.getTypeId() == 293 && item.getDurability() == 497) {
+                if (item.getItemMeta() != null && item.getItemMeta().getDisplayName() != null && item.getItemMeta().hasLore()) {
+                    for (String lore : item.getItemMeta().getLore()) {
+                        lore = ChatColor.stripColor(lore);
+
+                        if (lore.startsWith("Click to receive $")) {
+                            return;
+                        }
+                    }
+
+                    if (plugin.actionDefaults.hasLootbag(player)) {
+                        event.setCancelled(true);
+                        player.sendMessage(ChatColor.RED + "You can only carry one loot bag at a time!");
+                    } else {
+                        plugin.actionDefaults.giveLootbag(player);
+                        player.setItemOnCursor(null);
+                    }
+                } else {
+                    if (plugin.actionDefaults.hasLootbag(player)) {
+                        event.setCancelled(true);
+                        player.sendMessage(ChatColor.RED + "You can only carry one loot bag at a time!");
+                    } else {
+                        event.setCancelled(true);
+                        event.getClickedInventory().setItem(event.getSlot(), null);
+                        plugin.actionDefaults.giveLootbag(player);
+                    }
+                }
+            }
         }
     }
 }

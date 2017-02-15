@@ -433,6 +433,29 @@ public class ActionDefaults {
         }
     }
 
+    public void removeBodies(String world, String regionName) {
+        ProtectedRegion rg = Main.instance.worldGuardPlugin.getRegionManager(Bukkit.getWorld(world)).getRegion(regionName);
+
+        if (rg != null) {
+            Region region = new CuboidRegion(rg.getMaximumPoint(), rg.getMinimumPoint());
+
+            com.sk89q.worldedit.Vector max = region.getMaximumPoint();
+            com.sk89q.worldedit.Vector min = region.getMinimumPoint();
+
+            for (int i = min.getBlockX(); i <= max.getBlockX(); i++) {
+                for (int j = min.getBlockY(); j <= max.getBlockY(); j++) {
+                    for (int k = min.getBlockZ(); k <= max.getBlockZ(); k++) {
+                        Block block = Bukkit.getServer().getWorld(world).getBlockAt(i, j, k);
+
+                        if (block.getType().name().contains("CAKE")) {
+                            block.setType(Material.AIR);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public void createEntityWithSkin(Player player, String type, String name, String skin, boolean hidden, String world, int x, int y, int z, float yaw, float pitch) {
         Main.instance.entityManager.createEntityWithSkin(player, type, name, skin, hidden, world, x, y, z, yaw, pitch);
     }
@@ -1337,6 +1360,10 @@ public class ActionDefaults {
         return new MoneyUtil().getInvMoney(player);
     }
 
+    public ItemStack[] getBillsStack(int amount) {
+        return new MoneyUtil().getBillsStack(amount);
+    }
+
     public Merchant createTrade(String title) {
         Merchant merchant = Main.instance.merchantAPI.newMerchant(title);
         merchant.setTitle(title, false);
@@ -1875,6 +1902,40 @@ public class ActionDefaults {
         cop.openInventory(inventory);
     }
 
+    public int getBonusLootItems(Player player, String items) {
+        int loot = 0;
+        List<String> listItems = Arrays.asList(items.split(", "));
+        PartyAPI partyAPI = new PartyAPI();
+
+        if (partyAPI.getParty(player) == null) {
+            for (ItemStack itemStack : player.getInventory().getContents()) {
+                if (itemStack == null) {
+                    continue;
+                }
+
+                if (listItems.contains(itemStack.getTypeId() + ":" + itemStack.getDurability())) {
+                    loot = loot + itemStack.getAmount();
+                    player.getInventory().remove(itemStack);
+                }
+            }
+        } else {
+            for (Player players : partyAPI.getParty(player).getMembers()) {
+                for (ItemStack itemStack : players.getInventory().getContents()) {
+                    if (itemStack == null) {
+                        continue;
+                    }
+
+                    if (listItems.contains(itemStack.getTypeId() + ":" + itemStack.getDurability())) {
+                        loot = loot + itemStack.getAmount();
+                        players.getInventory().remove(itemStack);
+                    }
+                }
+            }
+        }
+
+        return loot;
+    }
+
     public Player getPlayerByName(String name) {
         return Bukkit.getPlayer(name);
     }
@@ -2017,7 +2078,7 @@ public class ActionDefaults {
         if (partyObject == null) {
             Main.instance.objective.put(player.getUniqueId(), objective);
         } else {
-            for (Player players: partyObject.getMembers()) {
+            for (Player players : partyObject.getMembers()) {
                 Main.instance.objective.put(players.getUniqueId(), objective);
             }
         }
@@ -2029,7 +2090,7 @@ public class ActionDefaults {
 
     public void updatetAttribute(Player player) {
         // Set all attributes to default first
-        for (Attribute attribute: Attribute.values()) {
+        for (Attribute attribute : Attribute.values()) {
             if (player.getAttribute(attribute) == null) continue;
 
             player.getAttribute(attribute).setBaseValue(player.getAttribute(attribute).getDefaultValue());
@@ -2037,7 +2098,7 @@ public class ActionDefaults {
 
         // Update attributes based on perm
         Map<String, Boolean> permissions = Main.instance.permissions.getPlayerPermissions("world", null, player.getUniqueId());
-        for (String key: permissions.keySet()) {
+        for (String key : permissions.keySet()) {
             boolean status = permissions.get(key);
 
             if (status) {
@@ -2064,5 +2125,34 @@ public class ActionDefaults {
             state.setData((MaterialData) openable);
             state.update();
         }
+    }
+
+    public boolean isInParty(Player player) {
+        PartyAPI partyAPI = new PartyAPI();
+
+        if (partyAPI.getParty(player) == null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean isPartyLeader(Player player) {
+        PartyAPI partyAPI = new PartyAPI();
+
+        return partyAPI.isOwner(player);
+    }
+
+    public boolean areAllPlayersReady(Player player, int radius) {
+        PartyAPI partyAPI = new PartyAPI();
+        PartyObject partyObject = partyAPI.getParty(player);
+
+        for (Player members : partyObject.getMembers()) {
+            if (!(player.getLocation().distance(members.getLocation()) <= radius)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

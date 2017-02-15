@@ -180,14 +180,6 @@ public class ScriptListener implements Listener {
                         }
                     }
                 }.runTaskLater(plugin, 5L);
-            } else {
-                if (plugin.actionDefaults.hasLootbag(player)) {
-                    event.setCancelled(true);
-                    player.sendMessage(ChatColor.RED + "You can only carry one loot bag at a time!");
-                } else {
-                    plugin.actionDefaults.giveLootbag(player);
-                    player.setItemOnCursor(null);
-                }
             }
         }
     }

@@ -1,8 +1,10 @@
 package utils;
 
 import com.zeshanaslam.crimering.Main;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import renamer.RenamerObject;
 
@@ -45,6 +47,41 @@ public class MoneyUtil {
                 break;
             }
         }
+    }
+
+    public ItemStack[] getBillsStack(int amount) {
+        Inventory inventory = Bukkit.createInventory(null, 54, "");
+
+        while (true) {
+            if (amount - 2500 >= 0) {
+                amount = amount - 2500;
+                inventory.addItem(Main.instance.actionDefaults.createItemStackWithRenamer(bill2500ID, 1, 0));
+
+            } else {
+                break;
+            }
+        }
+
+        while (true) {
+            if (amount - 50 >= 0) {
+                amount = amount - 50;
+                inventory.addItem(Main.instance.actionDefaults.createItemStackWithRenamer(bill50ID, 1, 0));
+
+            } else {
+                break;
+            }
+        }
+
+        while (true) {
+            if (amount - 1 >= 0) {
+                amount = amount - 1;
+                inventory.addItem(Main.instance.actionDefaults.createItemStackWithRenamer(bill1ID, 1, 0));
+            } else {
+                break;
+            }
+        }
+
+        return inventory.getContents();
     }
 
     public int getItemWorth(ItemStack item) {

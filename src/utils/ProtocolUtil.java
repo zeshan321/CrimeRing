@@ -86,6 +86,7 @@ public class ProtocolUtil {
             return i;
         }
 
+        boolean armor = new ItemUtils().isArmor(i);
         if (!(i instanceof CraftItemStack)) {
             i = CraftItemStack.asCraftCopy(i);
         }
@@ -97,7 +98,10 @@ public class ProtocolUtil {
         }
 
         tag.setInt("HideFlags", 63);
-        tag.setInt("Unbreakable", 1);
+
+        if (!armor) {
+            tag.setInt("Unbreakable", 1);
+        }
 
         return setTag(i, tag);
     }

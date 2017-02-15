@@ -25,7 +25,7 @@ public class Scramble implements Listener {
     public void onClick(PlayerInteractAtEntityEvent event) {
         Player player = event.getPlayer();
 
-        if (event.getHand().equals(EquipmentSlot.OFF_HAND)) {
+        if (event.getHand().equals(EquipmentSlot.OFF_HAND) || !player.isSneaking()) {
             return;
         }
 

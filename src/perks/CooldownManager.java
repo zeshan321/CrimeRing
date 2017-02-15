@@ -5,12 +5,15 @@ import com.google.common.collect.Multimap;
 import com.zeshanaslam.crimering.Main;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.UUID;
 
 public class CooldownManager {
 
-    private Multimap<UUID, CooldownObject> cooldowns = ArrayListMultimap.create();
     public PerksUtil perksUtil = new PerksUtil();
+    private Multimap<UUID, CooldownObject> cooldowns = ArrayListMultimap.create();
 
     public CooldownManager() {
         Main.instance.getServer().getScheduler().scheduleSyncRepeatingTask(Main.instance, () -> {
@@ -44,7 +47,7 @@ public class CooldownManager {
     }
 
     public long isInCooldown(Player player, String type) {
-        for (CooldownObject object: cooldowns.get(player.getUniqueId())) {
+        for (CooldownObject object : cooldowns.get(player.getUniqueId())) {
             if (object.type.equals(type)) {
                 long secondsLeft = ((object.timestamp / 1000) + object.seconds) - (System.currentTimeMillis() / 1000);
                 return secondsLeft;
