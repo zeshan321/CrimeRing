@@ -3,6 +3,7 @@ package brewing;
 import com.zeshanaslam.crimering.FileHandler;
 import com.zeshanaslam.crimering.Main;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.BrewingStand;
 import org.bukkit.entity.Player;
@@ -21,7 +22,8 @@ import static java.lang.Math.toIntExact;
 public class BrewingManager {
 
     public HashMap<String, BrewObject> brews = new HashMap<>();
-    private List<BrewObject> brewObjectList = new ArrayList<>();
+    public HashMap<String, Integer> brewsName = new HashMap<>();
+    public List<BrewObject> brewObjectList = new ArrayList<>();
 
     public BrewingManager() {
         Bukkit.getScheduler().runTaskTimerAsynchronously(Main.instance, () -> {
@@ -88,10 +90,14 @@ public class BrewingManager {
 
     public void load() {
         brewObjectList.clear();
+        brewsName.clear();
 
         FileHandler fileHandler = new FileHandler("plugins/CrimeRing/brewing.yml");
 
+        int i = -1;
         for (String key : fileHandler.getKeys()) {
+            i++;
+
             String slot1 = fileHandler.getString(key + ".slot1");
             String slot2 = fileHandler.getString(key + ".slot2");
             String slot3 = fileHandler.getString(key + ".slot3");
@@ -107,9 +113,18 @@ public class BrewingManager {
 
             if (fileHandler.contains(key + ".perm")) {
                 brewObject.perm = fileHandler.getString(key + ".perm");
+            } else {
+                brewObject.perm = null;
             }
 
             brewObjectList.add(brewObject);
+
+            int id = Integer.valueOf(brewObject.slotC1.split(" ")[0].split(":")[0]);
+            int data = Integer.valueOf(brewObject.slotC1.split(" ")[0].split(":")[1]);
+
+            if (Main.instance.renamerManager.getNameByID(id, data) == null) continue;
+
+            brewsName.put(ChatColor.stripColor(Main.instance.renamerManager.getNameByID(id, data)), i);
         }
     }
 
@@ -127,7 +142,7 @@ public class BrewingManager {
                 if (object.perm == null) {
                     brewObject = object;
                 } else {
-                    if (player.hasPermission(brewObject.perm)) {
+                    if (player.hasPermission(object.perm)) {
                         brewObject = object;
                     }
                 }

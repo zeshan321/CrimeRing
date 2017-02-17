@@ -1,5 +1,6 @@
 package script;
 
+import brewing.BrewObject;
 import com.enjin.officialplugin.points.PointsAPI;
 import com.shampaggon.crackshot.CSUtility;
 import com.sk89q.worldedit.regions.CuboidRegion;
@@ -11,12 +12,17 @@ import com.zeshanaslam.crimering.Main;
 import es.pollitoyeye.Bikes.BikeManager;
 import es.pollitoyeye.Bikes.CarManager;
 import es.pollitoyeye.Bikes.VehiclesMain;
+import haveric.recipeManager.RecipeManager;
+import haveric.recipeManager.recipes.BaseRecipe;
+import haveric.recipeManager.recipes.CraftRecipe;
+import haveric.recipeManagerCommon.recipes.RMCRecipeInfo;
 import me.Stijn.AudioClient.AudioClient;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.disguisetypes.DisguiseType;
 import me.libraryaddict.disguise.disguisetypes.MiscDisguise;
 import me.libraryaddict.disguise.disguisetypes.MobDisguise;
 import me.libraryaddict.disguise.disguisetypes.PlayerDisguise;
+import me.libraryaddict.inventory.PageInventory;
 import me.robin.battlelevels.api.BattleLevelsAPI;
 import merchants.api.Merchant;
 import net.elseland.xikage.MythicMobs.API.Bukkit.BukkitMobsAPI;
@@ -53,10 +59,7 @@ import org.inventivetalent.bossbar.BossBarAPI;
 import org.inventivetalent.particle.ParticleEffect;
 import raids.PartyAPI;
 import raids.PartyObject;
-import utils.ItemUtils;
-import utils.MessageUtil;
-import utils.MoneyUtil;
-import utils.TargetHelper;
+import utils.*;
 
 import javax.script.*;
 import java.text.SimpleDateFormat;
@@ -1280,6 +1283,9 @@ public class ActionDefaults {
     }
 
     public ItemStack createItemStack(int id, int amount, int data) {
+        if (data == 0) {
+            return new ItemStack(id, amount);
+        }
         return new ItemStack(id, amount, (short) data);
     }
 
@@ -1980,9 +1986,10 @@ public class ActionDefaults {
     }
 
     public ItemStack createItemStackWithRenamer(int id, int amount, int data) {
-        ItemStack itemStack = createItemStack(id, amount, data);
+        ItemStack itemStack = Main.instance.renamerManager.renameItem(createItemStack(id, amount, data));
+        itemStack.setAmount(amount);
 
-        return Main.instance.renamerManager.renameItem(itemStack);
+        return itemStack;
     }
 
     public ItemStack createItemStackWithCrackShot(String name) {
@@ -2154,5 +2161,93 @@ public class ActionDefaults {
         }
 
         return true;
+    }
+
+    public void openPageInv(Player player, String title, ArrayList<ItemStack> itemsList) {
+        PageInventory inv = new PageInventory(player);
+
+        inv.setPages(itemsList);
+        inv.setTitle(title);
+        inv.setPageDisplayedInTitle(true);
+
+        inv.openInventory();
+    }
+
+    public ArrayList<ItemStack> getCraftingRecipes() {
+        ArrayList<ItemStack> names = new ArrayList<>();
+
+        for (Map.Entry<BaseRecipe, RMCRecipeInfo> e : RecipeManager.getRecipes().getRecipeList().entrySet()) {
+            BaseRecipe recipe = e.getKey();
+            String name = recipe.getName();
+
+            if (name.contains("shaped")) continue;
+
+            if (recipe instanceof CraftRecipe) {
+                CraftRecipe craftRecipe = (CraftRecipe) recipe;
+
+                ItemStack item = craftRecipe.getFirstResult();
+
+                String lore = ChatColor.DARK_GRAY + "Requires:\n";
+                for (ItemStack ingredients : craftRecipe.getIngredients()) {
+                    if (ingredients == null) continue;
+
+                    ItemStack renamed = createItemStackWithRenamer(ingredients.getTypeId(), ingredients.getAmount(), ingredients.getDurability());
+                    lore = lore + ChatColor.RED + ChatColor.stripColor(ItemNames.lookup(renamed)) + " x " + renamed.getAmount() + "\n";
+                }
+
+                names.add(createItemStackWithMeta(item.getTypeId(), item.getAmount(), item.getDurability(), ChatColor.GRAY + "Recipe: " + ChatColor.DARK_GREEN + name, lore));
+            }
+        }
+
+        return names;
+    }
+
+    public ArrayList<ItemStack> getBrewingRecipes() {
+        ArrayList<ItemStack> names = new ArrayList<>();
+
+        for (BrewObject brewObject : Main.instance.brewingManager.brewObjectList) {
+            int id = Integer.valueOf(brewObject.slotC1.split(" ")[0].split(":")[0]);
+            int data = Integer.valueOf(brewObject.slotC1.split(" ")[0].split(":")[1]);
+
+            ItemStack itemStack = createItemStackWithRenamer(id, 1, data);
+
+            String lore = ChatColor.DARK_GRAY + "Requires:\n";
+
+            if (!brewObject.slot1.startsWith("0:0")) {
+                int idStore = Integer.valueOf(brewObject.slot1.split(" ")[0].split(":")[0]);
+                int dataStore = Integer.valueOf(brewObject.slot1.split(" ")[0].split(":")[1]);
+                int amountStore = Integer.valueOf(brewObject.slot1.split(" ")[1]);
+
+                lore = lore + ChatColor.RED + ChatColor.stripColor(Main.instance.renamerManager.getNameByID(idStore, dataStore)) + " x " + amountStore + "\n";
+            }
+
+            if (!brewObject.slot2.startsWith("0:0")) {
+                int idStore = Integer.valueOf(brewObject.slot2.split(" ")[0].split(":")[0]);
+                int dataStore = Integer.valueOf(brewObject.slot2.split(" ")[0].split(":")[1]);
+                int amountStore = Integer.valueOf(brewObject.slot2.split(" ")[1]);
+
+                lore = lore + ChatColor.RED + ChatColor.stripColor(Main.instance.renamerManager.getNameByID(idStore, dataStore)) + " x " + amountStore + "\n";
+            }
+
+            if (!brewObject.slot3.startsWith("0:0")) {
+                int idStore = Integer.valueOf(brewObject.slot3.split(" ")[0].split(":")[0]);
+                int dataStore = Integer.valueOf(brewObject.slot3.split(" ")[0].split(":")[1]);
+                int amountStore = Integer.valueOf(brewObject.slot3.split(" ")[1]);
+
+                lore = lore + ChatColor.RED + ChatColor.stripColor(Main.instance.renamerManager.getNameByID(idStore, dataStore)) + " x " + amountStore + "\n";
+            }
+
+            if (!brewObject.slot4.startsWith("0:0")) {
+                int idStore = Integer.valueOf(brewObject.slot4.split(" ")[0].split(":")[0]);
+                int dataStore = Integer.valueOf(brewObject.slot4.split(" ")[0].split(":")[1]);
+                int amountStore = Integer.valueOf(brewObject.slot4.split(" ")[1]);
+
+                lore = lore + ChatColor.RED + ChatColor.stripColor(Main.instance.renamerManager.getNameByID(idStore, dataStore)) + " x " + amountStore + "\n";
+            }
+
+            names.add(setItemStackMeta(itemStack, ChatColor.GRAY + "Recipe: " + ChatColor.RED + ItemNames.lookup(itemStack), lore));
+        }
+
+        return names;
     }
 }

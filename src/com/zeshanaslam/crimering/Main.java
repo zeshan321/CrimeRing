@@ -158,14 +158,14 @@ public class Main extends JavaPlugin {
         scriptsManager = new ScriptsManager();
         scriptsManager.load();
 
-        // Load brewing manager
-        brewingManager = new BrewingManager();
-        brewingManager.load();
-
         // Load renamer manager
         renamerManager = new RenamerManager();
         renamerManager.load();
         //renamerManager.loadListeners();
+
+        // Load brewing manager
+        brewingManager = new BrewingManager();
+        brewingManager.load();
 
         // Load raid manager
         raidManager = new RaidManager();
@@ -459,23 +459,6 @@ public class Main extends JavaPlugin {
                             plugin.getServer().getPluginManager().callEvent(new PlayerEquipEvent(player, itemStack, slotIndex));
                         }, 0);
                     }
-                }
-            }
-        });
-
-        // Item renamer
-        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(this, ListenerPriority.NORMAL, PacketType.Play.Server.WINDOW_ITEMS) {
-            @Override
-            public void onPacketSending(PacketEvent event) {
-                Player player = event.getPlayer();
-
-                int i = -1;
-                for (ItemStack itemStack : player.getInventory().getContents()) {
-                    i++;
-
-                    if (itemStack == null || itemStack.hasItemMeta()) continue;
-
-                    player.getInventory().setItem(i, renamerManager.renameItem(itemStack));
                 }
             }
         });

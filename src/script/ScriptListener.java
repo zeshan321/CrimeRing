@@ -1,6 +1,10 @@
 package script;
 
+import brewing.BrewObject;
 import com.zeshanaslam.crimering.Main;
+import haveric.recipeManager.RecipeManager;
+import haveric.recipeManager.recipes.BaseRecipe;
+import haveric.recipeManager.recipes.CraftRecipe;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -16,6 +20,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -209,6 +214,93 @@ public class ScriptListener implements Listener {
         if (amount > 0) {
             plugin.actionDefaults.addInvBills(player, amount);
             event.getItemDrop().remove();
+        }
+    }
+
+    // Recipes
+    @EventHandler
+    public void onRecipeClick(InventoryClickEvent event) {
+        if (event.getClickedInventory() != null) {
+            Player player = (Player) event.getWhoClicked();
+            ItemStack item = event.getCurrentItem();
+
+            if (event.getClickedInventory().getName() != null) {
+                if (ChatColor.stripColor(event.getClickedInventory().getName()).startsWith("Recipe Viewer: ")) {
+                    event.setCancelled(true);
+                    return;
+                }
+            }
+
+            if (item == null || item.getItemMeta() == null || item.getItemMeta().getDisplayName() == null) {
+                return;
+            }
+
+
+            if (ChatColor.stripColor(item.getItemMeta().getDisplayName()).startsWith("Recipe: ")) {
+                String name = ChatColor.stripColor(item.getItemMeta().getDisplayName()).replace("Recipe: ", "");
+                BaseRecipe recipe = RecipeManager.getRecipes().getRecipeByName(name);
+
+                if (recipe != null) {
+                    if (recipe instanceof CraftRecipe) {
+                        CraftRecipe craftRecipe = (CraftRecipe) recipe;
+
+                        Inventory inventory = Bukkit.getServer().createInventory(player, InventoryType.WORKBENCH, "Recipe Viewer: " + name);
+
+                        int i = 0;
+                        for (ItemStack itemStack : craftRecipe.getIngredients()) {
+                            i++;
+
+                            if (itemStack == null) continue;
+
+                            inventory.setItem(i, itemStack);
+                        }
+
+                        player.openInventory(inventory);
+                    }
+                } else {
+                    if (plugin.brewingManager.brewsName.containsKey(name)) {
+                        BrewObject brewObject = plugin.brewingManager.brewObjectList.get(plugin.brewingManager.brewsName.get(name));
+
+                        Inventory inventory = Bukkit.getServer().createInventory(player, InventoryType.BREWING, "Recipe Viewer: " + name);
+
+                        if (!brewObject.slot1.startsWith("0:0")) {
+                            int idStore = Integer.valueOf(brewObject.slot1.split(" ")[0].split(":")[0]);
+                            int dataStore = Integer.valueOf(brewObject.slot1.split(" ")[0].split(":")[1]);
+                            int amountStore = Integer.valueOf(brewObject.slot1.split(" ")[1]);
+
+                            inventory.setItem(0, plugin.actionDefaults.createItemStackWithRenamer(idStore, amountStore, dataStore));
+                        }
+
+                        if (!brewObject.slot2.startsWith("0:0")) {
+                            int idStore = Integer.valueOf(brewObject.slot2.split(" ")[0].split(":")[0]);
+                            int dataStore = Integer.valueOf(brewObject.slot2.split(" ")[0].split(":")[1]);
+                            int amountStore = Integer.valueOf(brewObject.slot2.split(" ")[1]);
+
+                            inventory.setItem(1, plugin.actionDefaults.createItemStackWithRenamer(idStore, amountStore, dataStore));
+                        }
+
+                        if (!brewObject.slot3.startsWith("0:0")) {
+                            int idStore = Integer.valueOf(brewObject.slot3.split(" ")[0].split(":")[0]);
+                            int dataStore = Integer.valueOf(brewObject.slot3.split(" ")[0].split(":")[1]);
+                            int amountStore = Integer.valueOf(brewObject.slot3.split(" ")[1]);
+
+                            inventory.setItem(2, plugin.actionDefaults.createItemStackWithRenamer(idStore, amountStore, dataStore));
+                        }
+
+                        if (!brewObject.slot4.startsWith("0:0")) {
+                            int idStore = Integer.valueOf(brewObject.slot4.split(" ")[0].split(":")[0]);
+                            int dataStore = Integer.valueOf(brewObject.slot4.split(" ")[0].split(":")[1]);
+                            int amountStore = Integer.valueOf(brewObject.slot4.split(" ")[1]);
+
+                            inventory.setItem(3, plugin.actionDefaults.createItemStackWithRenamer(idStore, amountStore, dataStore));
+                        }
+
+                        inventory.setItem(4, plugin.actionDefaults.createItemStackWithRenamer(377, 1, 0));
+
+                        player.openInventory(inventory);
+                    }
+                }
+            }
         }
     }
 }

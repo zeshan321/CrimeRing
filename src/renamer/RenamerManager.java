@@ -2,16 +2,21 @@ package renamer;
 
 import com.zeshanaslam.crimering.FileHandler;
 import com.zeshanaslam.crimering.Main;
+import haveric.recipeManager.api.events.RecipeManagerCraftEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
+import utils.ItemNames;
 
 import java.util.HashMap;
 import java.util.List;
@@ -129,6 +134,45 @@ public class RenamerManager {
 
                 player.getInventory().setItem(event.getNewSlot(), renameItem(itemStack));
             }
+
+            @EventHandler
+            public void onCraft(RecipeManagerCraftEvent event) {
+                event.setResult(renameItem(event.getResult()));
+            }
+
+            @EventHandler
+            public void onClick(InventoryClickEvent event) {
+                new BukkitRunnable() {
+                    public void run() {
+                        int i = -1;
+
+                        for (ItemStack itemStack : event.getInventory().getContents()) {
+                            i++;
+
+                            if (itemStack == null || itemStack.hasItemMeta()) continue;
+
+                            event.getInventory().setItem(i, renameItem(itemStack));
+                        }
+                    }
+                }.runTaskLater(Main.instance, 20L);
+            }
+
+            @EventHandler
+            public void onClickCreative(InventoryCreativeEvent event) {
+                new BukkitRunnable() {
+                    public void run() {
+                        int i = -1;
+
+                        for (ItemStack itemStack : event.getInventory().getContents()) {
+                            i++;
+
+                            if (itemStack == null || itemStack.hasItemMeta()) continue;
+
+                            event.getInventory().setItem(i, renameItem(itemStack));
+                        }
+                    }
+                }.runTaskLater(Main.instance, 20L);
+            }
         };
     }
 
@@ -188,5 +232,14 @@ public class RenamerManager {
         }
 
         return itemStack;
+    }
+
+    public String getNameByID(int id, int data) {
+        if (items.containsKey(id + ":" + data)) {
+            RenamerObject renamerObject = items.get(id + ":" + data);
+            return renamerObject.name;
+        }
+
+        return ItemNames.lookup(new ItemStack(id, 1, (short) data));
     }
 }
