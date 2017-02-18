@@ -1354,6 +1354,11 @@ public class ActionDefaults {
         return new MoneyUtil().getItemWorth(itemStack);
     }
 
+    public int getItemStreetWorth(ItemStack itemStack) {
+        return new MoneyUtil().getItemStreetWorth(itemStack);
+    }
+
+
     public void addInvBills(Player player, int amount) {
         new MoneyUtil().giveBills(player, amount);
     }

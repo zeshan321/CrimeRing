@@ -49,7 +49,7 @@ public class GlowPerk implements Listener {
 
                                 Main.instance.getServer().getPluginManager().callEvent(new PlayerArrestedEvent(player, cop, timerObject.crimes, timerObject.timestamp));
                             } else {
-                                cop.sendMessage(ChatColor.RED + "DEBUG: HP HIGH");
+                                cop.sendMessage(ChatColor.RED + player.getName() + "'s HP is too high!");
                             }
                         } else {
                             cop.sendMessage(ChatColor.RED + "You cannot arrest a player that is not wanted!");
