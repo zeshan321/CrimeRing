@@ -2100,7 +2100,7 @@ public class ActionDefaults {
         Main.instance.objective.remove(player.getUniqueId());
     }
 
-    public void updatetAttribute(Player player) {
+    public void updateAttribute(Player player) {
         // Set all attributes to default first
         for (Attribute attribute : Attribute.values()) {
             if (player.getAttribute(attribute) == null) continue;
