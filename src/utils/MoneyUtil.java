@@ -98,6 +98,17 @@ public class MoneyUtil {
                     break;
                 }
             }
+        } else {
+            if (item.hasItemMeta() && item.getItemMeta().hasLore()) {
+                for (String lines : item.getItemMeta().getLore()) {
+                    lines = ChatColor.stripColor(lines).toLowerCase();
+
+                    if (lines.startsWith("worth")) {
+                        worth = Integer.valueOf(lines.replace("worth: $", ""));
+                        break;
+                    }
+                }
+            }
         }
 
         return worth;
@@ -115,6 +126,17 @@ public class MoneyUtil {
                 if (lines.startsWith("street worth")) {
                     worth = Integer.valueOf(lines.replace("street worth: $", ""));
                     break;
+                }
+            }
+        } else {
+            if (item.hasItemMeta() && item.getItemMeta().hasLore()) {
+                for (String lines : item.getItemMeta().getLore()) {
+                    lines = ChatColor.stripColor(lines).toLowerCase();
+
+                    if (lines.startsWith("street worth")) {
+                        worth = Integer.valueOf(lines.replace("street worth: $", ""));
+                        break;
+                    }
                 }
             }
         }
