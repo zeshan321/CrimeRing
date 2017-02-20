@@ -12,6 +12,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.FieldAccessException;
 import com.comphenix.protocol.utility.MinecraftVersion;
+import com.earth2me.essentials.Essentials;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -50,6 +51,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
 import org.tyrannyofheaven.bukkit.zPermissions.ZPermissionsService;
 import packets.WrapperPlayClientWindowClick;
+import payday.PaydayListener;
+import payday.PaydayManager;
 import perks.CooldownManager;
 import perks.arrest.GlowPerk;
 import perks.arrest.PerkManager;
@@ -92,6 +95,8 @@ public class Main extends JavaPlugin {
     public RadioManager radioManager;
     public DamageManager damageManager;
     public CooldownManager cooldownManager;
+    public PaydayManager paydayManager;
+    public Essentials essentials;
 
     // Lists and maps
     public ArrayList<String> flag = new ArrayList<>();
@@ -108,6 +113,9 @@ public class Main extends JavaPlugin {
         saveDefaultConfig();
         instance = this;
 
+        // Essentials
+        essentials = (Essentials) Bukkit.getServer().getPluginManager().getPlugin("Essentials");
+
         // Register placeholders
         new Placeholders();
 
@@ -119,6 +127,9 @@ public class Main extends JavaPlugin {
 
         // Hook into ZPermissions
         permissions = Bukkit.getServicesManager().load(ZPermissionsService.class);
+
+        // Payday manager
+        paydayManager = new PaydayManager();
 
         // Damage manager
         damageManager = new DamageManager();
@@ -260,6 +271,7 @@ public class Main extends JavaPlugin {
         pm.registerEvents(new Generators(this), this);
         pm.registerEvents(new ActionArrested(this), this);
         pm.registerEvents(new DamageListener(this), this);
+        pm.registerEvents(new PaydayListener(this), this);
 
         // Register perks
         pm.registerEvents(new GlowPerk(this), this);

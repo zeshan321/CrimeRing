@@ -11,7 +11,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
+import raids.PartyAPI;
+import raids.PartyObject;
 
 public class GlowPerk implements Listener {
 
@@ -30,6 +33,17 @@ public class GlowPerk implements Listener {
         if (event.getDamager() instanceof Player && event.getEntity() instanceof Player) {
             Player cop = (Player) event.getDamager();
             Player player = (Player) event.getEntity();
+
+            if (plugin.actionDefaults.isInRaid(player)) {
+                return;
+            }
+
+            PartyObject partyObject = new PartyAPI().getParty(cop);
+            if (partyObject != null) {
+                if (partyObject.hasMember(player)) {
+                    return;
+                }
+            }
 
             if (copUtil.isCop(cop)) {
                 if (cop.getInventory().getItemInMainHand() != null) {
@@ -67,8 +81,10 @@ public class GlowPerk implements Listener {
 
         if (plugin.perkManager.timer.containsKey(player.getUniqueId())) {
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                //GlowAPI.setGlowing(player, GlowAPI.Color.RED, new CopUtil().getCops());
+                plugin.actionDefaults.setGlow(player, "RED");
             }, 1L);
+        } else {
+            Main.instance.actionDefaults.removePotionEffect(player, "GLOWING");
         }
     }
 
@@ -98,5 +114,12 @@ public class GlowPerk implements Listener {
 
             copUtil.logCrime(player, PerkManager.Crime.ASSAULT);
         }
+    }
+
+    @EventHandler
+    public void onLeave(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
+
+        plugin.actionDefaults.removePotionEffect(player, "GLOWING");
     }
 }

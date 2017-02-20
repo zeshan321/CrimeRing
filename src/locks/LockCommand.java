@@ -56,17 +56,28 @@ public class LockCommand implements CommandExecutor {
 
             if (args[0].equalsIgnoreCase("add")) {
                 if (args[1].equalsIgnoreCase("player") || args[1].equalsIgnoreCase("gang")) {
-                    player.getInventory().setItemInMainHand(add(args[1], args[2], itemStack));
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 2; i < args.length; i++) {
+                        sb.append(args[i]).append(" ");
+                    }
 
-                    player.sendMessage(ChatColor.GOLD + "Added " + args[1].toLowerCase() + " " + args[2] + " to lock!");
+                    String argsName = sb.toString().trim();
+                    player.getInventory().setItemInMainHand(add(args[1], argsName, itemStack));
+
+                    player.sendMessage(ChatColor.GOLD + "Added " + args[1].toLowerCase() + " " + argsName + " to lock!");
                 } else {
                     lockHelp(sender);
                 }
             } else if (args[0].equalsIgnoreCase("remove")) {
                 if (args[1].equalsIgnoreCase("player") || args[1].equalsIgnoreCase("gang")) {
-                    player.getInventory().setItemInMainHand(remove(args[1], args[2], itemStack));
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 2; i < args.length; i++) {
+                        sb.append(args[i]).append(" ");
+                    }
+                    String argsName = sb.toString().trim();
+                    player.getInventory().setItemInMainHand(remove(args[1], argsName, itemStack));
 
-                    player.sendMessage(ChatColor.GOLD + "Removed " + args[1].toLowerCase() + " " + args[2] + " from lock!");
+                    player.sendMessage(ChatColor.GOLD + "Removed " + args[1].toLowerCase() + " " + argsName + " from lock!");
                 } else {
                     lockHelp(sender);
                 }

@@ -98,7 +98,7 @@ public class LockListener implements Listener {
                 lore.add(ChatColor.translateAlternateColorCodes('&', "&7Use &a/lock &7to add or remove"));
                 lore.add(ChatColor.translateAlternateColorCodes('&', "&7players and gangs to lock."));
                 lore.add("");
-                lore.add(ChatColor.translateAlternateColorCodes('&', "&7Place in &aFirst Slot &7to lock."));
+                lore.add(ChatColor.translateAlternateColorCodes('&', "&7Place in &aFirst Slot &7to lock"));
                 lore.add(ChatColor.translateAlternateColorCodes('&', "&7chest/door."));
                 lore.add("");
                 lore.add(ChatColor.GREEN + "Owner: " + player.getName());

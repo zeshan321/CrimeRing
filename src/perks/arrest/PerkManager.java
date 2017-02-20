@@ -32,31 +32,40 @@ public class PerkManager {
                 int seconds = timerObject.seconds;
                 long secondsLeft = ((timestamp / 1000) + seconds) - (System.currentTimeMillis() / 1000);
 
-                // Check if cop nearby
-                if (player.isOnline()) {
-                    if (copUtil.isCopNear(player)) {
-                        iterator.remove();
+                if (player != null) {
 
-                        timerObject.seconds = timerObject.seconds + 1;
-                        timer.put(player.getUniqueId(), timerObject);
+                    // Check if cop nearby
+                    if (player.isOnline()) {
+                        if (copUtil.isCopNear(player)) {
+                            iterator.remove();
 
-                        Main.instance.actionDefaults.sendActionBar(player, ChatColor.GOLD + "Status: " + ChatColor.RED + "Wanted");
-                        continue;
+                            timerObject.seconds = timerObject.seconds + 1;
+                            timer.put(player.getUniqueId(), timerObject);
+
+                            Main.instance.actionDefaults.sendActionBar(player, ChatColor.GOLD + "Status: " + ChatColor.RED + "Wanted");
+                            continue;
+                        }
                     }
                 }
 
                 if (secondsLeft <= 0) {
+                    if (player != null) {
 
-                    if (!player.isOnline()) {
+                        if (!player.isOnline()) {
+                            iterator.remove();
+                            Main.instance.actionDefaults.removePotionEffect(player, "GLOWING");
+                            continue;
+                        }
+
+
+                        Main.instance.actionDefaults.sendActionBar(player, ChatColor.GOLD + "Status: " + ChatColor.GREEN + "Evaded");
+                        Main.instance.actionDefaults.removePotionEffect(player, "GLOWING");
                         iterator.remove();
-                        continue;
+                    } else {
+                        iterator.remove();
                     }
-
-
-                    Main.instance.actionDefaults.sendActionBar(player, ChatColor.GOLD + "Status: " + ChatColor.GREEN + "Evaded");
-                    iterator.remove();
                 } else {
-                    if (player.isOnline()) {
+                    if (player != null && player.isOnline()) {
                         Main.instance.actionDefaults.sendActionBar(player, ChatColor.GOLD + "Status: " + ChatColor.RED + "Wanted");
                     }
                 }

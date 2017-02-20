@@ -132,6 +132,9 @@ public class BankListener implements Listener {
         Player player = event.getPlayer();
 
         if (type.containsKey(player.getUniqueId())) {
+            event.setCancelled(true);
+            player.sendMessage(event.getMessage());
+
             String status = type.get(player.getUniqueId());
             if (event.getMessage().matches("[0-9]+")) {
                 int amount = Integer.valueOf(event.getMessage());

@@ -337,6 +337,10 @@ public class ActionDefaults {
         return Main.instance.raidManager.isInRaid(player);
     }
 
+    public boolean isInRaid(Player player) {
+        return Main.instance.raidManager.isInRaid(player);
+    }
+
     public void giveItem(Player player, String name, int amount, boolean remove) {
         FileHandler fileHandler = new FileHandler("plugins/CrimeRing/items/" + name + ".yml");
 
@@ -385,10 +389,8 @@ public class ActionDefaults {
         return item;
     }
 
-    public void dropItemAtLocation(Location location, String name, int amount, boolean remove) {
-        FileHandler fileHandler = new FileHandler("plugins/CrimeRing/items/" + name + ".yml");
-
-        ItemStack item = fileHandler.getItemStack("Item");
+    public void dropItemAtLocation(Location location, int id, int data, int amount, boolean remove) {
+        ItemStack item = Main.instance.renamerManager.renameItem(new ItemStack(id, amount, (short) data));
         item.setAmount(amount);
 
         // Add 'Raid Item' to lore
@@ -2254,5 +2256,82 @@ public class ActionDefaults {
         }
 
         return names;
+    }
+
+    public void setGlow(Player player, String color) {
+        color = color.toUpperCase();
+
+        Color leatherColor = null;
+        switch (color) {
+            case "WHITE":
+                leatherColor = Color.WHITE;
+                break;
+
+            case "SILVER":
+                leatherColor = Color.SILVER;
+                break;
+
+            case "GRAY":
+                leatherColor = Color.GRAY;
+                break;
+
+            case "BLACK":
+                leatherColor = Color.BLACK;
+                break;
+
+            case "RED":
+                leatherColor = Color.RED;
+                break;
+
+            case "MAROON":
+                leatherColor = Color.MAROON;
+                break;
+
+            case "YELLOW":
+                leatherColor = Color.YELLOW;
+                break;
+
+            case "OLIVE":
+                leatherColor = Color.OLIVE;
+                break;
+
+            case "LIME":
+                leatherColor = Color.LIME;
+                break;
+
+            case "GREEN":
+                leatherColor = Color.GREEN;
+                break;
+
+            case "AQUA":
+                leatherColor = Color.AQUA;
+                break;
+
+            case "TEAL":
+                leatherColor = Color.TEAL;
+                break;
+
+            case "BLUE":
+                leatherColor = Color.BLUE;
+                break;
+
+            case "NAVY":
+                leatherColor = Color.NAVY;
+                break;
+
+            case "FUCHSIA":
+                leatherColor = Color.FUCHSIA;
+                break;
+
+            case "PURPLE":
+                leatherColor = Color.PURPLE;
+                break;
+
+            case "ORANGE":
+                leatherColor = Color.ORANGE;
+                break;
+        }
+
+        player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 99999999, 1, true, true, leatherColor));
     }
 }

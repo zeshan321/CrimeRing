@@ -46,7 +46,7 @@ public class CopUtil {
 
     public void setWanted(Player player) {
         Main.instance.perkManager.timer.put(player.getUniqueId(), new TimerObject(System.currentTimeMillis(), 120));
-        //GlowAPI.setGlowing(player, GlowAPI.Color.RED, getCops());
+        Main.instance.actionDefaults.setGlow(player, "RED");
 
         player.sendMessage(ChatColor.RED + "You are now wanted by the police!");
     }
