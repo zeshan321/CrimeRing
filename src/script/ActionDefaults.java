@@ -31,6 +31,7 @@ import net.elseland.xikage.MythicMobs.API.ThreatTables;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.minecraft.server.v1_11_R1.PacketPlayOutCustomSoundEffect;
 import net.minecraft.server.v1_11_R1.SoundCategory;
+import net.sacredlabyrinth.Phaed.PreciousStones.PreciousStones;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
@@ -2333,5 +2334,9 @@ public class ActionDefaults {
         }
 
         player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 99999999, 1, true, true, leatherColor));
+    }
+
+    public boolean isInPSRegion(Player player) {
+        return PreciousStones.API().isPStone(player.getLocation());
     }
 }
