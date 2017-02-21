@@ -15,8 +15,8 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import java.util.Set;
 
+import static io.lumine.xikage.mythicmobs.util.MythicUtil.getPrivateField;
 import static me.libraryaddict.disguise.utilities.ReflectionManager.getNmsClass;
-import static net.elseland.xikage.MythicLib.Util.MythicUtil.getPrivateField;
 
 public class EntityMethods {
 

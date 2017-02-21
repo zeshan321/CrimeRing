@@ -28,6 +28,7 @@ import entity.EntityObject;
 import events.*;
 import fakeblocks.FakeblockCommand;
 import fakeblocks.FakeblockListener;
+import io.lumine.xikage.mythicmobs.api.bukkit.BukkitAPIHelper;
 import locks.LockCommand;
 import locks.LockListener;
 import locks.LockManager;
@@ -35,7 +36,6 @@ import locks.LocksCreate;
 import merchants.SMerchantAPI;
 import merchants.api.MerchantAPI;
 import merchants.api.Merchants;
-import net.elseland.xikage.MythicMobs.API.Bukkit.BukkitMobsAPI;
 import net.milkbowl.vault.economy.Economy;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
@@ -86,7 +86,7 @@ public class Main extends JavaPlugin {
     public BrewingManager brewingManager;
     public WorldGuardPlugin worldGuardPlugin;
     public MerchantAPI merchantAPI;
-    public BukkitMobsAPI mythicAPI;
+    public BukkitAPIHelper mythicAPI;
     public PerkManager perkManager;
     public LockManager lockManager;
     public AmbientManager ambientManager;
@@ -158,7 +158,7 @@ public class Main extends JavaPlugin {
         perkManager = new PerkManager();
 
         // Hook into MythicMobs
-        mythicAPI = new BukkitMobsAPI();
+        mythicAPI = new BukkitAPIHelper();
 
         // Setup merchant api
         MerchantAPI api = new SMerchantAPI();

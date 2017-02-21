@@ -16,6 +16,7 @@ import haveric.recipeManager.RecipeManager;
 import haveric.recipeManager.recipes.BaseRecipe;
 import haveric.recipeManager.recipes.CraftRecipe;
 import haveric.recipeManagerCommon.recipes.RMCRecipeInfo;
+import io.lumine.xikage.mythicmobs.api.exceptions.InvalidMobTypeException;
 import me.Stijn.AudioClient.AudioClient;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.disguisetypes.DisguiseType;
@@ -25,9 +26,6 @@ import me.libraryaddict.disguise.disguisetypes.PlayerDisguise;
 import me.libraryaddict.inventory.PageInventory;
 import me.robin.battlelevels.api.BattleLevelsAPI;
 import merchants.api.Merchant;
-import net.elseland.xikage.MythicMobs.API.Bukkit.BukkitMobsAPI;
-import net.elseland.xikage.MythicMobs.API.Exceptions.InvalidMobTypeException;
-import net.elseland.xikage.MythicMobs.API.ThreatTables;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.minecraft.server.v1_11_R1.PacketPlayOutCustomSoundEffect;
 import net.minecraft.server.v1_11_R1.SoundCategory;
@@ -168,10 +166,9 @@ public class ActionDefaults {
     }
 
     public void spawnMob(String type, String world, int amount, int x, int y, int z) {
-        BukkitMobsAPI bukkitMobsAPI = new BukkitMobsAPI();
         try {
             for (int i = 1; i < amount + 1; i++) {
-                bukkitMobsAPI.spawnMythicMob(bukkitMobsAPI.getMythicMob(type), new Location(Bukkit.getWorld(world), x, y, z));
+                Main.instance.mythicAPI.spawnMythicMob(type, new Location(Bukkit.getWorld(world), x, y, z));
             }
         } catch (InvalidMobTypeException e) {
             e.printStackTrace();
@@ -184,6 +181,8 @@ public class ActionDefaults {
         if (rg != null) {
             Region region = new CuboidRegion(rg.getMaximumPoint(), rg.getMinimumPoint());
             Location centerLoc = new Location(Bukkit.getWorld(world), region.getCenter().getX(), region.getCenter().getY(), region.getCenter().getZ());
+            if (!centerLoc.getChunk().isLoaded()) centerLoc.getChunk().load();
+
             Collection<Entity> entities = Bukkit.getWorld(world).getNearbyEntities(centerLoc, region.getWidth() / 2, region.getHeight() / 2, region.getLength() / 2);
 
             entities.stream().filter(entity -> !(entity instanceof Player)).forEach(Entity::remove);
@@ -198,6 +197,8 @@ public class ActionDefaults {
         if (rg != null) {
             Region region = new CuboidRegion(rg.getMaximumPoint(), rg.getMinimumPoint());
             Location centerLoc = new Location(Bukkit.getWorld(world), region.getCenter().getX(), region.getCenter().getY(), region.getCenter().getZ());
+            if (!centerLoc.getChunk().isLoaded()) centerLoc.getChunk().load();
+
             Collection<Entity> entities = Bukkit.getWorld(world).getNearbyEntities(centerLoc, region.getWidth() / 2, region.getHeight() / 2, region.getLength() / 2);
 
             for (Entity entity : entities) {
@@ -242,6 +243,8 @@ public class ActionDefaults {
         if (rg != null) {
             Region region = new CuboidRegion(rg.getMaximumPoint(), rg.getMinimumPoint());
             Location centerLoc = new Location(Bukkit.getWorld(world), region.getCenter().getX(), region.getCenter().getY(), region.getCenter().getZ());
+            if (!centerLoc.getChunk().isLoaded()) centerLoc.getChunk().load();
+            
             Collection<Entity> entities = Bukkit.getWorld(world).getNearbyEntities(centerLoc, region.getWidth() / 2, region.getHeight() / 2, region.getLength() / 2);
 
             for (Entity entity : entities) {
@@ -1465,7 +1468,7 @@ public class ActionDefaults {
 
         try {
             for (int i = 1; i < amount + 1; i++) {
-                Entity entity = Main.instance.mythicAPI.spawnMythicMob(Main.instance.mythicAPI.getMythicMob(name), new Location(Bukkit.getWorld(world), x, y, z));
+                Entity entity = Main.instance.mythicAPI.spawnMythicMob(name, new Location(Bukkit.getWorld(world), x, y, z));
 
                 entities.add(entity);
             }
@@ -1480,7 +1483,7 @@ public class ActionDefaults {
         Entity entity = null;
 
         try {
-            entity = Main.instance.mythicAPI.spawnMythicMob(Main.instance.mythicAPI.getMythicMob(name), new Location(Bukkit.getWorld(world), x, y, z));
+            entity = Main.instance.mythicAPI.spawnMythicMob(name, new Location(Bukkit.getWorld(world), x, y, z));
         } catch (InvalidMobTypeException e) {
             e.printStackTrace();
         }
@@ -1502,7 +1505,7 @@ public class ActionDefaults {
     }
 
     public void setMMTarget(Entity entity, Player target) {
-        ThreatTables.taunt(entity, target);
+        Main.instance.mythicAPI.taunt(entity, target);
     }
 
     public void castMMSkill(Entity entity, String skill) {
