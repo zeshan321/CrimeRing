@@ -236,6 +236,8 @@ public class LocksUtil {
         double random = Math.random() * 100;
 
         if (random <= defaultChance) {
+            player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0F, 1.0F);
+
             for (ItemStack itemStack: player.getInventory().getContents()) {
                 if (isPick(itemStack)) {
                     itemStack.setAmount(itemStack.getAmount() - 1);

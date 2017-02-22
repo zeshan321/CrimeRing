@@ -87,10 +87,8 @@ public class MoneyUtil {
     public int getItemWorth(ItemStack item) {
         int worth = 0;
 
-        if (Main.instance.renamerManager.items.containsKey(item.getTypeId() + ":" + item.getDurability())) {
-            RenamerObject renamerObject = Main.instance.renamerManager.items.get(item.getTypeId() + ":" + item.getDurability());
-
-            for (String lines : renamerObject.lore) {
+        if (item.hasItemMeta() && item.getItemMeta().hasLore()) {
+            for (String lines : item.getItemMeta().getLore()) {
                 lines = ChatColor.stripColor(lines).toLowerCase();
 
                 if (lines.startsWith("worth")) {
@@ -99,8 +97,12 @@ public class MoneyUtil {
                 }
             }
         } else {
-            if (item.hasItemMeta() && item.getItemMeta().hasLore()) {
-                for (String lines : item.getItemMeta().getLore()) {
+            if (Main.instance.renamerManager.items.containsKey(item.getTypeId() + ":" + item.getDurability())) {
+                RenamerObject renamerObject = Main.instance.renamerManager.items.get(item.getTypeId() + ":" + item.getDurability());
+
+                if (renamerObject.lore == null) return 0;
+
+                for (String lines : renamerObject.lore) {
                     lines = ChatColor.stripColor(lines).toLowerCase();
 
                     if (lines.startsWith("worth")) {
@@ -117,10 +119,8 @@ public class MoneyUtil {
     public int getItemStreetWorth(ItemStack item) {
         int worth = 0;
 
-        if (Main.instance.renamerManager.items.containsKey(item.getTypeId() + ":" + item.getDurability())) {
-            RenamerObject renamerObject = Main.instance.renamerManager.items.get(item.getTypeId() + ":" + item.getDurability());
-
-            for (String lines : renamerObject.lore) {
+        if (item.hasItemMeta() && item.getItemMeta().hasLore()) {
+            for (String lines : item.getItemMeta().getLore()) {
                 lines = ChatColor.stripColor(lines).toLowerCase();
 
                 if (lines.startsWith("street worth")) {
@@ -129,8 +129,12 @@ public class MoneyUtil {
                 }
             }
         } else {
-            if (item.hasItemMeta() && item.getItemMeta().hasLore()) {
-                for (String lines : item.getItemMeta().getLore()) {
+            if (Main.instance.renamerManager.items.containsKey(item.getTypeId() + ":" + item.getDurability())) {
+                RenamerObject renamerObject = Main.instance.renamerManager.items.get(item.getTypeId() + ":" + item.getDurability());
+
+                if (renamerObject.lore == null) return 0;
+
+                for (String lines : renamerObject.lore) {
                     lines = ChatColor.stripColor(lines).toLowerCase();
 
                     if (lines.startsWith("street worth")) {

@@ -480,12 +480,15 @@ public class LockListener implements Listener {
 
             if (block.getType().toString().contains("DOOR")) {
                 Block dispenserBlock = block.getWorld().getBlockAt(block.getLocation().getBlockX(), block.getLocation().getBlockY() + 2, block.getLocation().getBlockZ());
-                Dispenser dispenser = (Dispenser) dispenserBlock.getState();
-                ItemStack itemStack = dispenser.getInventory().getItem(0);
 
-                if (itemStack != null) {
-                    if (Main.instance.lockManager.chests.containsKey(itemStack.getTypeId() + ":" + itemStack.getDurability() + "-lock"))
-                        it.remove();
+                if (dispenserBlock.getState() instanceof Dispenser) {
+                    Dispenser dispenser = (Dispenser) dispenserBlock.getState();
+                    ItemStack itemStack = dispenser.getInventory().getItem(0);
+
+                    if (itemStack != null) {
+                        if (Main.instance.lockManager.chests.containsKey(itemStack.getTypeId() + ":" + itemStack.getDurability() + "-lock"))
+                            it.remove();
+                    }
                 }
             }
 
