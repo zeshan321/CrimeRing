@@ -2270,4 +2270,10 @@ public class ActionDefaults {
     public boolean isInPSRegion(Player player) {
         return PreciousStones.API().isPStone(player.getLocation());
     }
+
+    public void broadcastMessage(String message) {
+        for (Player players: Bukkit.getOnlinePlayers()) {
+            players.sendMessage(message.split("\\n"));
+        }
+    }
 }

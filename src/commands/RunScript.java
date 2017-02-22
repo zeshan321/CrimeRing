@@ -29,38 +29,63 @@ public class RunScript implements CommandExecutor {
                 }
 
                 String script = args[0];
-                Player player = Bukkit.getPlayer(args[1]);
 
-                if (player == null || !player.isOnline()) {
-                    System.out.println("[CR] Unable to run script with offline player!");
-                    return false;
-                }
+                if (args[1] != "none") {
+                    Player player = Bukkit.getPlayer(args[1]);
 
-                if (Main.instance.scriptsManager.contains(script)) {
-                    for (ScriptObject scriptObject : Main.instance.scriptsManager.getObjects(script)) {
-
-                        try {
-                            ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
-
-                            // Objects
-                            Bindings bindings = engine.createBindings();
-                            bindings.put("player", player);
-                            bindings.put("x", player.getLocation().getBlockX());
-                            bindings.put("y", player.getLocation().getBlockY());
-                            bindings.put("z", player.getLocation().getBlockZ());
-                            bindings.put("world", player.getLocation().getWorld().getName());
-                            bindings.put("CR", new ActionDefaults(script, engine));
-
-                            ScriptContext scriptContext = engine.getContext();
-                            scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
-
-                            engine.eval(scriptObject.scriptData, scriptContext);
-                        } catch (ScriptException e) {
-                            e.printStackTrace();
-                        }
+                    if (player == null || !player.isOnline()) {
+                        System.out.println("[CR] Unable to run script with offline player!");
+                        return false;
                     }
 
-                    return true;
+                    if (Main.instance.scriptsManager.contains(script)) {
+                        for (ScriptObject scriptObject : Main.instance.scriptsManager.getObjects(script)) {
+
+                            try {
+                                ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+
+                                // Objects
+                                Bindings bindings = engine.createBindings();
+                                bindings.put("player", player);
+                                bindings.put("x", player.getLocation().getBlockX());
+                                bindings.put("y", player.getLocation().getBlockY());
+                                bindings.put("z", player.getLocation().getBlockZ());
+                                bindings.put("world", player.getLocation().getWorld().getName());
+                                bindings.put("CR", new ActionDefaults(script, engine));
+
+                                ScriptContext scriptContext = engine.getContext();
+                                scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+
+                                engine.eval(scriptObject.scriptData, scriptContext);
+                            } catch (ScriptException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        return true;
+                    }
+                } else {
+                    if (Main.instance.scriptsManager.contains(script)) {
+                        for (ScriptObject scriptObject : Main.instance.scriptsManager.getObjects(script)) {
+
+                            try {
+                                ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+
+                                // Objects
+                                Bindings bindings = engine.createBindings();
+                                bindings.put("CR", new ActionDefaults(script, engine));
+
+                                ScriptContext scriptContext = engine.getContext();
+                                scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+
+                                engine.eval(scriptObject.scriptData, scriptContext);
+                            } catch (ScriptException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        return true;
+                    }
                 }
 
                 System.out.println("[CR] Unable to find script name!");
