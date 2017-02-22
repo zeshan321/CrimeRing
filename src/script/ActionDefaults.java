@@ -1170,6 +1170,7 @@ public class ActionDefaults {
             itemStack.setDurability((short) data);
 
         Location location = new Location(Bukkit.getWorld(world), x, y, z);
+        if (!location.getChunk().isLoaded()) location.getChunk().load();
 
         for (Entity entity : location.getWorld().getNearbyEntities(location, 0.5, 0.5, 0.5)) {
             if (entity instanceof ItemFrame) {

@@ -30,7 +30,7 @@ public class RunScript implements CommandExecutor {
 
                 String script = args[0];
 
-                if (args[1] != "none") {
+                if (!args[1].equals("none")) {
                     Player player = Bukkit.getPlayer(args[1]);
 
                     if (player == null || !player.isOnline()) {
