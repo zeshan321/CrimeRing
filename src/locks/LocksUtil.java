@@ -236,16 +236,14 @@ public class LocksUtil {
         double random = Math.random() * 100;
 
         if (random <= defaultChance) {
-            if (isPick(player.getInventory().getItemInMainHand())) {
-                player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0F, 1.0F);
-
-                ItemStack localItemStack = player.getInventory().getItemInMainHand();
-                localItemStack.setAmount(localItemStack.getAmount() - 1);
-
-                player.getInventory().setItemInMainHand(localItemStack);
-            } else {
-                return false;
+            for (ItemStack itemStack: player.getInventory().getContents()) {
+                if (isPick(itemStack)) {
+                    itemStack.setAmount(itemStack.getAmount() - 1);
+                    return true;
+                }
             }
+
+            return false;
         }
 
         return true;

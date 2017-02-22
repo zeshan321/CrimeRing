@@ -12,6 +12,7 @@ import com.zeshanaslam.crimering.Main;
 import es.pollitoyeye.Bikes.BikeManager;
 import es.pollitoyeye.Bikes.CarManager;
 import es.pollitoyeye.Bikes.VehiclesMain;
+import glow.EntityGlowHelper;
 import haveric.recipeManager.RecipeManager;
 import haveric.recipeManager.recipes.BaseRecipe;
 import haveric.recipeManager.recipes.CraftRecipe;
@@ -244,7 +245,7 @@ public class ActionDefaults {
             Region region = new CuboidRegion(rg.getMaximumPoint(), rg.getMinimumPoint());
             Location centerLoc = new Location(Bukkit.getWorld(world), region.getCenter().getX(), region.getCenter().getY(), region.getCenter().getZ());
             if (!centerLoc.getChunk().isLoaded()) centerLoc.getChunk().load();
-            
+
             Collection<Entity> entities = Bukkit.getWorld(world).getNearbyEntities(centerLoc, region.getWidth() / 2, region.getHeight() / 2, region.getLength() / 2);
 
             for (Entity entity : entities) {
@@ -2262,81 +2263,8 @@ public class ActionDefaults {
         return names;
     }
 
-    public void setGlow(Player player, String color) {
-        color = color.toUpperCase();
-
-        Color leatherColor = null;
-        switch (color) {
-            case "WHITE":
-                leatherColor = Color.WHITE;
-                break;
-
-            case "SILVER":
-                leatherColor = Color.SILVER;
-                break;
-
-            case "GRAY":
-                leatherColor = Color.GRAY;
-                break;
-
-            case "BLACK":
-                leatherColor = Color.BLACK;
-                break;
-
-            case "RED":
-                leatherColor = Color.RED;
-                break;
-
-            case "MAROON":
-                leatherColor = Color.MAROON;
-                break;
-
-            case "YELLOW":
-                leatherColor = Color.YELLOW;
-                break;
-
-            case "OLIVE":
-                leatherColor = Color.OLIVE;
-                break;
-
-            case "LIME":
-                leatherColor = Color.LIME;
-                break;
-
-            case "GREEN":
-                leatherColor = Color.GREEN;
-                break;
-
-            case "AQUA":
-                leatherColor = Color.AQUA;
-                break;
-
-            case "TEAL":
-                leatherColor = Color.TEAL;
-                break;
-
-            case "BLUE":
-                leatherColor = Color.BLUE;
-                break;
-
-            case "NAVY":
-                leatherColor = Color.NAVY;
-                break;
-
-            case "FUCHSIA":
-                leatherColor = Color.FUCHSIA;
-                break;
-
-            case "PURPLE":
-                leatherColor = Color.PURPLE;
-                break;
-
-            case "ORANGE":
-                leatherColor = Color.ORANGE;
-                break;
-        }
-
-        player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 99999999, 1, true, true, leatherColor));
+    public EntityGlowHelper getGlowManager() {
+        return Main.instance.entityGlowHelper;
     }
 
     public boolean isInPSRegion(Player player) {

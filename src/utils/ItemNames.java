@@ -15,7 +15,7 @@ import java.util.Map;
  * Class to get the displayed name (as the client shows) for an item.
  */
 public class ItemNames {
-    private static final Map<String,String> map = ImmutableMap.<String,String>builder()
+    private static final Map<String, String> map = ImmutableMap.<String, String>builder()
             .put("1", "Stone")
             .put("1:1", "Granite")
             .put("1:2", "Polished Granite")
@@ -593,7 +593,7 @@ public class ItemNames {
             if (meta.getDisplayName() != null) {
                 return meta.getDisplayName();
             } else if (meta instanceof BookMeta) {
-                return ((BookMeta)meta).getTitle();
+                return ((BookMeta) meta).getTitle();
             }
         }
 
@@ -604,7 +604,7 @@ public class ItemNames {
             // special case: white wool/carpet is just called "Wool" or "Carpet"
             result = map.get(key);
         } else if (mat == Material.WOOL || mat == Material.CARPET || mat == Material.STAINED_CLAY || mat == Material.STAINED_GLASS || mat == Material.STAINED_GLASS_PANE) {
-            DyeColor dc = DyeColor.getByWoolData((byte)stack.getDurability());
+            DyeColor dc = DyeColor.getByWoolData((byte) stack.getDurability());
             result = dc == null ? map.get(key) : WordUtils.capitalizeFully(dc.toString().replace("_", " ")) + " " + map.get(key);
         } else if (mat == Material.LEATHER_HELMET || mat == Material.LEATHER_CHESTPLATE || mat == Material.LEATHER_LEGGINGS || mat == Material.LEATHER_BOOTS) {
             LeatherArmorMeta leatherArmorMeta = (LeatherArmorMeta) stack.getItemMeta();

@@ -2,7 +2,6 @@ package perks.arrest;
 
 import com.zeshanaslam.crimering.Main;
 import customevents.PlayerArrestedEvent;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -10,8 +9,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import raids.PartyAPI;
 import raids.PartyObject;
@@ -60,6 +57,7 @@ public class GlowPerk implements Listener {
 
                                 // Remove from timer
                                 Main.instance.perkManager.timer.remove(player.getUniqueId());
+                                Main.instance.entityGlowHelper.updateGlows(player);
 
                                 Main.instance.getServer().getPluginManager().callEvent(new PlayerArrestedEvent(player, cop, timerObject.crimes, timerObject.timestamp));
                             } else {
@@ -74,20 +72,6 @@ public class GlowPerk implements Listener {
         }
     }
 
-    // Reapply glows on join
-    @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-
-        if (plugin.perkManager.timer.containsKey(player.getUniqueId())) {
-            Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                plugin.actionDefaults.setGlow(player, "RED");
-            }, 1L);
-        } else {
-            Main.instance.actionDefaults.removePotionEffect(player, "GLOWING");
-        }
-    }
-
     @EventHandler
     public void onCopKill(EntityDeathEvent event) {
         if (!(event.getEntity().getKiller() instanceof Player)) {
@@ -97,12 +81,16 @@ public class GlowPerk implements Listener {
         Entity killed = event.getEntity();
         Player killer = event.getEntity().getKiller();
 
-        if (copUtil.isCop(killer) || Main.instance.mythicAPI.isMythicMob(killed) && Main.instance.mythicAPI.getMythicMobInstance(killed).getType().getInternalName().startsWith("Cop")) {
+        if (Main.instance.mythicAPI.isMythicMob(killed) && Main.instance.mythicAPI.getMythicMobInstance(killed).getType().getInternalName().toLowerCase().contains("cop")) {
             copUtil.logCrime(killer, PerkManager.Crime.COPKILL);
             return;
         }
 
         if (killed instanceof Player) {
+            if (copUtil.isCop((Player) killed)) {
+                copUtil.logCrime(killer, PerkManager.Crime.COPKILL);
+                return;
+            }
             copUtil.logCrime(killer, PerkManager.Crime.PLAYERKILL);
         }
     }
@@ -114,12 +102,5 @@ public class GlowPerk implements Listener {
 
             copUtil.logCrime(player, PerkManager.Crime.ASSAULT);
         }
-    }
-
-    @EventHandler
-    public void onLeave(PlayerQuitEvent event) {
-        Player player = event.getPlayer();
-
-        plugin.actionDefaults.removePotionEffect(player, "GLOWING");
     }
 }

@@ -28,6 +28,8 @@ import entity.EntityObject;
 import events.*;
 import fakeblocks.FakeblockCommand;
 import fakeblocks.FakeblockListener;
+import glow.EntityGlowHelper;
+import glow.GlowListener;
 import io.lumine.xikage.mythicmobs.api.bukkit.BukkitAPIHelper;
 import locks.LockCommand;
 import locks.LockListener;
@@ -77,6 +79,7 @@ public class Main extends JavaPlugin {
     public Economy economy;
     public ClanManager clanManager;
     public ZPermissionsService permissions;
+    public Essentials essentials;
 
     // Managers
     public ScriptsManager scriptsManager;
@@ -96,7 +99,7 @@ public class Main extends JavaPlugin {
     public DamageManager damageManager;
     public CooldownManager cooldownManager;
     public PaydayManager paydayManager;
-    public Essentials essentials;
+    public EntityGlowHelper entityGlowHelper;
 
     // Lists and maps
     public ArrayList<String> flag = new ArrayList<>();
@@ -124,6 +127,9 @@ public class Main extends JavaPlugin {
         if (rsp != null) {
             economy = rsp.getProvider();
         }
+
+        // Glow helper
+        entityGlowHelper = new EntityGlowHelper();
 
         // Hook into ZPermissions
         permissions = Bukkit.getServicesManager().load(ZPermissionsService.class);
@@ -272,6 +278,7 @@ public class Main extends JavaPlugin {
         pm.registerEvents(new ActionArrested(this), this);
         pm.registerEvents(new DamageListener(this), this);
         pm.registerEvents(new PaydayListener(this), this);
+        pm.registerEvents(new GlowListener(this), this);
 
         // Register perks
         pm.registerEvents(new GlowPerk(this), this);

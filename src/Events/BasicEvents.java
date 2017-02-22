@@ -335,7 +335,8 @@ public class BasicEvents implements Listener {
             int cZ = chunk.getZ() * 16;
             Biome biome = player.getLocation().getWorld().getBiome(cX, cZ);
             if (biome == Biome.SKY || biome == Biome.VOID || biome == Biome.HELL) {
-                player.sendMessage(ChatColor.RED + "CR found '" + biome.name() + "' Biome. Fixing it... (Re-log for chunk updates)");
+                if (player.isOp())
+                    player.sendMessage(ChatColor.RED + "CR found '" + biome.name() + "' Biome. Fixing it... (Re-log for chunk updates)");
 
                 for (int x = 0; x < 16; x++) {
                     for (int z = 0; z < 16; z++) {

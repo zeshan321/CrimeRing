@@ -11,16 +11,15 @@ import java.util.UUID;
 
 public class PaydayManager {
 
-    public HashMap<UUID, Long> players = new HashMap<>();
-
     private final int time = 900;
+    public HashMap<UUID, Long> players = new HashMap<>();
     private PerksUtil perksUtil;
 
     public PaydayManager() {
         perksUtil = new PerksUtil();
 
         Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.instance, () -> {
-            for (Player playersOnline: Bukkit.getOnlinePlayers()) {
+            for (Player playersOnline : Bukkit.getOnlinePlayers()) {
                 if (players.containsKey(playersOnline.getUniqueId())) {
                     Player player = Bukkit.getPlayer(playersOnline.getUniqueId());
 

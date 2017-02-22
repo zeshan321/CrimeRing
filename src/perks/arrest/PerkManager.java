@@ -53,13 +53,12 @@ public class PerkManager {
 
                         if (!player.isOnline()) {
                             iterator.remove();
-                            Main.instance.actionDefaults.removePotionEffect(player, "GLOWING");
                             continue;
                         }
 
 
                         Main.instance.actionDefaults.sendActionBar(player, ChatColor.GOLD + "Status: " + ChatColor.GREEN + "Evaded");
-                        Main.instance.actionDefaults.removePotionEffect(player, "GLOWING");
+                        Main.instance.entityGlowHelper.updateGlows(player);
                         iterator.remove();
                     } else {
                         iterator.remove();
