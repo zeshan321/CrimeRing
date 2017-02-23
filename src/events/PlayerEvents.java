@@ -6,13 +6,17 @@ import me.robin.battlelevels.events.PlayerLevelUpEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.inventivetalent.bossbar.BossBar;
 import org.inventivetalent.bossbar.BossBarAPI;
 
@@ -84,6 +88,23 @@ public class PlayerEvents implements Listener {
         if (player.getWorld().getName().equalsIgnoreCase("world")) {
             Location location = new Location(player.getWorld(), -295, 63, -77, (float) 155.504, (float) 0.75);
             event.setRespawnLocation(location);
+        }
+    }
+
+    // Stop diamond hoes being used as hoes
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onUse(PlayerInteractEvent event) {
+        // Only use right hand
+        if (event.getHand() == EquipmentSlot.OFF_HAND) {
+            return;
+        }
+
+        if (event.getItem() == null) {
+            return;
+        }
+
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getItem().getType() == Material.DIAMOND_HOE) {
+            event.setCancelled(true);
         }
     }
 }

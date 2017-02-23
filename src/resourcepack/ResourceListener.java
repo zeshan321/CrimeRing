@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 
@@ -37,14 +38,18 @@ public class ResourceListener implements Listener {
                 e.printStackTrace();
             }
         }, 20L);
+    }
 
-        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-            Player player = event.getPlayer();
+    @EventHandler
+    public void onMove(PlayerMoveEvent event) {
+        Player player = event.getPlayer();
 
-            if (!(plugin.resourcepack.contains(event.getPlayer().getUniqueId()))) {
-                player.kickPlayer(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("Resource-kick")));
+        if (event.getFrom().getZ() != event.getTo().getZ() && event.getFrom().getX() != event.getTo().getX()) {
+            if (!(plugin.resourcepack.contains(player.getUniqueId()))) {
+                event.setCancelled(true);
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("Resource-kick")));
             }
-        }, 20L * 300);
+        }
     }
 
     @EventHandler
@@ -57,10 +62,7 @@ public class ResourceListener implements Listener {
         plugin.getServer().getScheduler().runTask(plugin, () -> {
             if (event.getStatus() == PlayerResourcePackStatusEvent.Status.ACCEPTED || event.getStatus() == PlayerResourcePackStatusEvent.Status.SUCCESSFULLY_LOADED) {
                 plugin.resourcepack.add(event.getPlayer().getUniqueId());
-                return;
             }
-
-            event.getPlayer().kickPlayer(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("Resource-kick")));
         });
     }
 }

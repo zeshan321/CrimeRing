@@ -7,8 +7,10 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 
 import javax.script.*;
 
@@ -17,6 +19,7 @@ public class ActionBlocks implements Listener {
     private final Main plugin;
     private final String typeBlock = "BLOCK-";
     private final String typeBreak = "BREAK-";
+    private final String typePlace = "PLACE-";
 
     public ActionBlocks(Main plugin) {
         this.plugin = plugin;
@@ -131,6 +134,45 @@ public class ActionBlocks implements Listener {
                     } catch (ScriptException e) {
                         e.printStackTrace();
                     }
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onBlockPlace(BlockPlaceEvent event) {
+        Player player = event.getPlayer();
+
+        String blockData = event.getBlockPlaced().getTypeId() + ":" + event.getBlockPlaced().getData();
+        if (Main.instance.listeners.contains(player.getUniqueId(), typePlace + blockData)) {
+            ListenerObject listenerObject = Main.instance.listeners.get(player.getUniqueId(), typePlace + blockData);
+
+            Invocable invocable = (Invocable) listenerObject.engine;
+            try {
+                invocable.invokeFunction(listenerObject.method, event);
+            } catch (ScriptException | NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+            return;
+        }
+
+        if (Main.instance.scriptsManager.contains(typePlace + blockData)) {
+            for (ScriptObject scriptObject : Main.instance.scriptsManager.getObjects(typePlace + blockData)) {
+                try {
+                    ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+
+                    // Objects
+                    Bindings bindings = engine.createBindings();
+                    bindings.put("player", player);
+                    bindings.put("event", event);
+                    bindings.put("CR", new ActionDefaults(typePlace + blockData, engine));
+
+                    ScriptContext scriptContext = engine.getContext();
+                    scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+
+                    engine.eval(scriptObject.scriptData, scriptContext);
+                } catch (ScriptException e) {
+                    e.printStackTrace();
                 }
             }
         }

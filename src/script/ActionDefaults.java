@@ -1092,6 +1092,10 @@ public class ActionDefaults {
                 Main.instance.listeners.put(player.getUniqueId(), type + "-" + trigger, listenerObject);
                 break;
 
+            case "PLACE":
+                Main.instance.listeners.put(player.getUniqueId(), type + "-" + trigger, listenerObject);
+                break;
+
             // 'GROW' will not work with listener
             case "GROW":
                 Main.instance.listeners.put(player.getUniqueId(), type + "-" + trigger, listenerObject);
@@ -1144,6 +1148,10 @@ public class ActionDefaults {
                 break;
 
             case "INTERACT":
+                Main.instance.listeners.remove(player.getUniqueId(), type + "-" + trigger);
+                break;
+
+            case "PLACE":
                 Main.instance.listeners.remove(player.getUniqueId(), type + "-" + trigger);
                 break;
 
