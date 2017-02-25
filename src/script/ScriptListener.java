@@ -5,6 +5,7 @@ import com.zeshanaslam.crimering.Main;
 import haveric.recipeManager.RecipeManager;
 import haveric.recipeManager.recipes.BaseRecipe;
 import haveric.recipeManager.recipes.CraftRecipe;
+import haveric.recipeManager.recipes.SmeltRecipe;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -252,8 +253,20 @@ public class ScriptListener implements Listener {
 
                             if (itemStack == null) continue;
 
-                            inventory.setItem(i, itemStack);
+                            inventory.setItem(i, plugin.renamerManager.renameItem(itemStack));
                         }
+
+                        player.openInventory(inventory);
+                    }
+
+                    if (recipe instanceof SmeltRecipe) {
+                        SmeltRecipe smeltRecipe = (SmeltRecipe) recipe;
+
+                        Inventory inventory = Bukkit.getServer().createInventory(player, InventoryType.FURNACE, "Recipe Viewer: " + name);
+
+                        inventory.setItem(0, plugin.renamerManager.renameItem(smeltRecipe.getIngredient()));
+                        inventory.setItem(1, plugin.renamerManager.renameItem(smeltRecipe.getFuel()));
+                        inventory.setItem(2, plugin.renamerManager.renameItem(smeltRecipe.getResult()));
 
                         player.openInventory(inventory);
                     }

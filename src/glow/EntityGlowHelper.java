@@ -20,6 +20,9 @@ public class EntityGlowHelper {
         glowFilter = new EntityFlagFilter(Main.instance) {
             @Override
             protected int filterFlag(Player observer, Entity observed, int flagValues) {
+                if (observed == null || observed.getUniqueId() == null) {
+                    return flagValues;
+                }
 
                 // Check if player is wanted
                 CopUtil copUtil = new CopUtil();

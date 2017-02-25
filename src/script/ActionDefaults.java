@@ -9,13 +9,12 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.zeshanaslam.crimering.FileHandler;
 import com.zeshanaslam.crimering.Main;
-import es.pollitoyeye.Bikes.BikeManager;
-import es.pollitoyeye.Bikes.CarManager;
-import es.pollitoyeye.Bikes.VehiclesMain;
+import es.pollitoyeye.Bikes.*;
 import glow.EntityGlowHelper;
 import haveric.recipeManager.RecipeManager;
 import haveric.recipeManager.recipes.BaseRecipe;
 import haveric.recipeManager.recipes.CraftRecipe;
+import haveric.recipeManager.recipes.SmeltRecipe;
 import haveric.recipeManagerCommon.recipes.RMCRecipeInfo;
 import io.lumine.xikage.mythicmobs.api.exceptions.InvalidMobTypeException;
 import me.Stijn.AudioClient.AudioClient;
@@ -2100,15 +2099,19 @@ public class ActionDefaults {
     }
 
     public void setObjective(Player player, String objective, boolean party) {
-        PartyAPI partyAPI = new PartyAPI();
-        PartyObject partyObject = partyAPI.getParty(player);
+        if (party) {
+            PartyAPI partyAPI = new PartyAPI();
+            PartyObject partyObject = partyAPI.getParty(player);
 
-        if (partyObject == null) {
-            Main.instance.objective.put(player.getUniqueId(), objective);
-        } else {
-            for (Player players : partyObject.getMembers()) {
-                Main.instance.objective.put(players.getUniqueId(), objective);
+            if (partyObject == null) {
+                Main.instance.objective.put(player.getUniqueId(), objective);
+            } else {
+                for (Player players : partyObject.getMembers()) {
+                    Main.instance.objective.put(players.getUniqueId(), objective);
+                }
             }
+        } else {
+            Main.instance.objective.put(player.getUniqueId(), objective);
         }
     }
 
@@ -2194,7 +2197,7 @@ public class ActionDefaults {
         inv.openInventory();
     }
 
-    public ArrayList<ItemStack> getCraftingRecipes() {
+    public ArrayList<ItemStack> getCraftingRecipes(String file) {
         ArrayList<ItemStack> names = new ArrayList<>();
 
         for (Map.Entry<BaseRecipe, RMCRecipeInfo> e : RecipeManager.getRecipes().getRecipeList().entrySet()) {
@@ -2204,6 +2207,8 @@ public class ActionDefaults {
             if (name.contains("shaped")) continue;
 
             if (recipe instanceof CraftRecipe) {
+                if (!e.getValue().getAdder().equals(file)) continue;
+
                 CraftRecipe craftRecipe = (CraftRecipe) recipe;
 
                 ItemStack item = craftRecipe.getFirstResult();
@@ -2213,6 +2218,38 @@ public class ActionDefaults {
                     if (ingredients == null) continue;
 
                     ItemStack renamed = createItemStackWithRenamer(ingredients.getTypeId(), ingredients.getAmount(), ingredients.getDurability());
+                    lore = lore + ChatColor.RED + ChatColor.stripColor(ItemNames.lookup(renamed)) + " x " + renamed.getAmount() + "\n";
+                }
+
+                names.add(createItemStackWithMeta(item.getTypeId(), item.getAmount(), item.getDurability(), ChatColor.GRAY + "Recipe: " + ChatColor.DARK_GREEN + name, lore));
+            }
+        }
+
+        return names;
+    }
+
+    public ArrayList<ItemStack> getSmeltingRecipes(String file) {
+        ArrayList<ItemStack> names = new ArrayList<>();
+
+        for (Map.Entry<BaseRecipe, RMCRecipeInfo> e : RecipeManager.getRecipes().getRecipeList().entrySet()) {
+            BaseRecipe recipe = e.getKey();
+            String name = recipe.getName();
+
+            if (recipe instanceof SmeltRecipe) {
+                if (!e.getValue().getAdder().equals(file)) continue;
+
+                SmeltRecipe smeltRecipe = (SmeltRecipe) recipe;
+
+                ItemStack item = smeltRecipe.getResult();
+
+                String lore = ChatColor.DARK_GRAY + "Requires:\n";
+                if (smeltRecipe.getIngredient() == null) continue;
+
+                ItemStack renamed = createItemStackWithRenamer(smeltRecipe.getIngredient().getTypeId(), smeltRecipe.getIngredient().getAmount(), smeltRecipe.getIngredient().getDurability());
+                lore = lore + ChatColor.RED + ChatColor.stripColor(ItemNames.lookup(renamed)) + " x " + renamed.getAmount() + "\n";
+
+                if (smeltRecipe.getFuel() != null) {
+                    renamed = createItemStackWithRenamer(smeltRecipe.getFuel().getTypeId(), smeltRecipe.getFuel().getAmount(), smeltRecipe.getFuel().getDurability());
                     lore = lore + ChatColor.RED + ChatColor.stripColor(ItemNames.lookup(renamed)) + " x " + renamed.getAmount() + "\n";
                 }
 
@@ -2281,8 +2318,26 @@ public class ActionDefaults {
     }
 
     public void broadcastMessage(String message) {
-        for (Player players: Bukkit.getOnlinePlayers()) {
+        for (Player players : Bukkit.getOnlinePlayers()) {
             players.sendMessage(message.split("\\n"));
         }
+    }
+
+    public ItemStack getVehicleItemStack(String vehicle, String type) {
+        switch (vehicle) {
+            case "car":
+                return CarManager.getCarItem(type);
+
+            case "bike":
+                return BikeManager.getBikeItem(type);
+
+            case "helicopter":
+                return HelicopterManager.getHelicopterItem(type);
+
+            case "plane":
+                return PlaneManager.getPlaneItem(type);
+        }
+
+        return null;
     }
 }

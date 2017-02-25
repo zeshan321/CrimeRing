@@ -37,7 +37,7 @@ public class ResourceListener implements Listener {
             } catch (InvocationTargetException e) {
                 e.printStackTrace();
             }
-        }, 20L);
+        }, 40L);
     }
 
     @EventHandler
