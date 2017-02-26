@@ -1,19 +1,32 @@
 package events;
 
 import com.zeshanaslam.crimering.Main;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Generators implements Listener {
 
     private final Main plugin;
+    private final List<BlockFace> faceList;
 
     public Generators(Main plugin) {
         this.plugin = plugin;
+
+        faceList = new ArrayList<>();
+        faceList.add(BlockFace.UP);
+        faceList.add(BlockFace.NORTH);
+        faceList.add(BlockFace.EAST);
+        faceList.add(BlockFace.SOUTH);
+        faceList.add(BlockFace.WEST);
     }
 
     @EventHandler
@@ -41,31 +54,24 @@ public class Generators implements Listener {
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
-        int radius = 1;
         Block block = event.getBlock();
-        Block newBlock = null;
 
-        for (int x = -(radius); x <= radius; x++) {
-            for (int y = -(radius); y <= radius; y++) {
-                for (int z = -(radius); z <= radius; z++) {
-                    if (block.getRelative(x, y, z).getType().name().toLowerCase().contains("prismarine")) {
-                        if (block.getLocation().distance(block.getRelative(x, y, z).getLocation()) == 0.0) {
-                            continue;
-                        }
-
-                        newBlock = block.getRelative(x, y, z);
-                    }
+        if (block.getType().name().toLowerCase().contains("prismarine")) {
+            for (BlockFace blockFace : faceList) {
+                if (block.getRelative(blockFace).getType() != Material.AIR) {
+                    event.setCancelled(true);
                 }
             }
-        }
-
-        if (newBlock != null) {
-            if (block.getY() < newBlock.getY()) {
-                if (!block.getType().name().toLowerCase().contains("prismarine"))
-                    return;
+        } else {
+            for (BlockFace blockFace : faceList) {
+                if (block.getRelative(blockFace).getType().name().toLowerCase().contains("prismarine")) {
+                    event.setCancelled(true);
+                }
             }
 
-            event.setCancelled(true);
+            if (block.getRelative(BlockFace.DOWN).getType().name().toLowerCase().contains("prismarine")) {
+                event.setCancelled(true);
+            }
         }
     }
 }

@@ -1401,6 +1401,12 @@ public class ActionDefaults {
         first = Main.instance.renamerManager.renameItem(first);
         result = Main.instance.renamerManager.renameItem(result);
 
+        // Check if item is crackshot
+        String title = new CSUtility().getWeaponTitle(first);
+        if (title != null) {
+            first = new CSUtility().generateWeapon(title);
+        }
+
         merchant.addOffer(Main.instance.merchantAPI.newOffer(result, first));
     }
 
@@ -1408,6 +1414,18 @@ public class ActionDefaults {
         first = Main.instance.renamerManager.renameItem(first);
         second = Main.instance.renamerManager.renameItem(second);
         result = Main.instance.renamerManager.renameItem(result);
+
+        // Check if item is crackshot
+        String title = new CSUtility().getWeaponTitle(first);
+        if (title != null) {
+            first = new CSUtility().generateWeapon(title);
+        }
+
+        title = new CSUtility().getWeaponTitle(second);
+        if (title != null) {
+            second = new CSUtility().generateWeapon(title);
+        }
+
 
         merchant.addOffer(Main.instance.merchantAPI.newOffer(result, first, second));
     }
@@ -1734,6 +1752,12 @@ public class ActionDefaults {
 
         if (itemStack != null) {
             return itemStack.getType() == Material.DIAMOND_HOE && itemStack.getDurability() == 497;
+        } else {
+            for (ItemStack itemStack1: player.getInventory().getContents()) {
+                if (itemStack1.getType() == Material.DIAMOND_HOE && itemStack1.getDurability() == 497) {
+                    return true;
+                }
+            }
         }
 
         return false;
@@ -2339,5 +2363,26 @@ public class ActionDefaults {
         }
 
         return null;
+    }
+
+    public void preloadChunks(String world, String regionName) {
+        ProtectedRegion rg = Main.instance.worldGuardPlugin.getRegionManager(Bukkit.getWorld(world)).getRegion(regionName);
+
+        if (rg != null) {
+            Region region = new CuboidRegion(rg.getMaximumPoint(), rg.getMinimumPoint());
+
+            com.sk89q.worldedit.Vector max = region.getMaximumPoint();
+            com.sk89q.worldedit.Vector min = region.getMinimumPoint();
+
+            for (int i = min.getBlockX(); i <= max.getBlockX(); i++) {
+                for (int j = min.getBlockY(); j <= max.getBlockY(); j++) {
+                    for (int k = min.getBlockZ(); k <= max.getBlockZ(); k++) {
+                        Block block = Bukkit.getServer().getWorld(world).getBlockAt(i, j, k);
+
+                        if (!block.getChunk().isLoaded()) block.getChunk().load();
+                    }
+                }
+            }
+        }
     }
 }

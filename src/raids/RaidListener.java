@@ -1,5 +1,6 @@
 package raids;
 
+import com.shampaggon.crackshot.CSUtility;
 import com.zeshanaslam.crimering.FileHandler;
 import com.zeshanaslam.crimering.Main;
 import org.bukkit.Bukkit;
@@ -12,10 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import utils.ItemUtils;
 
@@ -210,6 +208,30 @@ public class RaidListener implements Listener {
                     }
                 }
             }
+        }
+    }
+
+    @EventHandler
+    public void onTeleportOut(PlayerChangedWorldEvent event) {
+        Player player = event.getPlayer();
+
+        if (event.getFrom().getName().equalsIgnoreCase("raidworld")) {
+            RaidObject raidObject = plugin.raidManager.getRaid(player);
+
+            if (raidObject != null) {
+                raidObject.removeMember(player);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onQuit(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
+
+        RaidObject raidObject = plugin.raidManager.getRaid(player);
+
+        if (raidObject != null) {
+            raidObject.removeMember(player);
         }
     }
 }

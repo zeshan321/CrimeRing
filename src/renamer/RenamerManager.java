@@ -3,10 +3,12 @@ package renamer;
 import com.zeshanaslam.crimering.FileHandler;
 import com.zeshanaslam.crimering.Main;
 import haveric.recipeManager.api.events.RecipeManagerCraftEvent;
+import haveric.recipeManager.api.events.RecipeManagerSmeltEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCreativeEvent;
@@ -135,8 +137,13 @@ public class RenamerManager {
                 player.getInventory().setItem(event.getNewSlot(), renameItem(itemStack));
             }
 
-            @EventHandler
+            @EventHandler(priority = EventPriority.HIGHEST)
             public void onCraft(RecipeManagerCraftEvent event) {
+                event.setResult(renameItem(event.getResult()));
+            }
+
+            @EventHandler(priority = EventPriority.HIGHEST)
+            public void onSmelt(RecipeManagerSmeltEvent event) {
                 event.setResult(renameItem(event.getResult()));
             }
 
