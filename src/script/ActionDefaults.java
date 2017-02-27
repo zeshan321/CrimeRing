@@ -843,6 +843,7 @@ public class ActionDefaults {
             try {
                 invocable.invokeFunction(name);
             } catch (ScriptException | NoSuchMethodException e) {
+                System.out.println("[CR] Scripting error at function: " + name);
                 e.printStackTrace();
             }
         }, seconds * 20);
@@ -859,6 +860,7 @@ public class ActionDefaults {
                 try {
                     invocable.invokeFunction(name);
                 } catch (ScriptException | NoSuchMethodException e) {
+                    System.out.println("[CR] Scripting error at function: " + name);
                     e.printStackTrace();
                 }
             }
@@ -878,6 +880,7 @@ public class ActionDefaults {
             try {
                 invocable.invokeFunction(name, task);
             } catch (ScriptException | NoSuchMethodException e) {
+                System.out.println("[CR] Scripting error at repeat function: " + name);
                 e.printStackTrace();
             }
 
@@ -895,6 +898,7 @@ public class ActionDefaults {
             try {
                 invocable.invokeFunction(name, task);
             } catch (ScriptException | NoSuchMethodException e) {
+                System.out.println("[CR] Scripting error at repeat function: " + name);
                 e.printStackTrace();
             }
 
@@ -923,6 +927,7 @@ public class ActionDefaults {
 
                 engine.eval(scriptObject.scriptData, scriptContext);
             } catch (ScriptException e) {
+                System.out.println("[CR] Scripting error at: " + scriptObject.dir);
                 e.printStackTrace();
             }
         }
@@ -1598,7 +1603,7 @@ public class ActionDefaults {
                 }
             }
         }
-        
+
         return false;
     }
 

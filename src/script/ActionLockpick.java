@@ -28,6 +28,7 @@ public class ActionLockpick implements Listener {
             try {
                 invocable.invokeFunction(listenerObject.method, event);
             } catch (ScriptException | NoSuchMethodException e) {
+                System.out.println("[CR] Scripting error at: " + type + event.getLockType());
                 e.printStackTrace();
             }
 
