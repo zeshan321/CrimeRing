@@ -123,6 +123,18 @@ public class BankListener implements Listener {
                         }
                     }.runTaskLater(plugin, 300L);
                     break;
+
+                case "Convert":
+                    player.closeInventory();
+                    int cash = plugin.actionDefaults.getInvMoney(player);
+                    plugin.actionDefaults.takeInvMoney(player, cash);
+
+                    for (ItemStack money: plugin.actionDefaults.getBillsStack(cash)) {
+                        if (money == null) continue;
+
+                        player.getInventory().addItem(money);
+                    }
+                    break;
             }
         }
     }
@@ -186,8 +198,9 @@ public class BankListener implements Listener {
 
         if (!atm) {
             inventory.setItem(1, Main.instance.actionDefaults.createItemStackWithMeta(293, 1, 412, ChatColor.GOLD + "Check balance", ChatColor.GREEN + "Bank Balance: " + ChatColor.AQUA + "$" + bankBalance + "\n" + ChatColor.GREEN + "Player Balance: " + ChatColor.AQUA + "$" + playerBalance));
-            inventory.setItem(4, Main.instance.actionDefaults.createItemStackWithMeta(293, 1, 411, ChatColor.GOLD + "Withdraw", ChatColor.GREEN + "Click to withdraw"));
-            inventory.setItem(7, Main.instance.actionDefaults.createItemStackWithMeta(293, 1, 410, ChatColor.GOLD + "Deposit", ChatColor.GREEN + "Click to deposit"));
+            inventory.setItem(3, Main.instance.actionDefaults.createItemStackWithMeta(293, 1, 411, ChatColor.GOLD + "Withdraw", ChatColor.GREEN + "Click to withdraw"));
+            inventory.setItem(5, Main.instance.actionDefaults.createItemStackWithMeta(293, 1, 410, ChatColor.GOLD + "Deposit", ChatColor.GREEN + "Click to deposit"));
+            inventory.setItem(7, Main.instance.actionDefaults.createItemStackWithMeta(293, 1, 410, ChatColor.GOLD + "Convert", ChatColor.GREEN + "Click to convert your cash to bigger bills"));
         } else {
             inventory.setItem(2, Main.instance.actionDefaults.createItemStackWithMeta(293, 1, 412, ChatColor.GOLD + "Check balance", ChatColor.GREEN + "Bank Balance: " + ChatColor.AQUA + "$" + bankBalance + "\n" + ChatColor.GREEN + "Player Balance: " + ChatColor.AQUA + "$" + playerBalance));
             inventory.setItem(6, Main.instance.actionDefaults.createItemStackWithMeta(293, 1, 411, ChatColor.GOLD + "Withdraw", ChatColor.GREEN + "Click to withdraw"));

@@ -37,13 +37,14 @@ public class EntityGlowHelper {
                 if (glowing.containsKey(observed.getUniqueId())) {
                     List<UUID> viewing = glowing.get(observed.getUniqueId());
 
-                    if (!viewing.isEmpty()) {
-                        if (viewing.contains(observer.getUniqueId())) {
-                            return flagValues | ENTITY_GLOWING;
-                        }
+                    if (viewing.isEmpty()) {
+                        glowing.remove(observed.getUniqueId());
+                        return flagValues;
                     }
-                } else {
-                    glowing.remove(observed.getUniqueId());
+
+                    if (viewing.contains(observer.getUniqueId())) {
+                        return flagValues | ENTITY_GLOWING;
+                    }
                 }
 
                 return flagValues;

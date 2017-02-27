@@ -13,10 +13,13 @@ import es.pollitoyeye.Bikes.*;
 import glow.EntityGlowHelper;
 import haveric.recipeManager.RecipeManager;
 import haveric.recipeManager.recipes.BaseRecipe;
+import haveric.recipeManager.recipes.CombineRecipe;
 import haveric.recipeManager.recipes.CraftRecipe;
 import haveric.recipeManager.recipes.SmeltRecipe;
 import haveric.recipeManagerCommon.recipes.RMCRecipeInfo;
+import io.lumine.xikage.mythicmobs.adapters.AbstractEntity;
 import io.lumine.xikage.mythicmobs.api.exceptions.InvalidMobTypeException;
+import io.lumine.xikage.mythicmobs.mobs.ActiveMob;
 import me.Stijn.AudioClient.AudioClient;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.disguisetypes.DisguiseType;
@@ -373,6 +376,28 @@ public class ActionDefaults {
         FileHandler fileHandler = new FileHandler("plugins/CrimeRing/items/" + name + ".yml");
 
         ItemStack item = fileHandler.getItemStack("Item");
+        item.setAmount(amount);
+
+        // Add 'Raid Item' to lore
+        if (remove) {
+            ItemMeta itemMeta = item.getItemMeta();
+            List<String> lore = new ArrayList<>();
+
+            if (itemMeta.hasLore()) {
+                lore = itemMeta.getLore();
+            }
+
+            lore.add(ChatColor.GOLD + "Raid Item");
+            itemMeta.setLore(lore);
+
+            item.setItemMeta(itemMeta);
+        }
+
+        return item;
+    }
+
+    public ItemStack getItem(int id, int data, int amount, boolean remove) {
+        ItemStack item = Main.instance.renamerManager.renameItem(new ItemStack(id, amount, (short) data));
         item.setAmount(amount);
 
         // Add 'Raid Item' to lore
@@ -805,6 +830,7 @@ public class ActionDefaults {
 
                     engine.eval(scriptObject.scriptData, scriptContext);
                 } catch (ScriptException e) {
+                    System.out.println("[CR] Scripting error at: " + scriptObject.dir);
                     e.printStackTrace();
                 }
             }
@@ -1535,6 +1561,18 @@ public class ActionDefaults {
         Main.instance.mythicAPI.taunt(entity, target);
     }
 
+    public void addMMThreat(Entity mob, LivingEntity target, double amount) {
+        Main.instance.mythicAPI.addThreat(mob, target, amount);
+    }
+
+    public void reduceThreat(Entity mob, LivingEntity target, double amount) {
+        Main.instance.mythicAPI.reduceThreat(mob, target, amount);
+    }
+
+    public boolean hasMMTarget(Entity entity) {
+        return Main.instance.mythicAPI.getMythicMobInstance(entity).hasTarget();
+    }
+
     public void castMMSkill(Entity entity, String skill) {
         Main.instance.mythicAPI.castSkill(entity, skill);
     }
@@ -1544,6 +1582,24 @@ public class ActionDefaults {
         eTargets.add(player);
 
         Main.instance.mythicAPI.castSkill(entity, skill, player, player.getLocation(), eTargets, null, 1.0F);
+    }
+
+    public boolean isThreat(Player player, Entity entity) {
+        ActiveMob activeMob = Main.instance.mythicAPI.getMythicMobInstance(entity);
+
+        if (activeMob != null) {
+            Set<AbstractEntity> abstractEntities = activeMob.getThreatTable().getAllThreatTargets();
+
+            for (AbstractEntity abstractEntity: abstractEntities) {
+                if (abstractEntity.getName() == null) continue;
+
+                if (abstractEntity.getName().equals(player.getName())) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
     }
 
     public void disguiseEntity(Entity entity, String type, String name) {
@@ -1743,17 +1799,19 @@ public class ActionDefaults {
     }
 
     public void giveLootbag(Player player) {
-        player.getInventory().setItemInOffHand(this.createItemStackWithRenamer(293, 1, 497));
+        player.getInventory().setItemInOffHand(this.getItem(293, 497, 1, true));
         addPotionEffect(player, "SLOW", 999999, 1);
     }
 
     public boolean hasLootbag(Player player) {
         ItemStack itemStack = player.getInventory().getItemInOffHand();
 
-        if (itemStack != null) {
-            return itemStack.getType() == Material.DIAMOND_HOE && itemStack.getDurability() == 497;
+        if (itemStack != null && itemStack.getType() == Material.DIAMOND_HOE && itemStack.getDurability() == 497) {
+            return true;
         } else {
-            for (ItemStack itemStack1: player.getInventory().getContents()) {
+            for (ItemStack itemStack1 : player.getInventory().getContents()) {
+                if (itemStack1 == null) continue;
+
                 if (itemStack1.getType() == Material.DIAMOND_HOE && itemStack1.getDurability() == 497) {
                     return true;
                 }
@@ -2228,21 +2286,35 @@ public class ActionDefaults {
             BaseRecipe recipe = e.getKey();
             String name = recipe.getName();
 
-            if (name.contains("shaped")) continue;
+            if (!e.getValue().getAdder().equals(file)) continue;
 
             if (recipe instanceof CraftRecipe) {
-                if (!e.getValue().getAdder().equals(file)) continue;
-
                 CraftRecipe craftRecipe = (CraftRecipe) recipe;
 
                 ItemStack item = craftRecipe.getFirstResult();
 
                 String lore = ChatColor.DARK_GRAY + "Requires:\n";
                 for (ItemStack ingredients : craftRecipe.getIngredients()) {
-                    if (ingredients == null) continue;
+                    if (ingredients != null) {
+                        ItemStack renamed = createItemStackWithRenamer(ingredients.getTypeId(), ingredients.getAmount(), ingredients.getDurability());
+                        lore = lore + ChatColor.RED + ChatColor.stripColor(ItemNames.lookup(renamed)) + " x " + renamed.getAmount() + "\n";
+                    }
+                }
 
-                    ItemStack renamed = createItemStackWithRenamer(ingredients.getTypeId(), ingredients.getAmount(), ingredients.getDurability());
-                    lore = lore + ChatColor.RED + ChatColor.stripColor(ItemNames.lookup(renamed)) + " x " + renamed.getAmount() + "\n";
+                names.add(createItemStackWithMeta(item.getTypeId(), item.getAmount(), item.getDurability(), ChatColor.GRAY + "Recipe: " + ChatColor.DARK_GREEN + name, lore));
+            }
+
+            if (recipe instanceof CombineRecipe) {
+                CombineRecipe craftRecipe = (CombineRecipe) recipe;
+
+                ItemStack item = craftRecipe.getFirstResult();
+
+                String lore = ChatColor.DARK_GRAY + "Requires:\n";
+                for (ItemStack ingredients : craftRecipe.getIngredients()) {
+                    if (ingredients != null) {
+                        ItemStack renamed = createItemStackWithRenamer(ingredients.getTypeId(), ingredients.getAmount(), ingredients.getDurability());
+                        lore = lore + ChatColor.RED + ChatColor.stripColor(ItemNames.lookup(renamed)) + " x " + renamed.getAmount() + "\n";
+                    }
                 }
 
                 names.add(createItemStackWithMeta(item.getTypeId(), item.getAmount(), item.getDurability(), ChatColor.GRAY + "Recipe: " + ChatColor.DARK_GREEN + name, lore));
@@ -2348,6 +2420,8 @@ public class ActionDefaults {
     }
 
     public ItemStack getVehicleItemStack(String vehicle, String type) {
+        vehicle = vehicle.toLowerCase();
+
         switch (vehicle) {
             case "car":
                 return CarManager.getCarItem(type);
@@ -2360,6 +2434,12 @@ public class ActionDefaults {
 
             case "plane":
                 return PlaneManager.getPlaneItem(type);
+
+            case "raft":
+                return RaftManager.getRaftItem(type);
+
+            case "parachute":
+                return ParachuteManager.getParachuteItem(type);
         }
 
         return null;

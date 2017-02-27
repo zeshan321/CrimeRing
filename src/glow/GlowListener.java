@@ -1,6 +1,8 @@
 package glow;
 
 import com.zeshanaslam.crimering.Main;
+import me.libraryaddict.disguise.events.DisguiseEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -28,5 +30,17 @@ public class GlowListener implements Listener {
         Player player = event.getPlayer();
 
         plugin.entityGlowHelper.removeGlow(player);
+    }
+
+    @EventHandler
+    public void onDisguise(DisguiseEvent event) {
+        Entity entity = event.getEntity();
+
+        Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+            @Override
+            public void run() {
+                plugin.entityGlowHelper.updateGlows(entity);
+            }
+        }, 40L);
     }
 }

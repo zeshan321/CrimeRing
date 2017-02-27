@@ -10,7 +10,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemStack;
 
 import javax.script.*;
 
@@ -172,6 +171,7 @@ public class ActionBlocks implements Listener {
 
                     engine.eval(scriptObject.scriptData, scriptContext);
                 } catch (ScriptException e) {
+                    System.out.println("[CR] Scripting error at: " + scriptObject.dir);
                     e.printStackTrace();
                 }
             }
@@ -221,6 +221,7 @@ public class ActionBlocks implements Listener {
 
                     engine.eval(scriptObject.scriptData, scriptContext);
                 } catch (ScriptException e) {
+                    System.out.println("[CR] Scripting error at: " + scriptObject.dir);
                     e.printStackTrace();
                 }
             }
@@ -262,6 +263,7 @@ public class ActionBlocks implements Listener {
 
                     engine.eval(scriptObject.scriptData, scriptContext);
                 } catch (ScriptException e) {
+                    System.out.println("[CR] Scripting error at: " + scriptObject.dir);
                     e.printStackTrace();
                 }
             }

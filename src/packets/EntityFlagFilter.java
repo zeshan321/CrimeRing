@@ -19,6 +19,7 @@ public abstract class EntityFlagFilter {
     public static final int ENTITY_CONSUMING = 1 << 4;
     public static final int ENTITY_INVISIBLE = 1 << 5;
     public static final int ENTITY_GLOWING = 1 << 6;
+    public static final int ENTITY_GLOWING1 = 1 << 7;
 
     private ProtocolManager manager;
     private PacketListener packetListener;

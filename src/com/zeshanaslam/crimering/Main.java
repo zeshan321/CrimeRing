@@ -279,6 +279,7 @@ public class Main extends JavaPlugin {
         pm.registerEvents(new DamageListener(this), this);
         pm.registerEvents(new PaydayListener(this), this);
         pm.registerEvents(new GlowListener(this), this);
+        pm.registerEvents(new ActionShoot(this), this);
 
         // Register perks
         pm.registerEvents(new GlowPerk(this), this);

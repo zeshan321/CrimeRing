@@ -4,6 +4,7 @@ import brewing.BrewObject;
 import com.zeshanaslam.crimering.Main;
 import haveric.recipeManager.RecipeManager;
 import haveric.recipeManager.recipes.BaseRecipe;
+import haveric.recipeManager.recipes.CombineRecipe;
 import haveric.recipeManager.recipes.CraftRecipe;
 import haveric.recipeManager.recipes.SmeltRecipe;
 import org.bukkit.Bukkit;
@@ -256,6 +257,25 @@ public class ScriptListener implements Listener {
                             inventory.setItem(i, plugin.renamerManager.renameItem(itemStack));
                         }
 
+                        inventory.setItem(0, craftRecipe.getFirstResult());
+                        player.openInventory(inventory);
+                    }
+
+                    if (recipe instanceof CombineRecipe) {
+                        CombineRecipe craftRecipe = (CombineRecipe) recipe;
+
+                        Inventory inventory = Bukkit.getServer().createInventory(player, InventoryType.WORKBENCH, "Recipe Viewer: " + name);
+
+                        int i = 0;
+                        for (ItemStack itemStack : craftRecipe.getIngredients()) {
+                            i++;
+
+                            if (itemStack == null) continue;
+
+                            inventory.setItem(i, plugin.renamerManager.renameItem(itemStack));
+                        }
+
+                        inventory.setItem(0, craftRecipe.getFirstResult());
                         player.openInventory(inventory);
                     }
 

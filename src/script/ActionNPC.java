@@ -38,7 +38,6 @@ public class ActionNPC implements Listener {
             return;
         }
 
-
         if (event.getRightClicked() instanceof LivingEntity) {
             LivingEntity interacted = (LivingEntity) event.getRightClicked();
 

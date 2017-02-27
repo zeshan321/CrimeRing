@@ -51,6 +51,7 @@ public class ActionLockpick implements Listener {
 
                     engine.eval(scriptObject.scriptData, scriptContext);
                 } catch (ScriptException e) {
+                    System.out.println("[CR] Scripting error at: " + scriptObject.dir);
                     e.printStackTrace();
                 }
             }

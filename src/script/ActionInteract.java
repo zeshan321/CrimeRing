@@ -1,6 +1,5 @@
 package script;
 
-import com.shampaggon.crackshot.CSUtility;
 import com.zeshanaslam.crimering.Main;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -70,38 +69,10 @@ public class ActionInteract implements Listener {
 
                     engine.eval(scriptObject.scriptData, scriptContext);
                 } catch (ScriptException e) {
+                    System.out.println("[CR] Scripting error at: " + scriptObject.dir);
                     e.printStackTrace();
                 }
             }
-        }
-
-
-        if (event.getItem() != null && new CSUtility().getWeaponTitle(event.getItem()) != null) {
-            // Objects
-            plugin.actionDefaults.getApplicableRegions(player).stream().filter(region -> Main.instance.scriptsManager.contains(typeInteract + "CRACKSHOT-" + region)).forEach(region -> {
-                for (ScriptObject scriptObject : Main.instance.scriptsManager.getObjects(typeInteract + "CRACKSHOT-" + region)) {
-
-                    try {
-                        ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
-
-                        // Objects
-                        Bindings bindings = engine.createBindings();
-                        bindings.put("player", player);
-                        bindings.put("event", event);
-                        bindings.put("CR", new ActionDefaults(typeInteract + "CRACKSHOT-" + region, engine));
-                        bindings.put("id", material);
-                        bindings.put("data", data);
-                        bindings.put("clickType", clickType(event.getAction().toString()));
-
-                        ScriptContext scriptContext = engine.getContext();
-                        scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
-
-                        engine.eval(scriptObject.scriptData, scriptContext);
-                    } catch (ScriptException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
         }
     }
 
