@@ -36,7 +36,7 @@ public class ActionArrested implements Listener {
                     bindings.put("CR", new ActionDefaults(type, engine));
 
                     ScriptContext scriptContext = engine.getContext();
-                    scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+                    scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
 
                     engine.eval(scriptObject.scriptData, scriptContext);
                 } catch (ScriptException e) {

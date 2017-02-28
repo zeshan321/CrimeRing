@@ -826,7 +826,7 @@ public class ActionDefaults {
                     bindings.put("CR", new ActionDefaults(scriptID, engine));
 
                     ScriptContext scriptContext = engine.getContext();
-                    scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+                    scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
 
                     engine.eval(scriptObject.scriptData, scriptContext);
                 } catch (ScriptException e) {
@@ -923,7 +923,7 @@ public class ActionDefaults {
                 bindings.put("CR", new ActionDefaults(scriptID, engine));
 
                 ScriptContext scriptContext = engine.getContext();
-                scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+                scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
 
                 engine.eval(scriptObject.scriptData, scriptContext);
             } catch (ScriptException e) {

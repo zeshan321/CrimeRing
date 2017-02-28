@@ -50,7 +50,7 @@ public class ActionRegions implements Listener {
                     bindings.put("CR", new ActionDefaults(typeEnter + event.getRegion().getId(), engine));
 
                     ScriptContext scriptContext = engine.getContext();
-                    scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+                    scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
 
                     engine.eval(scriptObject.scriptData, scriptContext);
                 } catch (ScriptException e) {
@@ -91,7 +91,7 @@ public class ActionRegions implements Listener {
                     bindings.put("CR", new ActionDefaults(typeLeave + event.getRegion().getId(), engine));
 
                     ScriptContext scriptContext = engine.getContext();
-                    scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+                    scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
 
                     engine.eval(scriptObject.scriptData, scriptContext);
                 } catch (ScriptException e) {

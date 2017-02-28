@@ -59,7 +59,7 @@ public class ActionNPC implements Listener {
                             bindings.put("world", event.getRightClicked().getLocation().getWorld().getName());
 
                             ScriptContext scriptContext = engine.getContext();
-                            scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+                            scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
 
                             engine.eval(scriptObject.scriptData, scriptContext);
                         } catch (ScriptException e) {
@@ -100,7 +100,7 @@ public class ActionNPC implements Listener {
                         bindings.put("world", interacted.getLocation().getWorld().getName());
 
                         ScriptContext scriptContext = engine.getContext();
-                        scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+                        scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
 
                         engine.eval(scriptObject.scriptData, scriptContext);
                     } catch (ScriptException e) {
@@ -127,7 +127,7 @@ public class ActionNPC implements Listener {
                         bindings.put("world", event.getRightClicked().getLocation().getWorld().getName());
 
                         ScriptContext scriptContext = engine.getContext();
-                        scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+                        scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
 
                         engine.eval(scriptObject.scriptData, scriptContext);
                     } catch (ScriptException e) {

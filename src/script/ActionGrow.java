@@ -52,7 +52,7 @@ public class ActionGrow implements Listener {
                     bindings.put("world", newState.getLocation().getWorld().getName());
 
                     ScriptContext scriptContext = engine.getContext();
-                    scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+                    scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
 
                     engine.eval(scriptObject.scriptData, scriptContext);
                 } catch (ScriptException e) {

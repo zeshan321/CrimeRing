@@ -259,7 +259,7 @@ public class RaidManager {
                     bindings.put("CR", new ActionDefaults("RAID-" + name, engine));
 
                     ScriptContext scriptContext = engine.getContext();
-                    scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+                    scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
 
                     engine.eval(scriptObject.scriptData, scriptContext);
                 } catch (ScriptException e) {

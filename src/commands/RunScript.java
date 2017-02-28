@@ -54,7 +54,7 @@ public class RunScript implements CommandExecutor {
                                 bindings.put("CR", new ActionDefaults(script, engine));
 
                                 ScriptContext scriptContext = engine.getContext();
-                                scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+                                scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
 
                                 engine.eval(scriptObject.scriptData, scriptContext);
                             } catch (ScriptException e) {
@@ -76,7 +76,7 @@ public class RunScript implements CommandExecutor {
                                 bindings.put("CR", new ActionDefaults(script, engine));
 
                                 ScriptContext scriptContext = engine.getContext();
-                                scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+                                scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
 
                                 engine.eval(scriptObject.scriptData, scriptContext);
                             } catch (ScriptException e) {

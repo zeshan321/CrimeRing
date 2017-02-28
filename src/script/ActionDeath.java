@@ -59,7 +59,7 @@ public class ActionDeath implements Listener {
                         bindings.put("world", event.getEntity().getLocation().getWorld().getName());
 
                         ScriptContext scriptContext = engine.getContext();
-                        scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+                        scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
 
                         engine.eval(scriptObject.scriptData, scriptContext);
                     } catch (ScriptException e) {
@@ -97,7 +97,7 @@ public class ActionDeath implements Listener {
                         bindings.put("world", event.getEntity().getLocation().getWorld().getName());
 
                         ScriptContext scriptContext = engine.getContext();
-                        scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+                        scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
 
                         engine.eval(scriptObject.scriptData, scriptContext);
                     } catch (ScriptException e) {
@@ -143,7 +143,7 @@ public class ActionDeath implements Listener {
                         bindings.put("world", player.getLocation().getWorld().getName());
 
                         ScriptContext scriptContext = engine.getContext();
-                        scriptContext.setBindings(bindings, scriptContext.ENGINE_SCOPE);
+                        scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
 
                         engine.eval(scriptObject.scriptData, scriptContext);
                     } catch (ScriptException e) {
