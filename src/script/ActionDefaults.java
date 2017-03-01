@@ -1642,11 +1642,16 @@ public class ActionDefaults {
         }
     }
 
-    public boolean isOnBlock(Player player, String type) {
+    public boolean isOnBlock(Player player, int id, int data) {
         Location loc = player.getPlayer().getLocation();
         loc.setY(loc.getY() - 1);
 
-        return loc.getWorld().getBlockAt(loc).getType().toString().equals(type);
+        Block block = loc.getWorld().getBlockAt(loc);
+        if (block != null && block.getTypeId() == id && block.getData() == data) {
+            return true;
+        }
+
+        return false;
     }
 
     public List<Player> getParty(Player player) {

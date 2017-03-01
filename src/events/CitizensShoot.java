@@ -69,15 +69,17 @@ public class CitizensShoot implements Listener {
             }
         }
 
-        if (Main.instance.mythicAPI.isMythicMob(entity)) {
-            if (Main.instance.mythicAPI.getMythicMobInstance(entity).getType().getInternalName().startsWith("Cop")) {
+        if (Main.instance.mythicAPI.isMythicMob(entity1)) {
+            if (Main.instance.mythicAPI.getMythicMobInstance(entity1).getType().getInternalName().startsWith("Cop")) {
                 return;
             }
 
-            if (!Main.instance.mythicAPI.getMythicMobInstance(entity).getType().getInternalName().startsWith("Citizen")) {
-                if (!(entity instanceof Player)) {
-                    return;
-                }
+            if (!Main.instance.mythicAPI.getMythicMobInstance(entity1).getType().getInternalName().startsWith("Citizen")) {
+                return;
+            }
+        } else {
+            if (!(entity1 instanceof Player)) {
+                return;
             }
         }
 

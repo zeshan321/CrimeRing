@@ -59,6 +59,8 @@ import perks.CooldownManager;
 import perks.arrest.GlowPerk;
 import perks.arrest.PerkManager;
 import perks.thief.Scramble;
+import perks.tracking.TrackingEvents;
+import perks.tracking.TrackingManager;
 import radio.RadioManager;
 import raids.*;
 import renamer.RenamerManager;
@@ -100,6 +102,7 @@ public class Main extends JavaPlugin {
     public CooldownManager cooldownManager;
     public PaydayManager paydayManager;
     public EntityGlowHelper entityGlowHelper;
+    public TrackingManager trackingManager;
 
     // Lists and maps
     public ArrayList<String> flag = new ArrayList<>();
@@ -127,6 +130,9 @@ public class Main extends JavaPlugin {
         if (rsp != null) {
             economy = rsp.getProvider();
         }
+
+        // Tracking Manager
+        trackingManager = new TrackingManager();
 
         // Glow helper
         entityGlowHelper = new EntityGlowHelper();
@@ -284,6 +290,7 @@ public class Main extends JavaPlugin {
         // Register perks
         pm.registerEvents(new GlowPerk(this), this);
         pm.registerEvents(new Scramble(this), this);
+        pm.registerEvents(new TrackingEvents(this), this);
 
         // Commands
         getCommand("CRReload").setExecutor(new Reload(this));
