@@ -10,7 +10,7 @@ public class Conversation {
     public HashMap<UUID, ConversationObject> conversations = new HashMap<>();
 
     public enum ConvoType {
-        INT, DOUBLE, STRING
+        INT, DOUBLE, STRING, NUMBER
     }
 
     public void startConversation(ConversationObject object) {

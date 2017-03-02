@@ -56,6 +56,14 @@ public class ConversationEvents implements Listener {
                 case STRING:
                     object.callback.onValid(player, message);
                     break;
+
+                case NUMBER:
+                    if (message.matches("[0-9]+") || message.matches("[0-9]{1,13}(\\\\.[0-9]*)?")) {
+                        object.callback.onValid(player, message);
+                    } else {
+                        object.callback.onInvalid(player, message);
+                    }
+                    break;
             }
         }
     }
