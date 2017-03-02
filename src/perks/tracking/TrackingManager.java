@@ -52,6 +52,8 @@ public class TrackingManager {
                     }
 
                     player.setCompassTarget(Main.instance.actionDefaults.getRandomLocations(trackObject.lastLocation, base, 1, true).get(0));
+                } else {
+                    iterator.remove();
                 }
             }
         }, 0, 100L);

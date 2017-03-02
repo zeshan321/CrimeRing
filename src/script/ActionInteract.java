@@ -43,6 +43,7 @@ public class ActionInteract implements Listener {
             Invocable invocable = (Invocable) listenerObject.engine;
             try {
                 invocable.invokeFunction(listenerObject.method, event);
+                System.out.println("[CR] Scripting error at listener: " +  typeInteract + material + ":" + data);
             } catch (ScriptException | NoSuchMethodException e) {
                 e.printStackTrace();
             }
