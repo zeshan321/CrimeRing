@@ -17,8 +17,7 @@ public class CooldownManager {
 
     public CooldownManager() {
         Main.instance.getServer().getScheduler().scheduleSyncRepeatingTask(Main.instance, () -> {
-            Set keySet = cooldowns.keySet();
-            Iterator keyIterator = keySet.iterator();
+            Iterator keyIterator = cooldowns.keySet().iterator();
 
             while (keyIterator.hasNext()) {
                 UUID key = (UUID) keyIterator.next();
@@ -36,6 +35,7 @@ public class CooldownManager {
                 }
 
                 if (values.isEmpty()) {
+                    if (cooldowns.containsKey(key))
                     keyIterator.remove();
                 }
             }
