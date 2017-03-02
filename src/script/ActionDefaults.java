@@ -1,5 +1,6 @@
 package script;
 
+import bounty.BountyManager;
 import brewing.BrewObject;
 import com.enjin.officialplugin.points.PointsAPI;
 import com.shampaggon.crackshot.CSUtility;
@@ -2474,5 +2475,9 @@ public class ActionDefaults {
                 }
             }
         }
+    }
+
+    public BountyManager getBountyManager() {
+        return Main.instance.bountyManager;
     }
 }

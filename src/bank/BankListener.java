@@ -1,6 +1,9 @@
 package bank;
 
 import com.zeshanaslam.crimering.Main;
+import conversation.Conversation;
+import conversation.ConversationCallback;
+import conversation.ConversationObject;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
@@ -12,21 +15,15 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
-
-import java.util.HashMap;
-import java.util.UUID;
 
 public class BankListener implements Listener {
 
     private final Main plugin;
-    private HashMap<UUID, String> type = new HashMap<>();
 
     public BankListener(Main plugin) {
         this.plugin = plugin;
@@ -101,27 +98,62 @@ public class BankListener implements Listener {
                 case "Deposit":
                     player.closeInventory();
                     player.sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "How much you would like to deposit?");
-                    type.put(player.getUniqueId(), "D");
+                    plugin.conversation.startConversation(new ConversationObject(player.getUniqueId(), Conversation.ConvoType.INT, new ConversationCallback() {
+                        @Override
+                        public void onValid(Player player, String value) {
+                            int amount = Integer.valueOf(value);
 
-                    // Remove if user doesn't respond in time
-                    new BukkitRunnable() {
-                        public void run() {
-                            type.remove(player.getUniqueId());
+                            if (Main.instance.actionDefaults.getInvMoney(player) >= amount) {
+                                Main.instance.actionDefaults.takeInvMoney(player, amount);
+
+                                double taxed = amount * 0.20;
+                                double newAmount = amount - taxed;
+
+                                Main.instance.actionDefaults.depositMoney(player, newAmount);
+
+                                player.sendMessage(ChatColor.GOLD + "Here's your updated balances:");
+                                player.sendMessage(ChatColor.GREEN + "Bank Balance: " + ChatColor.AQUA + "$" + Main.instance.actionDefaults.getBalance(player) + "\n" + ChatColor.GREEN + "Player Balance: " + ChatColor.AQUA + "$" + Main.instance.actionDefaults.getInvMoney(player));
+                            } else {
+                                player.sendMessage(ChatColor.RED + "You do not have enough cash on you!");
+                            }
+
+                            plugin.conversation.endConversation(player);
                         }
-                    }.runTaskLater(plugin, 300L);
+
+                        @Override
+                        public void onInvalid(Player player, String value) {
+                            player.sendMessage(ChatColor.RED + "Only numerical values are accepted!");
+                        }
+                    }));
                     break;
 
                 case "Withdraw":
                     player.closeInventory();
                     player.sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "How much you would like to withdraw?");
-                    type.put(player.getUniqueId(), "W");
 
-                    // Remove if user doesn't respond in time
-                    new BukkitRunnable() {
-                        public void run() {
-                            type.remove(player.getUniqueId());
+                    plugin.conversation.startConversation(new ConversationObject(player.getUniqueId(), Conversation.ConvoType.INT, new ConversationCallback() {
+                        @Override
+                        public void onValid(Player player, String value) {
+                            int amount = Integer.valueOf(value);
+
+                            if (Main.instance.actionDefaults.getBalance(player) >= amount) {
+                                Main.instance.actionDefaults.withdrawMoney(player, amount);
+                                Main.instance.actionDefaults.addInvBills(player, amount);
+
+                                player.sendMessage(ChatColor.GOLD + "Here's your updated balances:");
+                                player.sendMessage(ChatColor.GREEN + "Bank Balance: " + ChatColor.AQUA + "$" + Main.instance.actionDefaults.getBalance(player) + "\n" + ChatColor.GREEN + "Player Balance: " + ChatColor.AQUA + "$" + Main.instance.actionDefaults.getInvMoney(player));
+                            } else {
+                                player.sendMessage(ChatColor.RED + "You do not have enough money in the bank!");
+                            }
+
+                            plugin.conversation.endConversation(player);
                         }
-                    }.runTaskLater(plugin, 300L);
+
+                        @Override
+                        public void onInvalid(Player player, String value) {
+                            player.sendMessage(ChatColor.RED + "Only numerical values are accepted!");
+                        }
+                    }));
                     break;
 
                 case "Convert":
@@ -129,7 +161,7 @@ public class BankListener implements Listener {
                     int cash = plugin.actionDefaults.getInvMoney(player);
                     plugin.actionDefaults.takeInvMoney(player, cash);
 
-                    for (ItemStack money: plugin.actionDefaults.getBillsStack(cash)) {
+                    for (ItemStack money : plugin.actionDefaults.getBillsStack(cash)) {
                         if (money == null) continue;
 
                         player.getInventory().addItem(money);
@@ -139,63 +171,14 @@ public class BankListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onChat(AsyncPlayerChatEvent event) {
-        Player player = event.getPlayer();
-
-        if (type.containsKey(player.getUniqueId())) {
-            event.setCancelled(true);
-            player.sendMessage(event.getMessage());
-
-            String status = type.get(player.getUniqueId());
-            if (event.getMessage().matches("[0-9]+")) {
-                int amount = Integer.valueOf(event.getMessage());
-
-                if (status.equals("D")) {
-                    if (Main.instance.actionDefaults.getInvMoney(player) >= amount) {
-                        Main.instance.actionDefaults.takeInvMoney(player, amount);
-
-                        double taxed = amount * 0.20;
-                        double newAmount = amount - taxed;
-
-                        Main.instance.actionDefaults.depositMoney(player, newAmount);
-
-                        player.sendMessage(ChatColor.GOLD + "Here's your updated balances:");
-                        player.sendMessage(ChatColor.GREEN + "Bank Balance: " + ChatColor.AQUA + "$" + Main.instance.actionDefaults.getBalance(player) + "\n" + ChatColor.GREEN + "Player Balance: " + ChatColor.AQUA + "$" + Main.instance.actionDefaults.getInvMoney(player));
-                    } else {
-                        player.sendMessage(ChatColor.RED + "You do not have enough cash on you!");
-                    }
-                }
-
-                if (status.equals("W")) {
-                    if (Main.instance.actionDefaults.getBalance(player) >= amount) {
-                        Main.instance.actionDefaults.withdrawMoney(player, amount);
-                        Main.instance.actionDefaults.addInvBills(player, amount);
-
-                        player.sendMessage(ChatColor.GOLD + "Here's your updated balances:");
-                        player.sendMessage(ChatColor.GREEN + "Bank Balance: " + ChatColor.AQUA + "$" + Main.instance.actionDefaults.getBalance(player) + "\n" + ChatColor.GREEN + "Player Balance: " + ChatColor.AQUA + "$" + Main.instance.actionDefaults.getInvMoney(player));
-                    } else {
-                        player.sendMessage(ChatColor.RED + "You do not have enough money in the bank!");
-                    }
-                }
-            } else {
-                player.sendMessage(ChatColor.RED + "Only numerical values are accepted!");
-            }
-
-            // Clean up
-            type.remove(player.getUniqueId());
-        }
-    }
-
     private void openInventory(Player player, boolean atm) {
-        // Remove if already contains in type
-        if (type.containsKey(player.getUniqueId())) type.remove(player.getUniqueId());
-
-        Inventory inventory = Bukkit.createInventory(player, 9, "Cogent City Bank");
+        // End convo
+        plugin.conversation.endConversation(player);
 
         double bankBalance = Main.instance.actionDefaults.getBalance(player);
         int playerBalance = Main.instance.actionDefaults.getInvMoney(player);
 
+        Inventory inventory = Bukkit.createInventory(player, 9, "Cogent City Bank");
         if (!atm) {
             inventory.setItem(1, Main.instance.actionDefaults.createItemStackWithMeta(293, 1, 412, ChatColor.GOLD + "Check balance", ChatColor.GREEN + "Bank Balance: " + ChatColor.AQUA + "$" + bankBalance + "\n" + ChatColor.GREEN + "Player Balance: " + ChatColor.AQUA + "$" + playerBalance));
             inventory.setItem(3, Main.instance.actionDefaults.createItemStackWithMeta(293, 1, 411, ChatColor.GOLD + "Withdraw", ChatColor.GREEN + "Click to withdraw"));

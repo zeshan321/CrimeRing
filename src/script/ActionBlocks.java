@@ -159,7 +159,7 @@ public class ActionBlocks implements Listener {
             for (ScriptObject scriptObject : Main.instance.scriptsManager.getObjects(typePlace + blockData)) {
                 try {
                     ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
-
+                    
                     // Objects
                     Bindings bindings = engine.createBindings();
                     bindings.put("player", player);

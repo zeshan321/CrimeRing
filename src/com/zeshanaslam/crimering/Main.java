@@ -2,6 +2,8 @@ package com.zeshanaslam.crimering;
 
 import ambientsounds.AmbientManager;
 import bank.BankListener;
+import bounty.BountyCreate;
+import bounty.BountyManager;
 import brewing.BrewListener;
 import brewing.BrewingManager;
 import com.comphenix.protocol.PacketType;
@@ -17,6 +19,8 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import commands.*;
+import conversation.Conversation;
+import conversation.ConversationEvents;
 import customevents.PlayerEquipEvent;
 import customevents.PlayerUnequipEvent;
 import damage.DamageListener;
@@ -103,6 +107,8 @@ public class Main extends JavaPlugin {
     public PaydayManager paydayManager;
     public EntityGlowHelper entityGlowHelper;
     public TrackingManager trackingManager;
+    public Conversation conversation;
+    public BountyManager bountyManager;
 
     // Lists and maps
     public ArrayList<String> flag = new ArrayList<>();
@@ -130,6 +136,66 @@ public class Main extends JavaPlugin {
         if (rsp != null) {
             economy = rsp.getProvider();
         }
+
+        // User data dir
+        File userDir = new File("plugins/CrimeRing/");
+        if (!userDir.exists()) {
+            userDir.mkdir();
+        }
+
+        // Scripts data dir
+        File scriptDir = new File("plugins/CrimeRing/scripts/");
+        if (!scriptDir.exists()) {
+            scriptDir.mkdir();
+        }
+
+        // Scripts inv data dir
+        File scriptInvDir = new File("plugins/CrimeRing/inv/");
+        if (!scriptInvDir.exists()) {
+            scriptInvDir.mkdir();
+        }
+
+        // Raids data dir
+        File raidsDir = new File("plugins/CrimeRing/raids/");
+        if (!raidsDir.exists()) {
+            raidsDir.mkdir();
+        }
+
+        // Items data dir
+        File itemsDir = new File("plugins/CrimeRing/items/");
+        if (!itemsDir.exists()) {
+            itemsDir.mkdir();
+        }
+
+        // Player data dir
+        File playerDir = new File("plugins/CrimeRing/player/");
+        if (!playerDir.exists()) {
+            playerDir.mkdir();
+        }
+
+        // Fakeblocks data dir
+        File fakeDir = new File("plugins/CrimeRing/fakeblocks/");
+        if (!fakeDir.exists()) {
+            fakeDir.mkdir();
+        }
+
+        // Locks data dir
+        File locksDir = new File("plugins/CrimeRing/locks/");
+        if (!locksDir.exists()) {
+            locksDir.mkdir();
+        }
+
+        // bounty data dir
+        File bountyDir = new File("plugins/CrimeRing/bounties/");
+        if (!bountyDir.exists()) {
+            bountyDir.mkdir();
+        }
+
+        // Conversation handler
+        conversation = new Conversation();
+
+        // Bounty Manager
+        bountyManager = new BountyManager();
 
         // Tracking Manager
         trackingManager = new TrackingManager();
@@ -202,54 +268,6 @@ public class Main extends JavaPlugin {
         // Load worldguard
         worldGuardPlugin = (WorldGuardPlugin) getServer().getPluginManager().getPlugin("WorldGuard");
 
-        // User data dir
-        File userDir = new File("plugins/CrimeRing/");
-        if (!userDir.exists()) {
-            userDir.mkdir();
-        }
-
-        // Scripts data dir
-        File scriptDir = new File("plugins/CrimeRing/scripts/");
-        if (!scriptDir.exists()) {
-            scriptDir.mkdir();
-        }
-
-        // Scripts inv data dir
-        File scriptInvDir = new File("plugins/CrimeRing/inv/");
-        if (!scriptInvDir.exists()) {
-            scriptInvDir.mkdir();
-        }
-
-        // Raids data dir
-        File raidsDir = new File("plugins/CrimeRing/raids/");
-        if (!raidsDir.exists()) {
-            raidsDir.mkdir();
-        }
-
-        // Items data dir
-        File itemsDir = new File("plugins/CrimeRing/items/");
-        if (!itemsDir.exists()) {
-            itemsDir.mkdir();
-        }
-
-        // Player data dir
-        File playerDir = new File("plugins/CrimeRing/player/");
-        if (!playerDir.exists()) {
-            playerDir.mkdir();
-        }
-
-        // Fakeblocks data dir
-        File fakeDir = new File("plugins/CrimeRing/fakeblocks/");
-        if (!fakeDir.exists()) {
-            fakeDir.mkdir();
-        }
-
-        // Locks data dir
-        File locksDir = new File("plugins/CrimeRing/locks/");
-        if (!locksDir.exists()) {
-            locksDir.mkdir();
-        }
-
         // events
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new BasicEvents(this), this);
@@ -286,6 +304,7 @@ public class Main extends JavaPlugin {
         pm.registerEvents(new PaydayListener(this), this);
         pm.registerEvents(new GlowListener(this), this);
         pm.registerEvents(new ActionShoot(this), this);
+        pm.registerEvents(new ConversationEvents(this), this);
 
         // Register perks
         pm.registerEvents(new GlowPerk(this), this);
