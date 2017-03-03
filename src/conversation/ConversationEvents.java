@@ -1,6 +1,7 @@
 package conversation;
 
 import com.zeshanaslam.crimering.Main;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -35,6 +36,9 @@ public class ConversationEvents implements Listener {
 
             String message = event.getMessage();
             ConversationObject object = plugin.conversation.conversations.get(player.getUniqueId());
+
+            // End task
+            Bukkit.getScheduler().cancelTask(object.taskID);
 
             switch(object.type) {
                 case INT:
