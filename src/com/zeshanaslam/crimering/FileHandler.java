@@ -43,6 +43,10 @@ public class FileHandler {
         return file.getName();
     }
 
+    public String getPath() {
+        return file.getPath();
+    }
+
     public static boolean fileExists(String path) {
         File file = new File(path);
 

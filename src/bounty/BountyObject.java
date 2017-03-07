@@ -10,12 +10,14 @@ public class BountyObject {
     public UUID owner;
     public String details;
     public List<String> items;
+    public String filePath;
 
-    public BountyObject(String file, UUID target, UUID owner, String details, List<String> items) {
+    public BountyObject(String filePath, String file, UUID target, UUID owner, String details, List<String> items) {
         this.file = file;
         this.target = target;
         this.owner = owner;
         this.details = details;
         this.items = items;
+        this.filePath = filePath;
     }
 }

@@ -16,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import utils.HiddenStringUtils;
 import utils.ItemNames;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -43,7 +44,7 @@ public class BountyManager {
                     UUID owner = UUID.fromString(fileHandler.getString("owner"));
                     List<String> items = fileHandler.getStringList("items");
 
-                    bounties.put(target, new BountyObject(fileHandler.getName(), target, owner, details, items));
+                    bounties.put(target, new BountyObject(filePath.toString(), fileHandler.getName(), target, owner, details, items));
                 }
             });
         } catch (IOException e) {
@@ -131,7 +132,7 @@ public class BountyManager {
         ArrayList<ItemStack> bounties = new ArrayList<>();
 
         for (BountyObject object : this.bounties.values()) {
-            if (object.owner.equals(player.getUniqueId())) continue;
+            if (!object.owner.equals(player.getUniqueId())) continue;
 
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(object.target);
             String lore = ChatColor.GRAY + "Details:\n" +
@@ -168,7 +169,7 @@ public class BountyManager {
 
         fileHandler.save();
 
-        bounties.put(target, new BountyObject(fileHandler.getName(), target, player.getUniqueId(), details, items));
+        bounties.put(target, new BountyObject(fileHandler.getPath(), fileHandler.getName(), target, player.getUniqueId(), details, items));
     }
 
     public void getRewards(Player player, String id) {
@@ -180,7 +181,7 @@ public class BountyManager {
 
                 for (String items : object.items) {
                     int itemID = Integer.valueOf(items.split(":")[0]);
-                    int data = Integer.valueOf(items.split(":")[1]);
+                    int data = Integer.valueOf(items.split(":")[1].split(" ")[0]);
                     int amount = Integer.valueOf(items.split(" ")[1]);
 
                     ItemStack renamed = Main.instance.actionDefaults.createItemStackWithRenamer(itemID, amount, data);
@@ -201,9 +202,11 @@ public class BountyManager {
         Iterator<BountyObject> iterator = this.bounties.values().iterator();
         while (iterator.hasNext()) {
             BountyObject object = iterator.next();
-            iterator.remove();
 
-            removeFile(object.file);
+            if (!object.target.equals(target)) continue;
+
+            iterator.remove();
+            new File(object.filePath).delete();
 
             for (String items : object.items) {
                 int itemID = Integer.valueOf(items.split(":")[0]);
@@ -224,12 +227,14 @@ public class BountyManager {
             BountyObject object = iterator.next();
 
             if (object.file.equals(id)) {
+                new File(object.filePath).delete();
                 iterator.remove();
-
-                FileHandler fileHandler = new FileHandler("plugins/CrimeRing/bounties/" + id);
-                fileHandler.delete();
                 break;
             }
         }
+    }
+
+    public boolean hasBounty(UUID target) {
+        return bounties.containsKey(target);
     }
 }

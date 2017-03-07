@@ -112,7 +112,7 @@ public class BasicEvents implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
 
@@ -122,6 +122,12 @@ public class BasicEvents implements Listener {
 
         if (player.isOp()) {
             return;
+        }
+
+        if (event.getClickedBlock().getType() == Material.QUARTZ_ORE) {
+            if (!player.hasPermission("CR.perk.pushblocks")) {
+                event.setCancelled(true);
+            }
         }
 
         if (plugin.getConfig().getIntegerList("Blocked-items-interact").contains(event.getClickedBlock().getTypeId())) {
@@ -172,6 +178,8 @@ public class BasicEvents implements Listener {
 
         if (event.getRemover() instanceof Player) {
             Player player = (Player) event.getRemover();
+
+            if (plugin.admins.contains(player.getUniqueId())) return;
 
             if (!(player.isOp())) {
                 event.setCancelled(true);

@@ -40,6 +40,7 @@ public class ConversationEvents implements Listener {
             // End task
             Bukkit.getScheduler().cancelTask(object.taskID);
 
+            player.sendMessage(message);
             switch(object.type) {
                 case INT:
                     if (message.matches("[0-9]+")) {

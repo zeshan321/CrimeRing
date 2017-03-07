@@ -111,6 +111,7 @@ public class Main extends JavaPlugin {
     public BountyManager bountyManager;
 
     // Lists and maps
+    public ArrayList<UUID> admins = new ArrayList<>();
     public ArrayList<String> flag = new ArrayList<>();
     public ArrayList<UUID> resourcepack = new ArrayList<>();
     public HashMap<String, Integer> values = new HashMap<>();
@@ -329,6 +330,7 @@ public class Main extends JavaPlugin {
         getCommand("CRRunscript").setExecutor(new RunScript(this));
         getCommand("CRLock").setExecutor(new LocksCreate(this));
         getCommand("lock").setExecutor(new LockCommand(this));
+        getCommand("cradmin").setExecutor(new Admin(this));
 
         ProtocolUtil protocolUtil = new ProtocolUtil();
 

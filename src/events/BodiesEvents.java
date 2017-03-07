@@ -15,6 +15,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import utils.HiddenStringUtils;
 
 import java.util.HashMap;
 
@@ -43,12 +44,29 @@ public class BodiesEvents implements Listener {
             }
         }
 
+        if (plugin.bountyManager.hasBounty(player.getUniqueId())) {
+            empty = false;
+        }
+
         if (!empty) {
             Block block = getBodyLocation(player.getLocation());
             block.setType(Material.CAKE_BLOCK);
 
             Inventory inventory = Bukkit.createInventory(null, 54, ChatColor.RED + player.getName() + "'s body");
             inventory.setContents(event.getDrops().toArray(new ItemStack[0]));
+
+            // Hook into bounties
+            if (plugin.bountyManager.hasBounty(player.getUniqueId()) && killer instanceof Player) {
+                Player killerPlayer = (Player) killer;
+
+                if (killerPlayer.hasPermission("CR.perk.bounty")) {
+                    ItemStack itemStack = plugin.actionDefaults.getPlayerHead(player.getName());
+                    itemStack = plugin.actionDefaults.setItemStackMeta(itemStack, ChatColor.RED + "Bounty: " + player.getName(),
+                            ChatColor.GRAY + "Right click to claim bounty.\n" + HiddenStringUtils.encodeString(player.getUniqueId().toString()));
+
+                    inventory.addItem(itemStack);
+                }
+            }
 
             bodies.put(block.getLocation(), new BodyObject(player, killer, System.currentTimeMillis(), block.getLocation(), inventory));
 
