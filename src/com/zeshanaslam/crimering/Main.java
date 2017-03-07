@@ -305,6 +305,7 @@ public class Main extends JavaPlugin {
         pm.registerEvents(new GlowListener(this), this);
         pm.registerEvents(new ActionShoot(this), this);
         pm.registerEvents(new ConversationEvents(this), this);
+        pm.registerEvents(new BountyCreate(this), this);
 
         // Register perks
         pm.registerEvents(new GlowPerk(this), this);

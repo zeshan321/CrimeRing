@@ -13,6 +13,7 @@ public class ConversationObject {
     public Conversation.ConvoType type;
     public ConversationCallback callback;
     public int taskID;
+    public int stage = 0;
 
     public long timeoutTicks = 300;
 

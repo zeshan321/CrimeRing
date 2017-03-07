@@ -68,6 +68,14 @@ public class ConversationEvents implements Listener {
                         object.callback.onInvalid(player, message);
                     }
                     break;
+
+                case BOOLEAN:
+                    if (plugin.conversation.isBoolean(message.toLowerCase())) {
+                        object.callback.onValid(player, message.toLowerCase());
+                    } else {
+                        object.callback.onInvalid(player, message);
+                    }
+                    break;
             }
         }
     }

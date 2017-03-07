@@ -39,6 +39,10 @@ public class FileHandler {
         this.load();
     }
 
+    public String getName() {
+        return file.getName();
+    }
+
     public static boolean fileExists(String path) {
         File file = new File(path);
 
